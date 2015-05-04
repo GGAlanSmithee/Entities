@@ -5,11 +5,16 @@
     </head>
     <body>
         <script type='text/javascript' src='../../dist/Entities.js'></script>
+        <script type='text/javascript' src='js/TestComponent.js'></script>
         
         <script type='text/javascript'>
-        
-        console.log(Entities);
 
+        var world = new Entities.World(1000, Entities.World.Type.Dynamic);
+        
+        world.registerComponent(Test);
+        
+        console.log(world);
+        
         </script> 
     </body>
 </html>

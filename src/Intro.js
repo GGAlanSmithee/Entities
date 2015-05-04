@@ -7,7 +7,7 @@
 if (typeof exports === 'undefined') {
     global = window;
 }
-        
+
 (function(){
 
     var root = this;

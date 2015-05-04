@@ -22,4 +22,6 @@ Grunt is used to build Entities
 
 - **send a pull request** to the master branch with a message of what have been changed and why
 
+- **thanks** for contributing
+
 [0]: http://nodejs.org
