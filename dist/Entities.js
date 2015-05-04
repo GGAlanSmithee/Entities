@@ -50,3 +50,72 @@ var Entities = Entities || {
 /*
 * "What matters in this life is not what we do but what we do for others, the legacy we leave and the imprint we make." - Eric Meyer
 */
+
+
+
+/**
+* @author       Alan Smithee <ggnore.alan.smithee@gmail.com>
+* @copyright    2015 GGNoRe.
+* @license      {@link https://github.com/GGAlanSmithee/Entities/blob/master/LICENSE|MIT License}
+*/
+
+'use strict';
+
+Entities.EntityFactory = function(options) {
+    options = options || {};
+};
+
+Entities.EntityFactory.prototype = {
+    constructor : Entities.EntityFactory
+};
+
+
+/**
+* @author       Alan Smithee <ggnore.alan.smithee@gmail.com>
+* @copyright    2015 GGNoRe.
+* @license      {@link https://github.com/GGAlanSmithee/Entities/blob/master/LICENSE|MIT License}
+*/
+
+'use strict';
+
+Entities.EntityManager = function(options) {
+    options = options || {};
+};
+
+Entities.EntityManager.prototype = {
+    constructor : Entities.EntityManager
+};
+
+
+/**
+* @author       Alan Smithee <ggnore.alan.smithee@gmail.com>
+* @copyright    2015 GGNoRe.
+* @license      {@link https://github.com/GGAlanSmithee/Entities/blob/master/LICENSE|MIT License}
+*/
+
+'use strict';
+
+Entities.SystemManager = function(options) {
+    options = options || {};
+};
+
+Entities.SystemManager.prototype = {
+    constructor : Entities.SystemManager
+};
+
+
+/**
+* @author       Alan Smithee <ggnore.alan.smithee@gmail.com>
+* @copyright    2015 GGNoRe.
+* @license      {@link https://github.com/GGAlanSmithee/Entities/blob/master/LICENSE|MIT License}
+*/
+
+'use strict';
+
+Entities.World = function(options) {
+    options = options || {};
+};
+
+Entities.World.prototype = {
+    constructor : Entities.World
+};
