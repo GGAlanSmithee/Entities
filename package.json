@@ -1,0 +1,22 @@
+{
+  "name": "Entities",
+  "version": "0.0.1",
+  "description": "efficient and easy-to-use Entity-Component System in JavaScript",
+  "main": "Gruntfile.js",
+  "directories": {
+    "examples": "examples"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GGAlanSmithee/Entities"
+  },
+  "keywords": [
+    "javascript",
+    "ces",
+    "ecs",
+    "entity",
+    "component"
+  ],
+  "author": "Alan Smithee",
+  "license": "MIT"
+}
