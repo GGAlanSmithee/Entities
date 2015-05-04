@@ -19,7 +19,7 @@ Grunt is used to build Entities
 - **run grunt** by typing `grunt` in the console, creating the dist file `Entities.js`
 
 - **test** so that your features work and that you haven't broken anything
-- 
+
 - **send a pull request** to the master branch with a message of what have been changed and why
 
 [0]: http://nodejs.org
