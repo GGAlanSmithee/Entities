@@ -24,7 +24,8 @@ Entities.World = function(size, type) {
 
 Entities.World.Type = {
     Dynamic : 0,
-    Static : 1
+    SemiDynamic : 1,
+    Static : 2
 };
 
 Entities.World.prototype = {
@@ -53,7 +54,7 @@ Entities.World.prototype = {
         
         this[component.name] = [];
         
-        if (this.Type === Entities.World.Type.Dynamic) {
+        if (this.Type === Entities.World.Type.Dynamic || this.Type === Entities.World.Type.SemiDynamic) {
             return;
         }
         
