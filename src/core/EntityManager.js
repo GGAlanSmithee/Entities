@@ -6,8 +6,8 @@
 
 'use strict';
 
-Entities.EntityManager = function(options) {
-    options = options || {};
+Entities.EntityManager = function(world) {
+    
 };
 
 Entities.EntityManager.prototype = {
