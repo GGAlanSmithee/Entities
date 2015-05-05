@@ -86,7 +86,7 @@ Entities.World.prototype = {
         
         this.Entities[entity] = this.ComponentType.None;
         
-        if (entity < this._maxEntity) {
+        if (entity < this.CurrentMaxEntity) {
             return;
         }
         

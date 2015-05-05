@@ -180,7 +180,8 @@ Entities.SystemManager = function() {
 Entities.SystemManager.Type = {
     Init : 0,
     Logic : 1,
-    Render : 2
+    Render : 2,
+    CleanUp : 3
 };
 
 Entities.SystemManager.prototype = {
@@ -188,9 +189,10 @@ Entities.SystemManager.prototype = {
     
     registerSystem : function(type, system) {
         switch (type) {
-            case Entities.SystemManager.Type.Init:   this.InitSystems.push(system.name);   break;
-            case Entities.SystemManager.Type.Logic:  this.LogicSystems.push(system.name);  break;
-            case Entities.SystemManager.Type.Render: this.RenderSystems.push(system.name); break;
+            case Entities.SystemManager.Type.Init:    this.InitSystems.push(system.name);    break;
+            case Entities.SystemManager.Type.Logic:   this.LogicSystems.push(system.name);   break;
+            case Entities.SystemManager.Type.Render:  this.RenderSystems.push(system.name);  break;
+            case Entities.SystemManager.Type.CleanUp: this.CleanUpSystems.push(system.name); break;
         }
         
         this[system.name] = system;
@@ -230,6 +232,15 @@ Object.defineProperty(Entities.SystemManager.prototype, 'RenderSystems', {
     },
     set: function(renderSystems) {
         this._renderSystems = renderSystems;
+    }
+});
+
+Object.defineProperty(Entities.SystemManager.prototype, 'CleanUpSystems', {
+    get: function() {
+        return this._cleanUpSystems;
+    },
+    set: function(cleanUpSystems) {
+        this._cleanUpSystems = cleanUpSystems;
     }
 });
 
@@ -322,7 +333,7 @@ Entities.World.prototype = {
         
         this.Entities[entity] = this.ComponentType.None;
         
-        if (entity < this._maxEntity) {
+        if (entity < this.CurrentMaxEntity) {
             return;
         }
         

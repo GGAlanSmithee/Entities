@@ -21,17 +21,19 @@
                      .withComponent(Test, function(test) { test.Rect = { x : 0, y : 0, w : 10, h : 10 }; })
                      .create();
 
-        entityFactory.build()
-                     .withComponent(Test, function(test) { test.Rect = { x : 0, y : 0, w : 10, h : 10 }; })
-                     .create();
-                     
         var entity = entityFactory.build()
                                   .withComponent(Test, function(test) { test.Rect = { x : 0, y : 0, w : 10, h : 10 }; })
                                   .create();
                      
+        entityFactory.build()
+                     .withComponent(Test, function(test) { test.Rect = { x : 0, y : 0, w : 10, h : 10 }; })
+                     .create();
+                     
         world.markEntityAsUnused(entity);
                      
         var entities = world.getEntities([ world.ComponentType.Test ]);
+        
+        console.log(world.CurrentMaxEntity);
         
         console.log(entities);
         
