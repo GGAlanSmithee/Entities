@@ -15,10 +15,10 @@ Entities.World = function(size, type) {
     
     this.Type = type !== undefined ? type : Entities.World.Type.Static;
     
-    this.Mask = [];
+    this.Entities = [];
     
     for (var i = 0; i < this.Size; ++i) {
-        this.Mask.push(this.ComponentType.None);
+        this.Entities.push(this.ComponentType.None);
     }
 };
 
@@ -31,11 +31,7 @@ Entities.World.Type = {
 Entities.World.prototype = {
     constructor : Entities.World,
     
-    MinRatio : 0.0,
-    
-    MaxRatio : 4.0,
-    
-    registerComponent : function(component, ratio) {
+    registerComponent : function(component) {
         var arr = [];
             
         for (var type in this.ComponentType) {
@@ -64,12 +60,12 @@ Entities.World.prototype = {
     }
 };
 
-Object.defineProperty(Entities.World.prototype, "Mask", {
+Object.defineProperty(Entities.World.prototype, "Entities", {
     get: function() {
-        return this._mask;
+        return this._entities;
     },
-    set: function(mask) {
-        this._mask = mask;
+    set: function(entities) {
+        this._entities = entities;
     }
 });
 
