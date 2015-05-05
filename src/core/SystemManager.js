@@ -6,10 +6,73 @@
 
 'use strict';
 
-Entities.SystemManager = function(options) {
-    options = options || {};
+Entities.SystemManager = function() {
+
+};
+
+Entities.SystemManager.Type = {
+    Init : 0,
+    Logic : 1,
+    Render : 2,
+    CleanUp : 3
 };
 
 Entities.SystemManager.prototype = {
-    constructor : Entities.SystemManager
+    constructor : Entities.SystemManager,
+    
+    registerSystem : function(type, system) {
+        switch (type) {
+            case Entities.SystemManager.Type.Init:    this.InitSystems.push(system.name);    break;
+            case Entities.SystemManager.Type.Logic:   this.LogicSystems.push(system.name);   break;
+            case Entities.SystemManager.Type.Render:  this.RenderSystems.push(system.name);  break;
+            case Entities.SystemManager.Type.CleanUp: this.CleanUpSystems.push(system.name); break;
+        }
+        
+        this[system.name] = system;
+    }
 };
+
+Object.defineProperty(Entities.SystemManager.prototype, 'Type', {
+    get: function() {
+        return this._type;
+    },
+    set: function(type) {
+        this._type = type;
+    }
+});
+
+Object.defineProperty(Entities.SystemManager.prototype, 'InitSystems', {
+    get: function() {
+        return this._initSystems;
+    },
+    set: function(initSystems) {
+        this._initSystems = initSystems;
+    }
+});
+
+Object.defineProperty(Entities.SystemManager.prototype, 'LogicSystems', {
+    get: function() {
+        return this._logicSystems;
+    },
+    set: function(logicSystems) {
+        this._logicSystems = logicSystems;
+    }
+});
+
+Object.defineProperty(Entities.SystemManager.prototype, 'RenderSystems', {
+    get: function() {
+        return this._renderSystems;
+    },
+    set: function(renderSystems) {
+        this._renderSystems = renderSystems;
+    }
+});
+
+Object.defineProperty(Entities.SystemManager.prototype, 'CleanUpSystems', {
+    get: function() {
+        return this._cleanUpSystems;
+    },
+    set: function(cleanUpSystems) {
+        this._cleanUpSystems = cleanUpSystems;
+    }
+});
