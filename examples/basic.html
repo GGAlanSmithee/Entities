@@ -9,11 +9,40 @@
         
         <script type='text/javascript'>
 
-        var world = new Entities.World(1000, Entities.World.Type.Dynamic);
+        
+        
+        var world = new Entities.World(1000, Entities.World.Type.Static);
         
         world.registerComponent(Test);
         
-        console.log(world);
+        var entityFactory = new Entities.EntityFactory(world);
+        
+        entityFactory.build()
+                     .withComponent(Test, function(test) { test.Rect = { x : 0, y : 0, w : 10, h : 10 }; })
+                     .create();
+
+        entityFactory.build()
+                     .withComponent(Test, function(test) { test.Rect = { x : 0, y : 0, w : 10, h : 10 }; })
+                     .create();
+                     
+        var entity = entityFactory.build()
+                                  .withComponent(Test, function(test) { test.Rect = { x : 0, y : 0, w : 10, h : 10 }; })
+                                  .create();
+                     
+        world.markEntityAsUnused(entity);
+                     
+        var entities = world.getEntities([ world.ComponentType.Test ]);
+        
+        console.log(entities);
+        
+        var entity = 0;
+        
+        while (entity < entities.length)
+        {
+            console.log(world.Test[entity]);
+            
+            ++entity;
+        }
         
         </script> 
     </body>
