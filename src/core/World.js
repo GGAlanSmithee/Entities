@@ -6,18 +6,20 @@
 
 'use strict';
 
-Entities.World = function(size, type) {
+Entities.World = function(capacity, type) {
     this.ComponentType = {
         None : 0
     };
     
-    this.Size = size ? size : 100;
+    this.Capacity = capacity ? capacity : 100;
+    
+    this.CurrentMaxEntity = 0;
     
     this.Type = type !== undefined ? type : Entities.World.Type.Static;
     
     this.Entities = [];
     
-    for (var i = 0; i < this.Size; ++i) {
+    for (var i = 0; i < this.Capacity; ++i) {
         this.Entities.push(this.ComponentType.None);
     }
 };
@@ -50,17 +52,87 @@ Entities.World.prototype = {
         
         this[component.name] = [];
         
-        if (this.Type === Entities.World.Type.Dynamic || this.Type === Entities.World.Type.SemiDynamic) {
+        if (this.Type !== Entities.World.Type.Static) {
             return;
         }
         
-        for (var i = 0; i < this.Size; ++i) {
+        for (var i = 0; i < this.Capacity; ++i) {
             this[component.name].push(new global[component.name]());
         }
+    },
+    
+    getFirstUnusedEntity : function() {
+        var entity = 0;
+        
+        while (entity < this.Capacity) {
+            if (this.Entities[entity] === this.ComponentType.None) {
+                if (entity > this.CurrentMaxEntity) {
+                    this.CurrentMaxEntity = entity;
+                }
+                
+                return entity;
+            }
+            
+            ++entity;
+        }
+        
+        return this.capacity;
+    },
+    
+    markEntityAsUnused : function(entity) {
+        if (entity >= this.capacity) {
+            return;
+        }
+        
+        this.Entities[entity] = this.ComponentType.None;
+        
+        if (entity < this._maxEntity) {
+            return;
+        }
+        
+        var i = entity;
+        
+        while (i >= 0) {
+            if (this.Entities[i] !== this.ComponentType.None) {
+                this.CurrentMaxEntity = i;
+                
+                return;
+            }
+            
+            --i;
+        }
+    },
+    
+    getEntities : function(components) {
+        if (components === undefined || components === null) {
+            return Entities;
+        }
+        
+        var entities = [];
+        
+        var mask = 0;
+        
+        components = components.constructor === Array ? components : [ components ];
+        
+        components.forEach(function(component) {
+            mask = mask | component;
+        });
+
+        var entity = 0;
+        
+        while (entity <= this.CurrentMaxEntity) {
+            if ((this.Entities[entity] & mask) === mask) {
+                entities.push(entity);
+            }
+            
+            ++entity;
+        }
+        
+        return entities;
     }
 };
 
-Object.defineProperty(Entities.World.prototype, "Entities", {
+Object.defineProperty(Entities.World.prototype, 'Entities', {
     get: function() {
         return this._entities;
     },
@@ -69,16 +141,25 @@ Object.defineProperty(Entities.World.prototype, "Entities", {
     }
 });
 
-Object.defineProperty(Entities.World.prototype, "Size", {
+Object.defineProperty(Entities.World.prototype, 'Capacity', {
     get: function() {
-        return this._size;
+        return this._capacity;
     },
-    set: function(size) {
-        this._size = size;
+    set: function(capacity) {
+        this._capacity = capacity;
     }
 });
 
-Object.defineProperty(Entities.World.prototype, "Type", {
+Object.defineProperty(Entities.World.prototype, 'CurrentMaxEntity', {
+    get: function() {
+        return this._currentMaxEntity;
+    },
+    set: function(currentMaxEntity) {
+        this._currentMaxEntity = currentMaxEntity;
+    }
+});
+
+Object.defineProperty(Entities.World.prototype, 'Type', {
     get: function() {
         return this._type;
     },
@@ -87,7 +168,7 @@ Object.defineProperty(Entities.World.prototype, "Type", {
     }
 });
 
-Object.defineProperty(Entities.World.prototype, "ComponentType", {
+Object.defineProperty(Entities.World.prototype, 'ComponentType', {
     get: function() {
         return this._componentType;
     },
