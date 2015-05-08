@@ -6,45 +6,36 @@
     <body>
         <script type='text/javascript' src='../../dist/Entities.js'></script>
         <script type='text/javascript' src='js/TestComponent.js'></script>
+        <script type='text/javascript' src='js/TestSystem.js'></script>
         
         <script type='text/javascript'>
 
+        'use strict';
         
+        var system = new Entities.SystemManager();
+        system.registerSystem(Entities.SystemManager.Type.Logic,Logic);
         
-        var world = new Entities.World(1000, Entities.World.Type.Static);
+        var world = new Entities.World(1000, Entities.World.Type.Dynamic);
         
         world.registerComponent(Test);
         
         var entityFactory = new Entities.EntityFactory(world);
         
+        var resetFunction = function(test) {
+            test.Rect = { x : 0, y : 0, w : 10, h : 10 };
+        };
+        
         entityFactory.build()
-                     .withComponent(Test, function(test) { test.Rect = { x : 0, y : 0, w : 10, h : 10 }; })
-                     .create();
-
-        var entity = entityFactory.build()
-                                  .withComponent(Test, function(test) { test.Rect = { x : 0, y : 0, w : 10, h : 10 }; })
-                                  .create();
-                     
-        entityFactory.build()
-                     .withComponent(Test, function(test) { test.Rect = { x : 0, y : 0, w : 10, h : 10 }; })
-                     .create();
-                     
-        world.markEntityAsUnused(entity);
-                     
-        var entities = world.getEntities([ world.ComponentType.Test ]);
+                     .withComponent(Test, resetFunction)
+                     .create(3);
         
-        console.log(world.CurrentMaxEntity);
+        system.LogicSystems.forEach(function(system) {
+            system(world);
+        });
         
-        console.log(entities);
-        
-        var entity = 0;
-        
-        while (entity < entities.length)
-        {
-            console.log(world.Test[entity]);
-            
-            ++entity;
-        }
+        system.LogicSystems.forEach(function(system) {
+            system(world);
+        });
         
         </script> 
     </body>
