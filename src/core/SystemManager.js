@@ -4,10 +4,11 @@
 * @license      {@link https://github.com/GGAlanSmithee/Entities/blob/master/LICENSE|MIT License}
 */
 
-'use strict';
-
 Entities.SystemManager = function() {
-
+    this.InitSystems    = [];
+    this.LogicSystems   = [];
+    this.RenderSystems  = [];
+    this.CleanUpSystems = [];
 };
 
 Entities.SystemManager.Type = {
@@ -22,10 +23,10 @@ Entities.SystemManager.prototype = {
     
     registerSystem : function(type, system) {
         switch (type) {
-            case Entities.SystemManager.Type.Init:    this.InitSystems.push(system.name);    break;
-            case Entities.SystemManager.Type.Logic:   this.LogicSystems.push(system.name);   break;
-            case Entities.SystemManager.Type.Render:  this.RenderSystems.push(system.name);  break;
-            case Entities.SystemManager.Type.CleanUp: this.CleanUpSystems.push(system.name); break;
+            case Entities.SystemManager.Type.Init:    this.InitSystems.push(system);    break;
+            case Entities.SystemManager.Type.Logic:   this.LogicSystems.push(system);   break;
+            case Entities.SystemManager.Type.Render:  this.RenderSystems.push(system);  break;
+            case Entities.SystemManager.Type.CleanUp: this.CleanUpSystems.push(system); break;
         }
         
         this[system.name] = system;
