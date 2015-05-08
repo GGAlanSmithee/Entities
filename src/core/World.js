@@ -4,8 +4,6 @@
 * @license      {@link https://github.com/GGAlanSmithee/Entities/blob/master/LICENSE|MIT License}
 */
 
-'use strict';
-
 Entities.World = function(capacity, type) {
     this.ComponentType = {
         None : 0
@@ -19,7 +17,7 @@ Entities.World = function(capacity, type) {
     
     this.Entities = [];
     
-    for (var i = 0; i < this.Capacity; ++i) {
+    for (let i = 0; i < this.Capacity; ++i) {
         this.Entities.push(this.ComponentType.None);
     }
 };
@@ -34,15 +32,13 @@ Entities.World.prototype = {
     constructor : Entities.World,
     
     registerComponent : function(component) {
-        var arr = [];
+        let arr = [];
             
-        for (var type in this.ComponentType) {
-           if (this.ComponentType.hasOwnProperty(type)) {
-                arr.push(this.ComponentType[type]);
-            }
-        }
+        Object.keys(this.ComponentType).forEach(function(key) {
+            arr.push(this[key]);
+        }, this.ComponentType);
         
-        var max = Math.max.apply(null, arr);
+        let max = Math.max.apply(null, arr);
         
         this.ComponentType[component.name] = max === undefined || max === null ? 0: max === 0 ? 1 : max * 2;
         
@@ -56,41 +52,63 @@ Entities.World.prototype = {
             return;
         }
         
-        for (var i = 0; i < this.Capacity; ++i) {
+        for (let i = 0; i < this.Capacity; ++i) {
             this[component.name].push(new global[component.name]());
         }
     },
     
+    createComponent : function(componentType, entity) {
+      if (this[componentType.name][entity] === null || this[componentType.name][entity] === undefined || !(this[componentType.name] instanceof componentType)) {
+          this[componentType.name][entity] = new global[componentType.name]();
+      }
+    },
+    
+    destroyComponent : function(componentType, entity) {
+      if (this[componentType.name][entity] !== null && this[componentType.name][entity] !== undefined) {
+          this[componentType.name][entity] = null;
+      }
+    },
+    
     getFirstUnusedEntity : function() {
-        var entity = 0;
-        
-        while (entity < this.Capacity) {
+        for (let entity = 0; entity < this.Capacity; ++entity) {
             if (this.Entities[entity] === this.ComponentType.None) {
-                if (entity > this.CurrentMaxEntity) {
-                    this.CurrentMaxEntity = entity;
-                }
-                
                 return entity;
             }
-            
-            ++entity;
         }
         
         return this.capacity;
     },
     
-    markEntityAsUnused : function(entity) {
+    useEntity : function(entity, identifier) {
+        if (entity > this.CurrentMaxEntity) {
+            this.CurrentMaxEntity = entity;
+        }
+        
+        this.Entities[entity] = identifier;
+    },
+    
+    unuseEntity : function(entity) {
         if (entity >= this.capacity) {
             return;
         }
         
+        if (this.Type === Entities.World.Type.Dynamic) {
+            for (let component in this.ComponentType) {
+                if (this.ComponentType.hasOwnProperty(component) &&
+                    this.ComponentType[component] !== this.ComponentType.None &&
+                    (entity & this.ComponentType[component]) === this.ComponentType[component]) {
+                    this[component].splice(entity, 1);
+                }
+            }
+        }
+        
         this.Entities[entity] = this.ComponentType.None;
         
-        if (entity < this.CurrentMaxEntity) {
+        if (entity <= this.CurrentMaxEntity) {
             return;
         }
         
-        var i = entity;
+        let i = entity;
         
         while (i >= 0) {
             if (this.Entities[i] !== this.ComponentType.None) {
@@ -105,12 +123,12 @@ Entities.World.prototype = {
     
     getEntities : function(components) {
         if (components === undefined || components === null) {
-            return Entities;
+            return this.Entities;
         }
         
-        var entities = [];
+        let entities = [];
         
-        var mask = 0;
+        let mask = 0;
         
         components = components.constructor === Array ? components : [ components ];
         
@@ -118,17 +136,21 @@ Entities.World.prototype = {
             mask = mask | component;
         });
 
-        var entity = 0;
-        
-        while (entity <= this.CurrentMaxEntity) {
+        for (let entity = 0; entity <= this.CurrentMaxEntity; ++entity) {
             if ((this.Entities[entity] & mask) === mask) {
                 entities.push(entity);
             }
-            
-            ++entity;
         }
         
         return entities;
+    },
+    
+    getComponents : function(entity) {
+        if (entity === undefined || entity === null) {
+            return [];
+        }
+        
+        
     }
 };
 
