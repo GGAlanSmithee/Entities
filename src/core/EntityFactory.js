@@ -9,29 +9,38 @@ Entities.EntityFactory = function(world) {
         throw 'An entity factory requires a world to work with';
     }
     
-    this.World                   = world;
-    this.ComponentsConfiguration = {};
+    this.World         = world;
+    this.Initializers  = {};
+    this.Configuration = {};
 };
 
 Entities.EntityFactory.prototype = {
     constructor : Entities.EntityFactory,
     
     build : function() {
-        this.ComponentsConfiguration = {};
+        this.Configuration = {};
         
         return this;
     },
     
     withComponent : function(componentType, initializer) {
         // todo make a general reset function if no initializer function is passed in
-        this.ComponentsConfiguration[componentType.name] = {
+        this.Configuration[componentType.name] = {
             type : componentType,
-            initializer : initializer && typeof(initializer) === 'function' ? initializer : function(component) {
-                // reset here
-            }
+            initializer : initializer && typeof(initializer) === 'function' ?
+                              initializer :
+                              this.Initializers[componentType.name] ?
+                                  this.Initializers[componentType.name] :
+                                  function(component) {
+                                      // reset here
+                                  }
         };
         
         return this;
+    },
+    
+    createConfiguration : function() {
+        return this.Configuration;
     },
     
     create : function(count, configuration) {
@@ -49,18 +58,20 @@ Entities.EntityFactory.prototype = {
             
             let entityComponentIdentifier = 0;
             
-            var componentsConfiguration = configuration ? configuration :this.ComponentsConfiguration;
+            if (!configuration) {
+                configuration  = this.Configuration;
+            }
             
-            Object.keys(componentsConfiguration).forEach(function(key) {
-                let configuration = componentsConfiguration[key];
+            Object.keys(configuration).forEach(function(key) {
+                let conf = configuration[key];
                 
                 if (this.World.Type !== Entities.World.Type.Static) {
-                    this.World.createComponent(configuration.type, entity);
+                    this.World.createComponent(conf.type, entity);
                 }
                 
                 entityComponentIdentifier = entityComponentIdentifier | this.World.ComponentType[key];
                 
-                configuration.initializer(this.World[key][entity]);
+                conf.initializer(this.World[key][entity]);
             }, this);
             
             this.World.useEntity(entity, entityComponentIdentifier);
@@ -71,8 +82,16 @@ Entities.EntityFactory.prototype = {
         return createdEntities;
     },
     
-    createConfiguration : function() {
-        return this.ComponentsConfiguration;
+    registerInitializer : function(componentType, initializer) {
+        if (!componentType) {
+            return;
+        }
+        
+        if (!initializer || !(typeof(initializer) === 'function')) {
+            return;
+        }
+        
+        this.Initializers[componentType.name] = initializer;
     }
 };
 
@@ -85,11 +104,20 @@ Object.defineProperty(Entities.EntityFactory.prototype, 'World', {
     }
 });
 
-Object.defineProperty(Entities.EntityFactory.prototype, 'ComponentsConfiguration', {
+Object.defineProperty(Entities.EntityFactory.prototype, 'Configuration', {
     get: function() {
-        return this._componentsConfiguration;
+        return this._configuration;
     },
-    set: function(componentsConfiguration) {
-        this._componentsConfiguration = componentsConfiguration;
+    set: function(configuration) {
+        this._configuration = configuration;
+    }
+});
+
+Object.defineProperty(Entities.EntityFactory.prototype, 'Initializers', {
+    get: function() {
+        return this._initializers;
+    },
+    set: function(initializers) {
+        this._initializers = initializers;
     }
 });
