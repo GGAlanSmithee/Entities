@@ -74,7 +74,7 @@ Entities.EntityFactory.prototype = {
     constructor : Entities.EntityFactory,
     
     build : function() {
-        this.Components = {};
+        this.ComponentsConfiguration = {};
         
         return this;
     },
@@ -91,7 +91,7 @@ Entities.EntityFactory.prototype = {
         return this;
     },
     
-    create : function(count) {
+    create : function(count, configuration) {
         let createdEntities = [];
         
         count = count ? count : 1;
@@ -106,8 +106,10 @@ Entities.EntityFactory.prototype = {
             
             let entityComponentIdentifier = 0;
             
-            Object.keys(this.ComponentsConfiguration).forEach(function(key) {
-                let configuration = this.ComponentsConfiguration[key];
+            var componentsConfiguration = configuration ? configuration :this.ComponentsConfiguration;
+            
+            Object.keys(componentsConfiguration).forEach(function(key) {
+                let configuration = componentsConfiguration[key];
                 
                 if (this.World.Type !== Entities.World.Type.Static) {
                     this.World.createComponent(configuration.type, entity);
@@ -127,50 +129,7 @@ Entities.EntityFactory.prototype = {
     },
     
     createConfiguration : function() {
-        
-        let configuration = {
-            // add components, initializers etc
-        };
-        
-        return configuration;
-    },
-    
-    createFromConfiguration : function(configuration, count) {
-        
-        //todo use configuration
-        
-        let createdEntities = [];
-        
-        count = count ? count : 1;
-        
-        for (let i = 0; i < count; ++i)
-        {
-            let entity = this.World.getFirstUnusedEntity();
-        
-            if (entity >= this.World.Capacity) {
-                break;
-            }
-            
-            let entityComponentIdentifier = 0;
-            
-            Object.keys(this.ComponentsConfiguration).forEach(function(key) {
-                let configuration = this.ComponentsConfiguration[key];
-                
-                if (this.World.Type !== Entities.World.Type.Static) {
-                    this.World.createComponent(configuration.type, entity);
-                }
-                
-                entityComponentIdentifier = entityComponentIdentifier | this.World.ComponentType[key];
-                
-                configuration.initializer(this.World[key][entity]);
-            }, this);
-            
-            this.World.useEntity(entity, entityComponentIdentifier);
-            
-            createdEntities.push(entity);
-        }
-        
-        return createdEntities;
+        return this.ComponentsConfiguration;
     }
 };
 

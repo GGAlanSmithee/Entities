@@ -6,6 +6,7 @@
     <body>
         <script type='text/javascript' src='../../dist/Entities.js'></script>
         <script type='text/javascript' src='js/TestComponent.js'></script>
+        <script type='text/javascript' src='js/TestComponentTwo.js'></script>
         <script type='text/javascript' src='js/TestSystem.js'></script>
         
         <script type='text/javascript'>
@@ -16,19 +17,34 @@
         system.registerSystem(Entities.SystemManager.Type.Logic,Logic);
         
         var world = new Entities.World(1000, Entities.World.Type.Dynamic);
-        
         world.registerComponent(Test);
+        world.registerComponent(TestTwo);
         
         var entityFactory = new Entities.EntityFactory(world);
         
-        var resetFunction = function(test) {
-            test.Rect = { x : 0, y : 0, w : 10, h : 10 };
+        var testResetFunction = function(test) {
+            test.Rect = { x : 0, y : 0, w : 0, h : 0 };
         };
         
-        entityFactory.build()
-                     .withComponent(Test, resetFunction)
-                     .create(3);
+        var testTwoResetFunction = function(testTwo) {
+            testTwo.Name = "";
+        };
         
+        var configuration = entityFactory.build()
+                                         .withComponent(Test, testResetFunction)
+                                         .withComponent(TestTwo, testTwoResetFunction)
+                                         .createConfiguration();
+        
+        entityFactory.build()
+                     .withComponent(Test, testResetFunction)
+                     .create(3);
+                                         
+        entityFactory.create(4, configuration);
+        
+        entityFactory.build()
+                     .withComponent(TestTwo, testTwoResetFunction)
+                     .create(3);
+                     
         system.LogicSystems.forEach(function(system) {
             system(world);
         });
