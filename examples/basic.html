@@ -13,44 +13,32 @@
 
         'use strict';
         
-        let system = new Entities.SystemManager();
-            system.registerSystem(Logic);
+        let entityManager = new Entities.EntityManager();
         
-        let world = new Entities.World(1000, Entities.World.Type.Dynamic);
-            world.registerComponent(Test);
-            world.registerComponent(TestTwo);
+        entityManager.registerComponent(Test, TestInitializer);
+        entityManager.registerComponent(TestTwo, TestTwoInitializer);
+    
+        entityManager.registerSystem(Logic);
         
-        let entityFactory = new Entities.EntityFactory();
-            entityFactory.registerInitializer(Test, function(test) {
-                test.Rect = { x : 0, y : 0, w : 0, h : 0 };
-            });
-            
-            entityFactory.registerInitializer(TestTwo, function(testTwo) {
-                testTwo.Name = "";
-            });
-        
-        let configuration = entityFactory.build()
+        let configuration = entityManager.build()
                                          .withComponent(Test)
                                          .withComponent(TestTwo)
                                          .createConfiguration();
         
-        entityFactory.build()
-                     .withComponent(Test)
-                     .create(world, 3);
-                                         
-        entityFactory.create(world, 4, configuration);
+        entityManager.createFromConfiguration(configuration, 4);
         
-        entityFactory.build()
-                     .withComponent(TestTwo)
-                     .create(world, 3);
-                     
-        system.LogicSystems.forEach(function(system) {
-            system(world);
-        });
+        entityManager.onLogic(16);
         
-        system.LogicSystems.forEach(function(system) {
-            system(world);
-        });
+        entityManager.createFromConfiguration(configuration, 8);
+        
+        entityManager.destroy(4);
+        
+        entityManager.onLogic(16);
+        
+        entityManager.destroy(6);
+        entityManager.destroy(9);
+        
+        entityManager.onLogic(16);
         
         </script> 
     </body>

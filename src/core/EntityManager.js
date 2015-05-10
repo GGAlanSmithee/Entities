@@ -4,39 +4,69 @@
 * @license      {@link https://github.com/GGAlanSmithee/Entities/blob/master/LICENSE|MIT License}
 */
 
-Entities.EntityManager = function(world, systemManager, entityFactory) {
+Entities.EntityManager = function(world, entityFactory, systemManager) {
     this.World = world ? world : new Entities.World(1000);
     
-    this.SystemManager = systemManager ? systemManager : new Entities.SystemManager();
+    this.EntityFactory = entityFactory ? entityFactory : new Entities.EntityFactory(this.World);
     
-    this.EntityFactory = entityFactory ? entityFactory : new Entities.EntityFactory();
+    this.SystemManager = systemManager ? systemManager : new Entities.SystemManager();
 };
 
 Entities.EntityManager.prototype = {
     constructor : Entities.EntityManager,
     
+    registerComponent : function(component, initializer) {
+        this.World.registerComponent(component);
+        
+        if (!initializer || typeof(initializer) !== 'function') {
+            return;
+        }
+        
+        this.registerInitializer(component, initializer);
+    },
+    
+    registerInitializer : function(component, initializer) {
+        this.EntityFactory.registerInitializer(component, initializer);
+    },
+    
+    registerSystem : function(system, type) {
+        this.SystemManager.registerSystem(system, type);
+    },
+    
+    build : function() {
+        return this.EntityFactory.build();
+    },
+    
+    createFromConfiguration : function(configuration, count) {
+        return this.EntityFactory.create(count, configuration);
+    },
+    
+    destroy : function(entity) {
+        this.World.unuseEntity(entity);
+    },
+        
     onInit : function() {
-        Object.keys(this.SystemManager.InitSystems).forEach(function(key) {
-            this[key];
-        }, this.SystemManager.InitSystems);
+        this.SystemManager.InitSystems.forEach(function(system) {
+            system(this.World);
+        }, this);
     },
     
     onLogic : function(time) {
-        Object.keys(this.SystemManager.LogicSystems).forEach(function(key) {
-            this[key];
-        }, this.SystemManager.LogicSystems);
+        this.SystemManager.LogicSystems.forEach(function(system) {
+            system(this.World);
+        }, this);
     },
     
     onRender : function(renderer) {
-        Object.keys(this.SystemManager.RenderSystems).forEach(function(key) {
-            this[key];
-        }, this.SystemManager.RenderSystems);
+        this.SystemManager.RenderSystems.forEach(function(system) {
+            system(this.World);
+        }, this);
     },
     
     onCleanUp : function(renderer) {
-        Object.keys(this.SystemManager.CleanUpSystems).forEach(function(key) {
-            this[key];
-        }, this.SystemManager.CleanUpSystems);
+        this.SystemManager.CleanUpSystems.forEach(function(system) {
+            system(this.World);
+        }, this);
     }
 };
 
@@ -45,6 +75,10 @@ Object.defineProperty(Entities.EntityManager.prototype, "World", {
         return this._world;
     },
     set: function(world) {
+        if (this.EntityFactory) {
+            this.EntityFactory.World = world;
+        }
+        
         this._world = world;
     }
 });
