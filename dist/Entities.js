@@ -177,11 +177,11 @@ Object.defineProperty(Entities.EntityFactory.prototype, 'Initializers', {
 */
 
 Entities.EntityManager = function(world, systemManager, entityFactory) {
-    this.World = world ? world : new Entities.World({ size : 100 });
+    this.World = world ? world : new Entities.World(1000);
     
     this.SystemManager = systemManager ? systemManager : new Entities.SystemManager();
     
-    this.EntityFactory = entityFactory ? entityFactory : new Entities.EntityFactory(this.World);
+    this.EntityFactory = entityFactory ? entityFactory : new Entities.EntityFactory();
 };
 
 Entities.EntityManager.prototype = {
@@ -263,7 +263,11 @@ Entities.SystemManager.Type = {
 Entities.SystemManager.prototype = {
     constructor : Entities.SystemManager,
     
-    registerSystem : function(type, system) {
+    registerSystem : function(system, type) {
+        if (type === undefined || type === null) {
+            type = Entities.SystemManager.Type.Logic;
+        }
+        
         switch (type) {
             case Entities.SystemManager.Type.Init:    this.InitSystems.push(system);    break;
             case Entities.SystemManager.Type.Logic:   this.LogicSystems.push(system);   break;

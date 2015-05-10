@@ -14,7 +14,7 @@
         'use strict';
         
         let system = new Entities.SystemManager();
-            system.registerSystem(Entities.SystemManager.Type.Logic, Logic);
+            system.registerSystem(Logic);
         
         let world = new Entities.World(1000, Entities.World.Type.Dynamic);
             world.registerComponent(Test);

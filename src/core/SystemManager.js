@@ -21,7 +21,11 @@ Entities.SystemManager.Type = {
 Entities.SystemManager.prototype = {
     constructor : Entities.SystemManager,
     
-    registerSystem : function(type, system) {
+    registerSystem : function(system, type) {
+        if (type === undefined || type === null) {
+            type = Entities.SystemManager.Type.Logic;
+        }
+        
         switch (type) {
             case Entities.SystemManager.Type.Init:    this.InitSystems.push(system);    break;
             case Entities.SystemManager.Type.Logic:   this.LogicSystems.push(system);   break;
