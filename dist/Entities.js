@@ -255,6 +255,10 @@ Object.defineProperty(Entities.EntityManager.prototype, "World", {
         return this._world;
     },
     set: function(world) {
+        if (this.EntityFactory) {
+            this.EntityFactory.World = world;
+        }
+        
         this._world = world;
     }
 });
