@@ -16,3 +16,7 @@ Object.defineProperty(Test.prototype, 'Rect', {
         this._rect = rect;
     }
 });
+
+function TestInitializer(test) {
+    test.Rect = { x : 0, y : 0, w : 0, h : 0 };
+}

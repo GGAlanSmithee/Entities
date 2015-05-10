@@ -16,3 +16,7 @@ Object.defineProperty(TestTwo.prototype, 'Name', {
         this._name = name;
     }
 });
+
+function TestTwoInitializer(testTwo) {
+    testTwo.Name = "";
+}
