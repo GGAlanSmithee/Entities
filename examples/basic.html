@@ -14,13 +14,13 @@
         'use strict';
         
         let system = new Entities.SystemManager();
-            system.registerSystem(Entities.SystemManager.Type.Logic,Logic);
+            system.registerSystem(Entities.SystemManager.Type.Logic, Logic);
         
         let world = new Entities.World(1000, Entities.World.Type.Dynamic);
             world.registerComponent(Test);
             world.registerComponent(TestTwo);
         
-        let entityFactory = new Entities.EntityFactory(world);
+        let entityFactory = new Entities.EntityFactory();
             entityFactory.registerInitializer(Test, function(test) {
                 test.Rect = { x : 0, y : 0, w : 0, h : 0 };
             });
@@ -36,13 +36,13 @@
         
         entityFactory.build()
                      .withComponent(Test)
-                     .create(3);
+                     .create(world, 3);
                                          
-        entityFactory.create(4, configuration);
+        entityFactory.create(world, 4, configuration);
         
         entityFactory.build()
                      .withComponent(TestTwo)
-                     .create(3);
+                     .create(world, 3);
                      
         system.LogicSystems.forEach(function(system) {
             system(world);

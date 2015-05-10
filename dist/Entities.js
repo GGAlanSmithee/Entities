@@ -61,12 +61,7 @@ var Entities = Entities || {
 * @license      {@link https://github.com/GGAlanSmithee/Entities/blob/master/LICENSE|MIT License}
 */
 
-Entities.EntityFactory = function(world) {
-    if (world === undefined || world === null || !(world instanceof Entities.World)) {
-        throw 'An entity factory requires a world to work with';
-    }
-    
-    this.World         = world;
+Entities.EntityFactory = function() {
     this.Initializers  = {};
     this.Configuration = {};
 };
@@ -100,16 +95,20 @@ Entities.EntityFactory.prototype = {
         return this.Configuration;
     },
     
-    create : function(count, configuration) {
+    create : function(world, count, configuration) {
+        if (world === undefined || world === null || !(world instanceof Entities.World)) {
+            throw 'An entity factory requires a world to work with';
+        }
+        
         let createdEntities = [];
         
         count = count ? count : 1;
         
         for (let i = 0; i < count; ++i)
         {
-            let entity = this.World.getFirstUnusedEntity();
+            let entity = world.getFirstUnusedEntity();
         
-            if (entity >= this.World.Capacity) {
+            if (entity >= world.Capacity) {
                 break;
             }
             
@@ -122,16 +121,16 @@ Entities.EntityFactory.prototype = {
             Object.keys(configuration).forEach(function(key) {
                 let conf = configuration[key];
                 
-                if (this.World.Type !== Entities.World.Type.Static) {
-                    this.World.createComponent(conf.type, entity);
+                if (world.Type !== Entities.World.Type.Static) {
+                    world.createComponent(conf.type, entity);
                 }
                 
-                entityComponentIdentifier = entityComponentIdentifier | this.World.ComponentType[key];
+                entityComponentIdentifier = entityComponentIdentifier | world.ComponentType[key];
                 
-                conf.initializer(this.World[key][entity]);
+                conf.initializer(world[key][entity]);
             }, this);
             
-            this.World.useEntity(entity, entityComponentIdentifier);
+            world.useEntity(entity, entityComponentIdentifier);
             
             createdEntities.push(entity);
         }
@@ -151,15 +150,6 @@ Entities.EntityFactory.prototype = {
         this.Initializers[componentType.name] = initializer;
     }
 };
-
-Object.defineProperty(Entities.EntityFactory.prototype, 'World', {
-    get: function() {
-        return this._world;
-    },
-    set: function(world) {
-        this._world = world;
-    }
-});
 
 Object.defineProperty(Entities.EntityFactory.prototype, 'Configuration', {
     get: function() {
