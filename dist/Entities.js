@@ -519,7 +519,17 @@ Entities.World.prototype = {
             return [];
         }
         
+        let components = [];
         
+        Object.keys(this.ComponentType).forEach(function(key) {
+            let component = this.ComponentType[key];
+            
+            if (component !== this.ComponentType.None && (this.Entities[entity] & component) === component) {
+                components.push(this[key][entity]);
+            }
+        }, this);
+        
+        return components;
     }
 };
 
