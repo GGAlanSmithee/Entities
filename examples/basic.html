@@ -13,6 +13,19 @@
 
         'use strict';
         
+        
+        // Init section to avoid IDE complaining about undefined functions
+        let Test = Test                              || new function() {};
+        let TestTwo = TestTwo                        || new function() {};
+        let TestInitializer = TestInitializer        || new function(test) {};
+        let TestTwoInitializer = TestTwoInitializer  || new function(testTwo) {};
+        
+        let Logic = Logic                            || new function(world) {};
+        
+        let Entities = Entities                      || {};
+        // Init section end
+        
+        
         let entityManager = new Entities.EntityManager();
         
         entityManager.registerComponent(Test, TestInitializer);
