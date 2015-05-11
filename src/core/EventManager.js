@@ -9,5 +9,54 @@ Entities.EventManager = function() {
 };
 
 Entities.EventManager.prototype = {
-    constructor : Entities.EventManager
+    constructor : Entities.EventManager,
+    
+    listen : function(event, callback) {
+        if (!Array.isArray(this.Events[event])) {
+            this.Events[event] = [];
+        }
+        
+        this.Events[event].push(callback);
+    },
+    
+    stopListening : function(event, callback) {
+        if (!event) {
+            return;
+        }
+        
+        if (!callback) {
+            this.Events[event] = [];
+            
+            return;
+        }
+        
+        let index = -1;
+        
+        this.Events[event].forEach(function(eventCallback, i)  {
+            if (eventCallback === callback) {
+                index = i;
+            }
+        });
+        
+        if (index < 0 || index >= this.Events[event].length) {
+            return;
+        }
+        
+        this.Events[event].splice(index, 1);
+    },
+    
+    trigger : function(event, args) {
+        this.Events[event].forEach(function(events) {
+            events(args);
+        });
+    },
 };
+
+Object.defineProperty(Entities.EventManager.prototype, 'Events', {
+    get: function() {
+        return this._events ? this._events : (this._events = {});
+    },
+    set: function(events) {
+        this._events = events;
+    }
+});
