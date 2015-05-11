@@ -16,6 +16,12 @@ Entities.EventManager.prototype = {
             this.Events[event] = [];
         }
         
+        for (let i = 0; i < this.Events[event].length; ++i) {
+            if (this.Events[event][i] === callback) {
+                return;
+            }
+        }
+        
         this.Events[event].push(callback);
     },
     

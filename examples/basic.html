@@ -8,40 +8,55 @@
         <script type='text/javascript' src='js/TestComponent.js'></script>
         <script type='text/javascript' src='js/TestComponentTwo.js'></script>
         <script type='text/javascript' src='js/TestSystem.js'></script>
+        <script type='text/javascript' src='js/TestEvent.js'></script>
+        <script type='text/javascript' src='js/TestEventTwo.js'></script>
         
         <script type='text/javascript'>
 
-        'use strict';
+            'use strict';
+            
+            let entityManager = new Entities.EntityManager();
+            
+            entityManager.registerComponent(Test, TestInitializer);
+            entityManager.registerComponent(TestTwo, TestTwoInitializer);
         
-        let entityManager = new Entities.EntityManager();
-        
-        entityManager.registerComponent(Test, TestInitializer);
-        entityManager.registerComponent(TestTwo, TestTwoInitializer);
-    
-        entityManager.registerSystem(Logic);
-        
-        let configuration = entityManager.build()
-                                         .withComponent(Test)
-                                         .withComponent(TestTwo)
-                                         .createConfiguration();
-        
-        entityManager.createFromConfiguration(configuration, 4);
-        
-        entityManager.onLogic(16);
-        
-        entityManager.createFromConfiguration(configuration, 8);
-        
-        entityManager.destroy(4);
-        
-        entityManager.onLogic(16);
-        
-        entityManager.destroy(6);
-        entityManager.destroy(9);
-        
-        entityManager.onLogic(16);
-        
-        console.log(entityManager.World.getComponents(8));
-        
+            entityManager.registerSystem(Logic);
+            
+            let configuration = entityManager.build()
+                                             .withComponent(Test)
+                                             .withComponent(TestTwo)
+                                             .createConfiguration();
+            
+            entityManager.createFromConfiguration(configuration, 4);
+            
+            entityManager.onLogic(16);
+            
+            entityManager.createFromConfiguration(configuration, 8);
+            
+            entityManager.destroy(4);
+            
+            entityManager.onLogic(16);
+            
+            entityManager.destroy(6);
+            entityManager.destroy(9);
+            
+            entityManager.onLogic(16);
+            
+            console.log(entityManager.World.getComponents(8));
+
+            entityManager.listen('collision', Collision);
+            entityManager.listen('collision', CollisionAgain);
+            
+            entityManager.trigger('collision', [  0, 1 ]);
+            
+            entityManager.stopListening('collision', CollisionAgain);
+            
+            entityManager.trigger('collision', [ 0, 1 ]);
+            
+            entityManager.stopListening('collision', Collision);
+            
+            entityManager.trigger('collision', [ 0, 1 ]);
+            
         </script> 
     </body>
 </html>

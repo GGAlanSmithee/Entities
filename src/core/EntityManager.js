@@ -4,12 +4,22 @@
 * @license      {@link https://github.com/GGAlanSmithee/Entities/blob/master/LICENSE|MIT License}
 */
 
-Entities.EntityManager = function(world, entityFactory, systemManager) {
-    this.World = world ? world : new Entities.World(1000);
+Entities.EntityManager = function(world, entityFactory, systemManager, eventManager) {
+    if (world && world instanceof Entities.World) {
+        this.World = world;
+    }
     
-    this.EntityFactory = entityFactory ? entityFactory : new Entities.EntityFactory(this.World);
+    if (entityFactory && entityFactory instanceof Entities.EntityFactory) {
+        this.EntityFactory = entityFactory;
+    }
     
-    this.SystemManager = systemManager ? systemManager : new Entities.SystemManager();
+    if (systemManager && systemManager instanceof Entities.SystemManager) {
+        this.SystemManager = systemManager;
+    }
+    
+    if (eventManager && eventManager instanceof Entities.EventManager) {
+        this.EventManager = eventManager;
+    }
     
     return this;
 };
@@ -46,7 +56,25 @@ Entities.EntityManager.prototype = {
     destroy : function(entity) {
         this.World.unuseEntity(entity);
     },
+    
+    listen : function(event, callback) {
+        this.EventManager.listen(event, callback);
+    },
+    
+    stopListening : function(event, callback) {
+        this.EventManager.stopListening(event, callback);
+    },
+    
+    trigger : function(event, args) {
+        if (Array.isArray(args)) {
+            args.unshift(this);
+        } else {
+            args = [ this, args ];
+        }
         
+        this.EventManager.trigger(event, args);
+    },
+    
     onInit : function() {
         this.SystemManager.InitSystems.forEach(function(system) {
             system(this.World);
@@ -74,7 +102,7 @@ Entities.EntityManager.prototype = {
 
 Object.defineProperty(Entities.EntityManager.prototype, "World", {
     get: function() {
-        return this._world;
+        return this._world ? this._world : (this._world = new Entities.World(1000));
     },
     set: function(world) {
         if (this.EntityFactory) {
@@ -85,20 +113,29 @@ Object.defineProperty(Entities.EntityManager.prototype, "World", {
     }
 });
 
+Object.defineProperty(Entities.EntityManager.prototype, "EntityFactory", {
+    get: function() {
+        return this._entityFactory ? this._entityFactory : (this._entityFactory = new Entities.EntityFactory(this.World));
+    },
+    set: function(entityFactory) {
+        this._entityFactory = entityFactory;
+    }
+});
+
 Object.defineProperty(Entities.EntityManager.prototype, "SystemManager", {
     get: function() {
-        return this._systemManager;
+        return this._systemManager ? this._systemManager : (this._systemManager = new Entities.SystemManager());
     },
     set: function(systemManager) {
         this._systemManager = systemManager;
     }
 });
 
-Object.defineProperty(Entities.EntityManager.prototype, "EntityFactory", {
+Object.defineProperty(Entities.EntityManager.prototype, "EventManager", {
     get: function() {
-        return this._entityFactory;
+        return this._eventManager ? this._eventManager : (this._eventManager = new Entities.EventManager());
     },
-    set: function(entityFactory) {
-        this._entityFactory = entityFactory;
+    set: function(eventManager) {
+        this._eventManager = eventManager;
     }
 });
