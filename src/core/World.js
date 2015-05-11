@@ -20,6 +20,8 @@ Entities.World = function(capacity, type) {
     for (let i = 0; i < this.Capacity; ++i) {
         this.Entities.push(this.ComponentType.None);
     }
+    
+    return this;
 };
 
 Entities.World.Type = {

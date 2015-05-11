@@ -10,6 +10,8 @@ Entities.EntityManager = function(world, entityFactory, systemManager) {
     this.EntityFactory = entityFactory ? entityFactory : new Entities.EntityFactory(this.World);
     
     this.SystemManager = systemManager ? systemManager : new Entities.SystemManager();
+    
+    return this;
 };
 
 Entities.EntityManager.prototype = {

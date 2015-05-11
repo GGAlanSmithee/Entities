@@ -12,6 +12,8 @@ Entities.EntityFactory = function(world) {
     this.World         = world;
     this.Initializers  = {};
     this.Configuration = {};
+    
+    return this;
 };
 
 Entities.EntityFactory.prototype = {

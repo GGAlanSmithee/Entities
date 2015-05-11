@@ -9,6 +9,8 @@ Entities.SystemManager = function() {
     this.LogicSystems   = [];
     this.RenderSystems  = [];
     this.CleanUpSystems = [];
+    
+    return this;
 };
 
 Entities.SystemManager.Type = {
