@@ -10,7 +10,6 @@ module.exports = function(grunt) {
       },
       GG: {
         src: [
-          'lib/*.js',
           'src/Intro.js',
           'src/Entities.js',
           'src/Outro.js',
