@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Basic usage of Entites.js</title>
+        <title>Basic usage of the world class</title>
     </head>
     <body>
         <script type='text/javascript' src='../../dist/Entities.js'></script>
@@ -34,6 +34,17 @@
             console.log(world.getEntities(position));
             console.log(world.getEntities(velocity, true));
             console.log(world.getEntities(true));
+            
+            world.addEntity(position);
+            let entities = world.getEntities(position, true);
+            
+            entities.forEach(function(entity) {
+                entity[position].x += 10;
+            });
+            
+            entities[0][position].y = entities[0][position].x * 2;
+            
+            entities = world.getEntities(position, true);
         </script> 
     </body>
 </html>
