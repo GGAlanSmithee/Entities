@@ -38,38 +38,52 @@ Entities.World.ComponentType = {
     Static      : 2
 };
 
+Entities.World.getNextComponentId = function(components) {
+    let arr  = [];
+    let keys = Object.keys(components);
+    
+    let i = 0, length = keys.length;
+    while (i < length) {
+        arr.push(components[keys[i]].id);
+        
+        ++i;
+    }
+    
+    let max = Math.max.apply(null, arr);
+    
+    return max === undefined || max === null ? 0: max === 0 ? 1 : max * 2;
+};
+
+Entities.World.newComponentFromObject = function(object) {
+    let type = typeof object;
+    
+    if (type === 'function') {
+        return new global[object.name]();
+    }
+    
+    if (type === 'object') {
+        return new (function (object) {
+            var ret  = {};
+            var keys = Object.keys(object);
+            
+            var i = 0, length = keys.length;
+            while (i < length) {
+                ret[keys[i]] = object[keys[i]];
+                ++i;
+            }
+            
+            return ret;
+        })(object);
+    }
+    
+    return object;
+};
+    
 Entities.World.prototype = {
     constructor : Entities.World,
     
-    getNextComponentId : function() {
-        let arr  = [];
-        let keys = Object.keys(this.Components);
-        
-        let i = 0, length = keys.length;
-        while (i < length) {
-            arr.push(this.Components[keys[i]].id);
-            
-            ++i;
-        }
-        
-        let max = Math.max.apply(null, arr);
-        
-        return max === undefined || max === null ? 0: max === 0 ? 1 : max * 2;
-    },
-
-    newComponentFromObject : function(object) {
-        let type = typeof object;
-        
-        switch(type) {
-            case 'function' : return new global[object.name]();
-            case 'object'   : return Object.create(object);
-        }
-        
-        return object;
-    },
-    
     registerComponent : function(type, object, returnDetails) {
-        let id = this.getNextComponentId();
+        let id = Entities.World.getNextComponentId(this.Components);
         
         let component = {
             id     : id,
@@ -83,7 +97,7 @@ Entities.World.prototype = {
             let entity = 0;
             
             while (entity < this.Capacity) {
-                this.Entities[entity][id] = this.newComponentFromObject(object);
+                this.Entities[entity][id] = Entities.World.newComponentFromObject(object);
                 
                 ++entity;
             }
@@ -111,7 +125,7 @@ Entities.World.prototype = {
             return;
         }
         
-        this.Entities[entity][component] = this.newComponentFromObject(this.Components[component].object);
+        this.Entities[entity][component] = Entities.World.newComponentFromObject(this.Components[component].object);
         
         return returnDetails ? this.Entities[entity][component] : component;
     },
