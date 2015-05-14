@@ -6,20 +6,20 @@
 
 Entities.World = function(capacity) {
     
-    this.Capacity = capacity ? capacity : 100;
+    this.capacity = capacity ? capacity : 100;
     
-    this.CurrentMaxEntity = 0;
+    this.currentMaxEntity = 0;
     
-    this.Entities = [];
+    this.entities = [];
     
     let i = 0;
-    while (i < this.Capacity) {
-        this.Entities[i] = { id : 0 };
+    while (i < this.capacity) {
+        this.entities[i] = { id : 0 };
         
         ++i;
     }
     
-    this.Components = {
+    this.components = {
         0 : {
             id     : Entities.World.None,
             type   : null,
@@ -83,7 +83,7 @@ Entities.World.prototype = {
     constructor : Entities.World,
     
     registerComponent : function(type, object, returnDetails) {
-        let id = Entities.World.getNextComponentId(this.Components);
+        let id = Entities.World.getNextComponentId(this.components);
         
         let component = {
             id     : id,
@@ -91,105 +91,105 @@ Entities.World.prototype = {
             object : object
         };
         
-        this.Components[id] = component;
+        this.components[id] = component;
         
         if (type === Entities.World.ComponentType.Static) {
             let entity = 0;
             
-            while (entity < this.Capacity) {
-                this.Entities[entity][id] = Entities.World.newComponentFromObject(object);
+            while (entity < this.capacity) {
+                this.entities[entity][id] = Entities.World.newComponentFromObject(object);
                 
                 ++entity;
             }
         }
         
-        return returnDetails ? this.Components[id] : id;
+        return returnDetails ? this.components[id] : id;
     },
     
     addComponent : function(entity, component, returnDetails) {
-        if (!this.Components[component]) {
+        if (!this.components[component]) {
             throw 'cannot add component: there is no registered component template ' + component;
         }
 
-        if ((this.Entities[entity].id & this.Components[component].id) === this.Components[component].id) {
+        if ((this.entities[entity].id & this.components[component].id) === this.components[component].id) {
             return;
         }
         
-        this.Entities[entity].id |= this.Components[component].id;
+        this.entities[entity].id |= this.components[component].id;
         
-        if (this.Components[component].type === Entities.World.ComponentType.Static) {
+        if (this.components[component].type === Entities.World.ComponentType.Static) {
             return;
         }
         
-        if (this.Entities[entity][component] !== null && this.Entities[entity][component] !== undefined) {
+        if (this.entities[entity][component] !== null && this.entities[entity][component] !== undefined) {
             return;
         }
         
-        this.Entities[entity][component] = Entities.World.newComponentFromObject(this.Components[component].object);
+        this.entities[entity][component] = Entities.World.newComponentFromObject(this.components[component].object);
         
-        return returnDetails ? this.Entities[entity][component] : component;
+        return returnDetails ? this.entities[entity][component] : component;
     },
     
     removeComponent : function(entity, component) {
-        if (!this.Components[component]) {
+        if (!this.components[component]) {
             throw 'cannot remove component: there is no registered component template ' + component;
         }
         
-        if ((this.Entities[entity].id & this.Components[component].id) !== this.Components[component].id) {
+        if ((this.entities[entity].id & this.components[component].id) !== this.components[component].id) {
             return;
         }
         
-        this.Entities[entity].id &= ~this.Components[component].id;
+        this.entities[entity].id &= ~this.components[component].id;
         
-        if (this.Components[component].type === Entities.World.ComponentType.Static ||
-            this.Components[component].type === Entities.World.ComponentType.SemiDynamic) {
+        if (this.components[component].type === Entities.World.ComponentType.Static ||
+            this.components[component].type === Entities.World.ComponentType.SemiDynamic) {
             return;
         }
         
-        if (this.Entities[entity][component] === null || this.Entities[entity][component] === undefined) {
+        if (this.entities[entity][component] === null || this.entities[entity][component] === undefined) {
             return;
         }
         
-        this.Entities[entity][component] = null;
+        this.entities[entity][component] = null;
     },
     
     getFirstUnusedEntity : function() {
         let entity = 0;
         
-        while (entity < this.Capacity) {
-            if (this.Entities[entity] && this.Entities[entity].id === Entities.World.None) {
+        while (entity < this.capacity) {
+            if (this.entities[entity] && this.entities[entity].id === Entities.World.None) {
                 return entity;
             }
             
             ++entity;
         }
         
-        return this.Capacity;
+        return this.capacity;
     },
     
     addEntity : function(components, returnDetails) {
         let entity = this.getFirstUnusedEntity();
         
-        if (entity === this.Capacity) {
+        if (entity === this.capacity) {
             
-            let i = this.Capacity, length = (this.Capacity *= 2);
+            let i = this.capacity, length = (this.capacity *= 2);
             while (i < length) {
-                this.Entities[i] = { id : 0 };
+                this.entities[i] = { id : 0 };
                 
                 ++i;
             }
         }
         
-        if (entity > this.CurrentMaxEntity) {
-            this.CurrentMaxEntity = entity;
+        if (entity > this.currentMaxEntity) {
+            this.currentMaxEntity = entity;
         }
         
         let componentId = Entities.World.None;
-        let keys        = Object.keys(this.Components);
+        let keys        = Object.keys(this.components);
         
         let i = 0, length = keys.length;
         while (i < length) {
-            componentId = this.Components[keys[i]].id;
+            componentId = this.components[keys[i]].id;
             
             if ((components & componentId) === componentId) {
                 this.addComponent(entity, componentId);
@@ -200,15 +200,15 @@ Entities.World.prototype = {
             ++i;
         }
         
-        return returnDetails ? this.Entities[entity] : entity;
+        return returnDetails ? this.entities[entity] : entity;
     },
     
     removeEntity : function(entity) {
-        if (entity > this.CurrentMaxEntity) {
+        if (entity > this.currentMaxEntity) {
             return;
         }
         
-        let keys = Object.keys(this.Components);
+        let keys = Object.keys(this.components);
         
         let i = 0, length = keys.length;
         while (i < length) {
@@ -217,15 +217,15 @@ Entities.World.prototype = {
             ++i;
         }
         
-        if (entity <= this.CurrentMaxEntity) {
+        if (entity <= this.currentMaxEntity) {
             return;
         }
         
         i = entity;
         
         while (i >= 0) {
-            if (this.Entities[i].id !== Entities.World.None) {
-                this.CurrentMaxEntity = i;
+            if (this.entities[i].id !== Entities.World.None) {
+                this.currentMaxEntity = i;
             }
             
             --i;
@@ -238,9 +238,9 @@ Entities.World.prototype = {
         let i = 0;    
         
         if (components === undefined || components === null) {
-            while (i <= this.CurrentMaxEntity) {
-                if (this.Entities[i].id !== Entities.World.None) {
-                    entities.push(returnDetails ? this.Entities[i] : i);
+            while (i <= this.currentMaxEntity) {
+                if (this.entities[i].id !== Entities.World.None) {
+                    entities.push(returnDetails ? this.entities[i] : i);
                 }
                 
                 ++i;
@@ -250,9 +250,9 @@ Entities.World.prototype = {
         }
     
         i = 0;
-        while (i <= this.CurrentMaxEntity) {
-            if (this.Entities[i].id !== Entities.World.None && (this.Entities[i].id & components) === components) {
-                entities.push(returnDetails ? this.Entities[i] : i);
+        while (i <= this.currentMaxEntity) {
+            if (this.entities[i].id !== Entities.World.None && (this.entities[i].id & components) === components) {
+                entities.push(returnDetails ? this.entities[i] : i);
             }
             
             ++i;
@@ -261,39 +261,3 @@ Entities.World.prototype = {
         return entities;
     }
 };
-
-Object.defineProperty(Entities.World.prototype, 'Capacity', {
-    get: function() {
-        return this._capacity;
-    },
-    set: function(capacity) {
-        this._capacity = capacity;
-    }
-});
-
-Object.defineProperty(Entities.World.prototype, 'CurrentMaxEntity', {
-    get: function() {
-        return this._currentMaxEntity;
-    },
-    set: function(currentMaxEntity) {
-        this._currentMaxEntity = currentMaxEntity;
-    }
-});
-
-Object.defineProperty(Entities.World.prototype, 'Entities', {
-    get: function() {
-        return this._entities;
-    },
-    set: function(entities) {
-        this._entities = entities;
-    }
-});
-
-Object.defineProperty(Entities.World.prototype, 'Components', {
-    get: function() {
-        return this._components;
-    },
-    set: function(components) {
-        this._components = components;
-    }
-});
