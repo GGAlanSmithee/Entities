@@ -4,13 +4,13 @@
 * @license      {@link https://github.com/GGAlanSmithee/Entities/blob/master/LICENSE|MIT License}
 */
 
-Entities.EventManager = function() {
+Entities.EventHandler = function() {
     this.events = {};
     return this;
 };
 
-Entities.EventManager.prototype = {
-    constructor : Entities.EventManager,
+Entities.EventHandler.prototype = {
+    constructor : Entities.EventHandler,
     
     listen : function(event, handler, callback) {
         if (typeof event !== 'string' || typeof handler !== 'string' || typeof callback !== 'function') {
@@ -43,16 +43,18 @@ Entities.EventManager.prototype = {
             return;
         }
         
-        if (!this.events[event]) {
+        let self = this instanceof Entities.EntityManager ? this.eventHandler : this;
+        
+        if (!self.events[event]) {
             return;
         }
         
-        let keys = Object.keys(this.events[event]);
+        let keys = Object.keys(self.events[event]);
         
         let i = keys.length - 1;
         while (i >= 0) {
-            if (this.events[event][keys[i]]) {
-                this.events[event][keys[i]].apply(null, arguments);
+            if (self.events[event][keys[i]]) {
+                self.events[event][keys[i]].apply(this, arguments);
             }
             
             --i;
