@@ -4,14 +4,9 @@
 * @license      {@link https://github.com/GGAlanSmithee/Entities/blob/master/LICENSE|MIT License}
 */
 
-Entities.EntityFactory = function(world) {
-    if (world === undefined || world === null || !(world instanceof Entities.World)) {
-        throw 'An entity factory requires a world to work with';
-    }
-        
-    this.World         = world;
-    this.Initializers  = {};
-    this.Configuration = {};
+Entities.EntityFactory = function() {
+    this.initializers  = {};
+    this.configuration = {};
     
     return this;
 };
@@ -19,8 +14,8 @@ Entities.EntityFactory = function(world) {
 Entities.EntityFactory.prototype = {
     constructor : Entities.EntityFactory,
     
-    registerInitializer : function(componentType, initializer) {
-        if (!componentType) {
+    registerInitializer : function(component, initializer) {
+        if (!component) {
             return;
         }
         
@@ -28,96 +23,86 @@ Entities.EntityFactory.prototype = {
             return;
         }
         
-        this.Initializers[componentType.name] = initializer;
+        this.initializers[component] = initializer;
     },
     
     build : function() {
-        this.Configuration = {};
+        this.configuration = {};
         
         return this;
     },
     
-    withComponent : function(componentType, initializer) {
-        this.Configuration[componentType.name] = {
-            type : componentType,
-            initializer : initializer && typeof(initializer) === 'function' ?
-                              initializer :
-                              this.Initializers[componentType.name] ?
-                                  this.Initializers[componentType.name] :
-                                  function(component) {
-                                      // todo make a generic reset function if no initializer function is passed in
-                                  }
+    withComponent : function(component, initializer) {
+        if (initializer === null || initializer === undefined) {
+            initializer = this.initializers[component];
+        }
+        
+        if (initializer === null || initializer === undefined) {
+            initializer = function(component) {
+                // todo make a generic reset function if no initializer function is passed in
+            };
+        }
+        
+        this.configuration[component] = {
+            component : component,
+            initializer : initializer
         };
         
         return this;
     },
     
     createConfiguration : function() {
-        return this.Configuration;
+        return this.configuration;
     },
     
-    create : function(count, configuration) {
-        let createdEntities = [];
+    create : function(world, count, configuration) {
+        if (world === undefined || world === null || !(world instanceof Entities.World)) {
+            //todo add logging here
+            
+            return [];
+        }
+    
+        count         = count ? count : 1;
+        configuration = configuration ? configuration : this.configuration;
+
+        let components = Entities.World.None;
+        let keys       = Object.keys(configuration);
         
-        count = count ? count : 1;
-        
-        for (let i = 0; i < count; ++i)
-        {
-            let entity = this.World.getFirstUnusedEntity();
-        
-            if (entity >= this.World.Capacity) {
-                break;
-            }
+        let i = keys.length - 1;
+        while (i >= 0) {
+            components |= configuration[keys[i]].component;
             
-            let entityComponentIdentifier = 0;
-            
-            if (!configuration) {
-                configuration  = this.Configuration;
-            }
-            
-            Object.keys(configuration).forEach(function(key) {
-                let conf = configuration[key];
-                
-                if (this.World.Type !== Entities.World.Type.Static) {
-                    this.World.createComponent(conf.type, entity);
-                }
-                
-                entityComponentIdentifier = entityComponentIdentifier | this.World.ComponentType[key];
-                
-                conf.initializer(this.World[key][entity]);
-            }, this);
-            
-            this.World.useEntity(entity, entityComponentIdentifier);
-            
-            createdEntities.push(entity);
+            --i;
         }
         
-        return createdEntities;
+        let entities = [];
+        
+        i = count - 1;
+        while(i >= 0) {
+            let entity = world.addEntity(components, true);
+            
+            let entityComponents = Object.keys(entity);
+            
+            let j = entityComponents.length - 1;
+            while (j >= 0) {
+                let component = Number(entityComponents[j]);
+                
+                if (Number.isInteger(component) && (entity['id'] & component) === component) {
+                    let result = configuration[component].initializer.call(entity[component]);
+                    
+                    if (typeof entity[component] !== 'function' && typeof entity[component] !== 'object' && result != undefined) {
+                        entity[component] = result;
+                    }
+                }
+                
+                --j;
+            }
+            
+            entities.push(entity);
+            
+            --i;
+        }
+        
+        return entities;
     }
 };
-
-Object.defineProperty(Entities.EntityFactory.prototype, 'World', {
-    get: function() {
-        return this._world;
-    },
-    set: function(world) {
-        this._world = world;
-    }
-});
-Object.defineProperty(Entities.EntityFactory.prototype, 'Configuration', {
-    get: function() {
-        return this._configuration;
-    },
-    set: function(configuration) {
-        this._configuration = configuration;
-    }
-});
-
-Object.defineProperty(Entities.EntityFactory.prototype, 'Initializers', {
-    get: function() {
-        return this._initializers;
-    },
-    set: function(initializers) {
-        this._initializers = initializers;
-    }
-});
