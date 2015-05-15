@@ -23,8 +23,8 @@ Entities.SystemManager.Type = {
 Entities.SystemManager.prototype = {
     constructor : Entities.SystemManager,
     
-    registerSystem : function(type, system) {
-        if (typeof system !== 'function') {
+    registerSystem : function(type, mask, callback) {
+        if (typeof callback !== 'function') {
             //todo add logging ?
             
             return;
@@ -33,6 +33,11 @@ Entities.SystemManager.prototype = {
         if (type === undefined || type === null) {
             type = Entities.SystemManager.Type.Logic;
         }
+        
+        let system = {
+            mask     : mask,
+            callback : callback
+        };
         
         switch (type) {
             case Entities.SystemManager.Type.Init:    this.initSystems.push(system);    break;
