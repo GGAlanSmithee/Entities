@@ -5,81 +5,40 @@
 */
 
 Entities.SystemManager = function() {
-    this.InitSystems    = [];
-    this.LogicSystems   = [];
-    this.RenderSystems  = [];
-    this.CleanUpSystems = [];
+    this.initSystems    = [];
+    this.logicSystems   = [];
+    this.renderSystems  = [];
+    this.cleanUpSystems = [];
     
     return this;
 };
 
 Entities.SystemManager.Type = {
-    Init : 0,
-    Logic : 1,
-    Render : 2,
+    Init    : 0,
+    Logic   : 1,
+    Render  : 2,
     CleanUp : 3
 };
 
 Entities.SystemManager.prototype = {
     constructor : Entities.SystemManager,
     
-    registerSystem : function(system, type) {
+    registerSystem : function(type, system) {
+        if (typeof system !== 'function') {
+            //todo add logging ?
+            
+            return;
+        }
+        
         if (type === undefined || type === null) {
             type = Entities.SystemManager.Type.Logic;
         }
         
         switch (type) {
-            case Entities.SystemManager.Type.Init:    this.InitSystems.push(system);    break;
-            case Entities.SystemManager.Type.Logic:   this.LogicSystems.push(system);   break;
-            case Entities.SystemManager.Type.Render:  this.RenderSystems.push(system);  break;
-            case Entities.SystemManager.Type.CleanUp: this.CleanUpSystems.push(system); break;
+            case Entities.SystemManager.Type.Init:    this.initSystems.push(system);    break;
+            case Entities.SystemManager.Type.Logic:   this.logicSystems.push(system);   break;
+            case Entities.SystemManager.Type.Render:  this.renderSystems.push(system);  break;
+            case Entities.SystemManager.Type.CleanUp: this.cleanUpSystems.push(system); break;
         }
-        
-        this[system.name] = system;
     }
 };
-
-Object.defineProperty(Entities.SystemManager.prototype, 'Type', {
-    get: function() {
-        return this._type;
-    },
-    set: function(type) {
-        this._type = type;
-    }
-});
-
-Object.defineProperty(Entities.SystemManager.prototype, 'InitSystems', {
-    get: function() {
-        return this._initSystems;
-    },
-    set: function(initSystems) {
-        this._initSystems = initSystems;
-    }
-});
-
-Object.defineProperty(Entities.SystemManager.prototype, 'LogicSystems', {
-    get: function() {
-        return this._logicSystems;
-    },
-    set: function(logicSystems) {
-        this._logicSystems = logicSystems;
-    }
-});
-
-Object.defineProperty(Entities.SystemManager.prototype, 'RenderSystems', {
-    get: function() {
-        return this._renderSystems;
-    },
-    set: function(renderSystems) {
-        this._renderSystems = renderSystems;
-    }
-});
-
-Object.defineProperty(Entities.SystemManager.prototype, 'CleanUpSystems', {
-    get: function() {
-        return this._cleanUpSystems;
-    },
-    set: function(cleanUpSystems) {
-        this._cleanUpSystems = cleanUpSystems;
-    }
-});
