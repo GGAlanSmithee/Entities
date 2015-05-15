@@ -5,64 +5,57 @@
 */
 
 Entities.EventManager = function() {
+    this.events = {};
     return this;
 };
 
 Entities.EventManager.prototype = {
     constructor : Entities.EventManager,
     
-    listen : function(event, callback) {
-        if (!Array.isArray(this.Events[event])) {
-            this.Events[event] = [];
-        }
-        
-        for (let i = 0; i < this.Events[event].length; ++i) {
-            if (this.Events[event][i] === callback) {
-                return;
-            }
-        }
-        
-        this.Events[event].push(callback);
-    },
-    
-    stopListening : function(event, callback) {
-        if (!event) {
+    listen : function(event, handler, callback) {
+        if (typeof event !== 'string' || typeof handler !== 'string' || typeof callback !== 'function') {
             return;
         }
         
-        if (!callback) {
-            this.Events[event] = [];
+        if (!Array.isArray(this.events[event])) {
+            this.events[event] = [];
+        }
+        
+        this.events[event][handler] = callback;
+    },
+    
+    stopListening : function(event, handler) {
+        if (typeof event !== 'string' || typeof handler !== 'string') {
+            return;
+        }
+        
+        if (!this.events[event]) {
+            return;
+        }
+        
+        this.events[event][handler] = null;
+    },
+    
+    trigger : function() {
+        let event = Array.prototype.splice.call(arguments, 0, 1)[0];
+        
+        if (typeof event !== 'string') {
+            return;
+        }
+        
+        if (!this.events[event]) {
+            return;
+        }
+        
+        let keys = Object.keys(this.events[event]);
+        
+        let i = keys.length - 1;
+        while (i >= 0) {
+            if (this.events[event][keys[i]]) {
+                this.events[event][keys[i]].apply(null, arguments);
+            }
             
-            return;
+            --i;
         }
-        
-        let index = -1;
-        
-        this.Events[event].forEach(function(eventCallback, i)  {
-            if (eventCallback === callback) {
-                index = i;
-            }
-        });
-        
-        if (index < 0 || index >= this.Events[event].length) {
-            return;
-        }
-        
-        this.Events[event].splice(index, 1);
-    },
-    
-    trigger : function(event, args) {
-        this.Events[event].forEach(function(events) {
-            events(args);
-        });
-    },
-};
-
-Object.defineProperty(Entities.EventManager.prototype, 'Events', {
-    get: function() {
-        return this._events ? this._events : (this._events = {});
-    },
-    set: function(events) {
-        this._events = events;
     }
-});
+};
