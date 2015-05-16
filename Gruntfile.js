@@ -1,6 +1,14 @@
 module.exports = function(grunt) {
   
   grunt.initConfig({
+    jasmine : {
+      test: {
+        src: 'dist/Entities.js',
+        options: {
+          specs: 'spec/*Spec.js'
+        }
+      }
+    },
     jshint : {
       all: {
         options : {
@@ -28,6 +36,8 @@ module.exports = function(grunt) {
     }
   });
 
+  grunt.loadNpmTasks('grunt-contrib-jasmine');
+  
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
   grunt.loadNpmTasks('grunt-contrib-clean');
