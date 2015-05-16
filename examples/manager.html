@@ -37,7 +37,7 @@
                     entity[position].y += 3;
                     entity[velocity] += 0.2;
                     
-                    this.trigger('collision', entity);
+                    this.trigger('collision', entity).then(function() { console.log('woho'); });
                 }, this);
             });
             

@@ -80,7 +80,7 @@ Entities.EntityManager.prototype = {
     },
     
     trigger : function() {
-        this.eventHandler.trigger.apply(this, arguments);
+        return this.eventHandler.trigger.apply(this, arguments);
     },
     
     onInit : function() {
