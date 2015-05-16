@@ -28,15 +28,19 @@
                 console.log('hello there ' + firstName + ' ' + lastName);
             });
             
-            event.trigger('greeting', 'Alan');
-            event.trigger('fullgreeting', 'Alan', 'Smithee');
-            event.trigger('anotherFullgreetingHandler', 'Alan', 'Smithee');
+            event.trigger('greeting', 'Alan').then(function() { console.log('good bye!'); });
+            event.trigger('fullgreeting', 'Alan', 'Smithee').then(function() { console.log('full good bye!'); });
+            event.trigger('anotherFullgreetingHandler', 'Alan', 'Smithee').then(function() { console.log('full good bye!'); });
             
             event.stopListening('fullgreeting', 'fullgreetingHandler');
             event.stopListening('greeting', 'anotherGreetingHandler');
             
-            event.trigger('greeting', 'Alan');
-            event.trigger('fullgreeting', 'Alan', 'Smithee');
+            event.trigger('greeting', 'Alan').then(function() { console.log('good bye!'); });
+            event.trigger('fullgreeting', 'Alan', 'Smithee').then(function() { console.log('full good bye!'); });
+            
+            console.log('triggering delayed...');
+            
+            event.triggerDelayed('fullgreeting', 2000, 'Alan', 'Smithee').then(function() { console.log('full good bye!'); });
         </script> 
     </body>
 </html>
