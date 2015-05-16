@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Basic usage of the event handler class</title>
+    </head>
+    <body>
+        <script type='text/javascript' src='../../dist/Entities.js'></script>
+        
+        <script type='text/javascript'>
+
+            'use strict';
+            
+            let event = new Entities.EventHandler();
+            
+            event.listen('greeting', 'anotherGreetingHandler', function(name) {
+                console.log('hello again ' + name);
+            });
+            
+            event.listen('greeting', 'greetingHandler', function(name) {
+                console.log('hello there ' + name);
+            });
+            
+            event.listen('fullgreeting', 'anotherFullgreetingHandler', function(firstName, lastName) {
+                console.log('hello again ' + firstName + ' ' + lastName);
+            });
+            
+            event.listen('fullgreeting', 'fullgreetingHandler', function(firstName, lastName) {
+                console.log('hello there ' + firstName + ' ' + lastName);
+            });
+            
+            event.trigger('greeting', 'Alan');
+            event.trigger('fullgreeting', 'Alan', 'Smithee');
+            event.trigger('anotherFullgreetingHandler', 'Alan', 'Smithee');
+            
+            event.stopListening('fullgreeting', 'fullgreetingHandler');
+            event.stopListening('greeting', 'anotherGreetingHandler');
+            
+            event.trigger('greeting', 'Alan');
+            event.trigger('fullgreeting', 'Alan', 'Smithee');
+        </script> 
+    </body>
+</html>

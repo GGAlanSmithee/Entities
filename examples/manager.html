@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Basic usage of the entity manager class</title>
+    </head>
+    <body>
+        <script type='text/javascript' src='../../dist/Entities.js'></script>
+        
+        <script type='text/javascript'>
+
+            'use strict';
+            
+            let entityManager = new Entities.EntityManager();
+            
+            let positionTemplate    = { x : 0, y : 0 };
+            let positionInitializer = function() {
+                 this.x = 10;
+                 this.y = 10;
+            };
+            
+            let velocityTemplate    = 1.5;
+            let velocityInitializer = function() { return 2.5; };
+            
+            let position   = entityManager.registerComponent(Entities.World.ComponentType.Static, positionTemplate, positionInitializer);
+            let velocity   = entityManager.registerComponent(Entities.World.ComponentType.Dynamic, velocityTemplate, velocityInitializer);
+            
+            entityManager.listen('collision', 'destroy', function(entity) {
+                if (Math.random() < .5) {
+                    console.log('destroyed entity ', entity);
+                    this.removeEntity(entity);
+                }
+            });
+            
+            entityManager.registerSystem(Entities.SystemManager.Type.Logic, position | velocity, function(entities) {
+                entities.forEach(function(entity) {
+                    entity[position].x += 5;
+                    entity[position].y += 3;
+                    entity[velocity] += 0.2;
+                    
+                    this.trigger('collision', entity);
+                }, this);
+            });
+            
+            entityManager.build()
+                         .withComponent(position)
+                         .create(5);
+                         
+            entityManager.build()
+                         .withComponent(velocity)
+                         .create(5);
+                         
+            entityManager.build()
+                         .withComponent(position)
+                         .withComponent(velocity)
+                         .create(15);
+            
+            entityManager.onLogic();
+            
+            console.log('\n' + entityManager.getEntities(position | velocity).length + '\n');
+            
+            entityManager.onLogic();
+            
+            console.log('\n' + entityManager.getEntities(position | velocity).length + '\n');
+            
+            entityManager.onLogic();
+            
+            console.log('\n' + entityManager.getEntities(position | velocity).length + '\n');
+            
+            entityManager.onLogic();
+            
+            console.log('\n' + entityManager.getEntities(position | velocity).length + '\n');
+            /*
+            let playerMask   = position | velocity | selectable;
+            let computerMask = position | velocity;
+            
+            world.addEntity(playerMask);
+            world.addEntity(computerMask);
+            
+            console.log(entityManager);
+            */
+        </script> 
+    </body>
+</html>

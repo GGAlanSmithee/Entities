@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Basic usage of the system manager class</title>
+    </head>
+    <body>
+        <script type='text/javascript' src='../../dist/Entities.js'></script>
+        
+        <script type='text/javascript'>
+
+            'use strict';
+            
+            let world   = new Entities.World();
+            
+            let position   = world.registerComponent(Entities.World.ComponentType.Static, { x : 0, y : 0 });
+            let velocity   = world.registerComponent(Entities.World.ComponentType.Dynamic, 2.0);
+            let selectable = world.registerComponent(Entities.World.ComponentType.Static, { isSelected  : false });
+            
+            let movable      = position | velocity;
+            let controllable = position | velocity | selectable;
+            
+            world.addEntity(movable);
+            world.addEntity(controllable);
+            
+            let system = new Entities.SystemManager(world);
+            
+            system.registerSystem(Entities.SystemManager.Type.Logic, movable, function(entities) {
+                entities.forEach(function(entity) {
+                    entity[position].x += 5;
+                });
+                
+                console.log(entities);
+            });
+            
+            system.registerSystem(Entities.SystemManager.Type.Logic, controllable, function(entities) {
+                entities.forEach(function(entity) {
+                    entity[velocity]   -= 0.1;
+                    entity[position].y += 5;
+                });
+                
+                console.log(entities);
+            });
+            
+            system.logicSystems.forEach(function(system) {
+                system.callback(world.getEntities(system.mask, true));
+            });
+        </script> 
+    </body>
+</html>
