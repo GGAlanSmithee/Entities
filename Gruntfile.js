@@ -1,6 +1,14 @@
 module.exports = function(grunt) {
   
   grunt.initConfig({
+    jshint : {
+      all: {
+        options : {
+          esnext : true
+        },
+        src: [ 'src/core/*.js' ]
+      }
+    },
     clean: {
       dist: ['dist']
     },
@@ -20,12 +28,13 @@ module.exports = function(grunt) {
     }
   });
 
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   // Load the plugin that provides the "uglify" task.
   grunt.loadNpmTasks('grunt-contrib-concat');
 
   // Default task(s).
-  grunt.registerTask('default', ['clean', 'concat']);
-
+  grunt.registerTask('default', ['jshint', 'clean', 'concat']);
 };

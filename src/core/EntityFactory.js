@@ -19,7 +19,7 @@ Entities.EntityFactory.prototype = {
             return;
         }
         
-        if (!initializer || !(typeof(initializer) === 'function')) {
+        if (!initializer || typeof(initializer) !== 'function') {
             return;
         }
         
@@ -87,10 +87,10 @@ Entities.EntityFactory.prototype = {
             while (j >= 0) {
                 let component = Number(entityComponents[j]);
                 
-                if (Number.isInteger(component) && (entity['id'] & component) === component) {
+                if (Number.isInteger(component) && (entity.id & component) === component) {
                     let result = configuration[component].initializer.call(entity[component]);
                     
-                    if (typeof entity[component] !== 'function' && typeof entity[component] !== 'object' && result != undefined) {
+                    if (typeof entity[component] !== 'function' && typeof entity[component] !== 'object' && result !== undefined) {
                         entity[component] = result;
                     }
                 }

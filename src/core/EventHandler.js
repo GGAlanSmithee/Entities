@@ -15,6 +15,21 @@ Entities.EventHandler.EmptyPromise = function() {
     });
 };
 
+Entities.EventHandler.Promise = function(event, context, args, timeout) {
+    
+    if (timeout) {
+        return new Promise(function(resolve, reject) {
+            setTimeout(function(){
+                resolve(event.apply(context, args));
+            }, timeout);
+        });
+    }
+    
+    return new Promise(function(resolve, reject) {
+        resolve(event.apply(context, args));
+    });
+};
+                
 Entities.EventHandler.prototype = {
     constructor : Entities.EventHandler,
     
@@ -63,9 +78,7 @@ Entities.EventHandler.prototype = {
         let i = keys.length - 1;
         while (i >= 0) {
             if (self.events[event][keys[i]]) {
-                promises.push(new Promise(function(resolve, reject) {
-                    resolve(self.events[event][keys[i]].apply(context, args));
-                }));
+                promises.push(Entities.EventHandler.Promise(self.events[event][keys[i]], context, args));
             }
             
             --i;
@@ -98,16 +111,14 @@ Entities.EventHandler.prototype = {
         let keys     = Object.keys(self.events[event]);
         let promises = [];
         
+        let addPromise = function(index) {
+            promises.push(Entities.EventHandler.Promise(self.events[event][keys[index]], context, args, timeout));
+        };
+        
         let i = keys.length - 1;
         while (i >= 0) {
             if (self.events[event][keys[i]]) {
-                (function(index) {
-                    promises.push(new Promise(function(resolve, reject) {
-                        setTimeout(function(){
-                            resolve(self.events[event][keys[index]].apply(context, args));
-                        }, timeout);
-                    }));
-                })(i);
+                addPromise(i);
             }
             
             --i;

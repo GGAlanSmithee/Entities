@@ -62,7 +62,7 @@ Entities.World.newComponentFromObject = function(object) {
     }
     
     if (type === 'object') {
-        return new (function (object) {
+        return (function (object) {
             var ret  = {};
             var keys = Object.keys(object);
             
