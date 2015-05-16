@@ -14,7 +14,7 @@ Entities.World = function(capacity) {
     
     let i = 0;
     while (i < this.capacity) {
-        this.entities[i] = { id : 0 };
+        this.entities[i] = { index : i, id : 0 };
         
         ++i;
     }
@@ -193,7 +193,7 @@ Entities.World.prototype = {
             
             let i = this.capacity, length = (this.capacity *= 2);
             while (i < length) {
-                this.entities[i] = { id : 0 };
+                this.entities[i] = { index : i, id : 0 };
                 
                 ++i;
             }
