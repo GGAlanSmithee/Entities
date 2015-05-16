@@ -36,15 +36,14 @@
             console.log(world.getEntities(true));
             
             world.addEntity(position);
-            let entities = world.getEntities(position, true);
             
-            entities.forEach(function(entity) {
-                entity[position].x += 10;
-            });
+            console.log(world.getEntities(null, true));
             
-            entities[0][position].y = entities[0][position].x * 2;
+            console.log(world.getEntities(velocity, true));
             
-            entities = world.getEntities(position, true);
+            console.log(world.getEntitiesExact(velocity, true));
+            
+            console.log(world.getEntitiesExcept(velocity, true));
         </script> 
     </body>
 </html>
