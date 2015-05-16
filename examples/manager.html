@@ -33,9 +33,9 @@
             
             entityManager.registerSystem(Entities.SystemManager.Type.Logic, position | velocity, function(entities) {
                 entities.forEach(function(entity) {
-                    entity[position].x += 5;
-                    entity[position].y += 3;
-                    entity[velocity] += 0.2;
+                    entity[position].x += Math.random() * 5;
+                    entity[position].y += Math.random() * 3;
+                    entity[velocity] += Math.random() * 0.5;
                     
                     this.trigger('collision', entity).then(function() { console.log('woho'); });
                 }, this);
@@ -49,16 +49,28 @@
                          .withComponent(velocity)
                          .create(5);
                          
-            entityManager.build()
-                         .withComponent(position)
-                         .withComponent(velocity)
-                         .create(15);
+            let config = entityManager.build()
+                                      .withComponent(position)
+                                      .withComponent(velocity)
+                                      .createConfiguration();
+                                      
+            entityManager.create(15, config);
             
             entityManager.onLogic();
             
             console.log('\n' + entityManager.getEntities(position | velocity).length + '\n');
             
             entityManager.onLogic();
+            
+            console.log('\n' + entityManager.getEntities(position | velocity).length + '\n');
+            
+            entityManager.onLogic();
+            
+            console.log('\n' + entityManager.getEntities(position | velocity).length + '\n');
+            
+            entityManager.create(10, config);
+            
+            console.log('adding 10 more..\n');
             
             console.log('\n' + entityManager.getEntities(position | velocity).length + '\n');
             
