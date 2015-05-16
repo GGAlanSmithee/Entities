@@ -78,7 +78,26 @@ Entities.World.newComponentFromObject = function(object) {
     
     return object;
 };
+
+Entities.World.getEntitiesWithoutComponents = function(entities, returnDetails) {
+    if (returnDetails) {
+        return entities;
+    }
+        
+    let ret = [];
+
+    let i = 0;    
+    while (i <= this.currentMaxEntity) {
+        if (this.entities[i].id !== Entities.World.None) {
+            entities.push(i);
+        }
+        
+        ++i;
+    }
     
+    return ret;
+};
+
 Entities.World.prototype = {
     constructor : Entities.World,
     
@@ -233,31 +252,59 @@ Entities.World.prototype = {
     },
     
     getEntities : function(components, returnDetails) {
-        let entities = [];
-
-        let i = 0;    
-        
-        if (components === undefined || components === null) {
-            while (i <= this.currentMaxEntity) {
-                if (this.entities[i].id !== Entities.World.None) {
-                    entities.push(returnDetails ? this.entities[i] : i);
-                }
-                
-                ++i;
-            }
-            
-            return entities;
+        if (!components) {
+            return Entities.World.getEntitiesWithoutComponents(this.entities, returnDetails);
         }
-    
-        i = 0;
+        
+        let ret = [];
+        
+        let i = 0;
         while (i <= this.currentMaxEntity) {
             if (this.entities[i].id !== Entities.World.None && (this.entities[i].id & components) === components) {
-                entities.push(returnDetails ? this.entities[i] : i);
+                ret.push(returnDetails ? this.entities[i] : i);
             }
             
             ++i;
         }
         
-        return entities;
+        return ret;
+    },
+    
+    getEntitiesExact : function(components, returnDetails) {
+        if (!components) {
+            return Entities.World.getEntitiesWithoutComponents(this.entities, returnDetails);
+        }
+    
+        let ret = [];
+        
+        let i = 0;
+        while (i <= this.currentMaxEntity) {
+            if (this.entities[i].id !== Entities.World.None && this.entities[i].id === components) {
+                ret.push(returnDetails ? this.entities[i] : i);
+            }
+            
+            ++i;
+        }
+        
+        return ret;
+    },
+    
+    getEntitiesExcept : function(components, returnDetails) {
+        if (!components) {
+            return Entities.World.getEntitiesWithoutComponents(this.entities, returnDetails);
+        }
+    
+        let ret = [];
+        
+        let i = 0;
+        while (i <= this.currentMaxEntity) {
+            if (this.entities[i].id !== Entities.World.None && (this.entities[i].id & components) !== components) {
+                ret.push(returnDetails ? this.entities[i] : i);
+            }
+            
+            ++i;
+        }
+        
+        return ret;
     }
 };
