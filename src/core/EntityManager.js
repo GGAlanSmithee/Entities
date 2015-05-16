@@ -4,138 +4,126 @@
 * @license      {@link https://github.com/GGAlanSmithee/Entities/blob/master/LICENSE|MIT License}
 */
 
-Entities.EntityManager = function(world, entityFactory, systemManager, eventManager) {
-    if (world && world instanceof Entities.World) {
-        this.World = world;
-    }
+Entities.EntityManager = function(world, entityFactory, systemManager, eventHandler) {
+    this.world = world && world instanceof Entities.World ? world : new Entities.World();
     
-    if (entityFactory && entityFactory instanceof Entities.EntityFactory) {
-        this.EntityFactory = entityFactory;
-    }
+    this.factory = entityFactory && entityFactory instanceof Entities.EntityFactory ? entityFactory : new Entities.EntityFactory();
     
-    if (systemManager && systemManager instanceof Entities.SystemManager) {
-        this.SystemManager = systemManager;
-    }
-    
-    if (eventManager && eventManager instanceof Entities.EventManager) {
-        this.EventManager = eventManager;
-    }
+    this.systemManager = systemManager && systemManager instanceof Entities.SystemManager ? systemManager : new Entities.SystemManager();
+        
+    this.eventHandler = eventHandler && eventHandler instanceof Entities.EventHandler ? eventHandler : new Entities.EventHandler();
     
     return this;
+};
+
+Entities.EntityManager.getEntityIndex = function(world, entity) {
+    return entity = typeof entity === 'number' ? entity : typeof entity === 'object' && entity.index ? entity.index : world.capacity;
 };
 
 Entities.EntityManager.prototype = {
     constructor : Entities.EntityManager,
     
-    registerComponent : function(component, initializer) {
-        this.World.registerComponent(component);
+    registerComponent : function(type, component, initializer) {
+        let componentId = this.world.registerComponent(type, component);
         
-        if (!initializer || typeof(initializer) !== 'function') {
-            return;
+        if (typeof(initializer) !== 'function') {
+            return componentId;
         }
         
-        this.registerInitializer(component, initializer);
+        this.factory.registerInitializer(componentId, initializer);
+        
+        return componentId;
     },
     
-    registerInitializer : function(component, initializer) {
-        this.EntityFactory.registerInitializer(component, initializer);
-    },
-    
-    registerSystem : function(system, type) {
-        this.SystemManager.registerSystem(system, type);
+    registerSystem : function(type, mask, system) {
+        this.systemManager.registerSystem(type, mask, system);
     },
     
     build : function() {
-        return this.EntityFactory.build();
-    },
-    
-    createFromConfiguration : function(configuration, count) {
-        return this.EntityFactory.create(count, configuration);
-    },
-    
-    destroy : function(entity) {
-        this.World.unuseEntity(entity);
-    },
-    
-    listen : function(event, callback) {
-        this.EventManager.listen(event, callback);
-    },
-    
-    stopListening : function(event, callback) {
-        this.EventManager.stopListening(event, callback);
-    },
-    
-    trigger : function(event, args) {
-        if (Array.isArray(args)) {
-            args.unshift(this);
-        } else {
-            args = [ this, args ];
-        }
+        this.factory.build();
         
-        this.EventManager.trigger(event, args);
+        return this;
+    },
+    
+    withComponent : function(component, initializer) {
+        this.factory.withComponent(component, initializer);
+        
+        return this;
+    },
+    
+    createConfiguration : function() {
+        return this.factory.createConfiguration();
+    },
+    
+    create : function(count, configuration) {
+        return this.factory.create(this.world, count, configuration);
+    },
+    
+    removeEntity : function(entity) {
+        this.world.removeEntity(Entities.EntityManager.getEntityIndex(this.world, entity));
+    },
+    
+    getEntities : function(components) {
+        return this.world.getEntities(components, true);
+    },
+    
+    removeComponent : function(entity, component) {
+        this.world.removeComponent(Entities.EntityManager.getEntityIndex(this.world, entity), component);
+    },
+    
+    listen : function(event, handler, callback) {
+        this.eventHandler.listen(event, handler, callback);
+    },
+    
+    stopListening : function(event, handler) {
+        this.eventHandler.stopListening(event, handler);
+    },
+    
+    trigger : function() {
+        this.eventHandler.trigger.apply(this, arguments);
     },
     
     onInit : function() {
-        this.SystemManager.InitSystems.forEach(function(system) {
-            system(this.World);
-        }, this);
+        let i = this.systemManager.initSystems.length - 1;
+        while (i >= 0) {
+            let system = this.systemManager.initSystems[i];
+            
+            system.callback.call(this, this.world.getEntities(system.mask, true));
+            
+            --i;
+        }
     },
     
     onLogic : function(time) {
-        this.SystemManager.LogicSystems.forEach(function(system) {
-            system(this.World);
-        }, this);
+        let i = this.systemManager.logicSystems.length - 1;
+        while (i >= 0) {
+            let system = this.systemManager.logicSystems[i];
+            
+            system.callback.call(this, this.world.getEntities(system.mask, true));
+            
+            --i;
+        }
     },
     
     onRender : function(renderer) {
-        this.SystemManager.RenderSystems.forEach(function(system) {
-            system(this.World);
-        }, this);
+        let i = this.systemManager.renderSystems.length - 1;
+        while (i >= 0) {
+            let system = this.systemManager.renderSystems[i];
+            
+            system.callback.call(this, this.world.getEntities(system.mask, true));
+            
+            --i;
+        }
     },
     
     onCleanUp : function(renderer) {
-        this.SystemManager.CleanUpSystems.forEach(function(system) {
-            system(this.World);
-        }, this);
+        let i = this.systemManager.cleanUpSystems.length - 1;
+        while (i >= 0) {
+            let system = this.systemManager.cleanUpSystems[i];
+            
+            system.callback.call(this, this.world.getEntities(system.mask, true));
+            
+            --i;
+        }
     }
 };
-
-Object.defineProperty(Entities.EntityManager.prototype, "World", {
-    get: function() {
-        return this._world ? this._world : (this._world = new Entities.World(1000));
-    },
-    set: function(world) {
-        if (this.EntityFactory) {
-            this.EntityFactory.World = world;
-        }
-        
-        this._world = world;
-    }
-});
-
-Object.defineProperty(Entities.EntityManager.prototype, "EntityFactory", {
-    get: function() {
-        return this._entityFactory ? this._entityFactory : (this._entityFactory = new Entities.EntityFactory(this.World));
-    },
-    set: function(entityFactory) {
-        this._entityFactory = entityFactory;
-    }
-});
-
-Object.defineProperty(Entities.EntityManager.prototype, "SystemManager", {
-    get: function() {
-        return this._systemManager ? this._systemManager : (this._systemManager = new Entities.SystemManager());
-    },
-    set: function(systemManager) {
-        this._systemManager = systemManager;
-    }
-});
-
-Object.defineProperty(Entities.EntityManager.prototype, "EventManager", {
-    get: function() {
-        return this._eventManager ? this._eventManager : (this._eventManager = new Entities.EventManager());
-    },
-    set: function(eventManager) {
-        this._eventManager = eventManager;
-    }
-});
