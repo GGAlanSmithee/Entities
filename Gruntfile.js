@@ -5,7 +5,8 @@ module.exports = function(grunt) {
       test: {
         src: 'dist/Entities.js',
         options: {
-          specs: 'spec/*Spec.js'
+          specs:   'test/spec/*.js',
+          outfile: 'test/Runner.html'
         }
       }
     },
@@ -46,5 +47,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
 
   // Default task(s).
-  grunt.registerTask('default', ['jshint', 'clean', 'concat']);
+  grunt.registerTask('default', ['jasmine:test:build', 'jshint', 'clean', 'concat']);
 };
