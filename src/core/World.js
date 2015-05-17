@@ -19,13 +19,13 @@ Entities.World = function(capacity) {
         ++i;
     }
     
-    this.components = {
-        0 : {
+    this.components = [
+        {
             id     : Entities.World.None,
             type   : null,
             object : null
         }
-    };
+    ];
     
     return this;
 };
@@ -39,6 +39,10 @@ Entities.World.ComponentType = {
 };
 
 Entities.World.getNextComponentId = function(components) {
+    if (!Array.isArray(components)) {
+        throw new TypeError('components argument must be an array');
+    }
+    
     let arr  = [];
     let keys = Object.keys(components);
     
@@ -51,14 +55,18 @@ Entities.World.getNextComponentId = function(components) {
     
     let max = Math.max.apply(null, arr);
     
-    return max === undefined || max === null ? 0: max === 0 ? 1 : max * 2;
+    return max === undefined || max === null || max === -Infinity ? 0: max === 0 ? 1 : max * 2;
 };
 
-Entities.World.newComponentFromObject = function(object) {
+Entities.World.newComponent = function(object) {
+    if (object === null || object === undefined) {
+        throw new TypeError('cannot create a component from ' + object);
+    }
+    
     let type = typeof object;
     
     if (type === 'function') {
-        return new global[object.name]();
+        return new object();
     }
     
     if (type === 'object') {
@@ -79,17 +87,21 @@ Entities.World.newComponentFromObject = function(object) {
     return object;
 };
 
-Entities.World.getEntitiesWithoutComponents = function(entities, returnDetails) {
+Entities.World.getEntities = function(world, returnDetails) {
+    if (!(world instanceof Entities.World)) {
+        throw new TypeError('world argument must be an instance of Entities.World');
+    }
+    
     if (returnDetails) {
-        return entities;
+        return world.entities;
     }
         
     let ret = [];
 
     let i = 0;    
-    while (i <= this.currentMaxEntity) {
-        if (this.entities[i].id !== Entities.World.None) {
-            entities.push(i);
+    while (i <= world.currentMaxEntity) {
+        if (world.entities[i].id !== Entities.World.None) {
+            ret.push(i);
         }
         
         ++i;
@@ -116,7 +128,7 @@ Entities.World.prototype = {
             let entity = 0;
             
             while (entity < this.capacity) {
-                this.entities[entity][id] = Entities.World.newComponentFromObject(object);
+                this.entities[entity][id] = Entities.World.newComponent(object);
                 
                 ++entity;
             }
@@ -127,7 +139,7 @@ Entities.World.prototype = {
     
     addComponent : function(entity, component, returnDetails) {
         if (!this.components[component]) {
-            throw 'cannot add component: there is no registered component template ' + component;
+            throw new Error('cannot add component: there is no registered component template ', component);
         }
 
         if ((this.entities[entity].id & this.components[component].id) === this.components[component].id) {
@@ -144,7 +156,7 @@ Entities.World.prototype = {
             return;
         }
         
-        this.entities[entity][component] = Entities.World.newComponentFromObject(this.components[component].object);
+        this.entities[entity][component] = Entities.World.newComponent(this.components[component].object);
         
         return returnDetails ? this.entities[entity][component] : component;
     },
@@ -253,7 +265,7 @@ Entities.World.prototype = {
     
     getEntities : function(components, returnDetails) {
         if (!components) {
-            return Entities.World.getEntitiesWithoutComponents(this.entities, returnDetails);
+            return Entities.World.getEntities(this, returnDetails);
         }
         
         let ret = [];
@@ -272,7 +284,7 @@ Entities.World.prototype = {
     
     getEntitiesExact : function(components, returnDetails) {
         if (!components) {
-            return Entities.World.getEntitiesWithoutComponents(this.entities, returnDetails);
+            return Entities.World.getEntities(this, returnDetails);
         }
     
         let ret = [];
@@ -291,7 +303,7 @@ Entities.World.prototype = {
     
     getEntitiesExcept : function(components, returnDetails) {
         if (!components) {
-            return Entities.World.getEntitiesWithoutComponents(this.entities, returnDetails);
+            return Entities.World.getEntities(this, returnDetails);
         }
     
         let ret = [];

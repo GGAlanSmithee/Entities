@@ -5,7 +5,7 @@ module.exports = function(grunt) {
       test: {
         src: 'dist/Entities.js',
         options: {
-          specs:   'test/spec/*.js',
+          specs:   [ 'test/spec/*.js', 'test/spec/world/*.js' ],
           outfile: 'test/Runner.html'
         }
       }
