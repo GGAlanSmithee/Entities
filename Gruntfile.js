@@ -11,10 +11,7 @@ module.exports = function(grunt) {
       options: {
         clearRequireCache: true,
         harmony : true,
-        files: [
-          'test/spec',
-          'test/spec/world/*.js'
-        ]
+        files: 'test/spec/*'
       }
     },
     jshint : {

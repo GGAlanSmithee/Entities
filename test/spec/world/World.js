@@ -1,11 +1,6 @@
 var expect = require("chai").expect;
 var Entities = require('../../../dist/Entities');
 
-var blanket = require("blanket")({
-   /* options are passed as an argument object to the require statement */
-   "pattern": "../../../dist/Entities.js"
-   });
-   
 describe('Entites.World', function() {
     describe('constructor()', function() {
         beforeEach(function() {
