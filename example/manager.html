@@ -21,8 +21,8 @@
             let velocityTemplate    = 1.5;
             let velocityInitializer = function() { return 2.5; };
             
-            let position   = entityManager.registerComponent(Entities.World.ComponentType.Static, positionTemplate, positionInitializer);
-            let velocity   = entityManager.registerComponent(Entities.World.ComponentType.Dynamic, velocityTemplate, velocityInitializer);
+            let position = entityManager.registerComponent(Entities.World.ComponentType.Static, positionTemplate, positionInitializer);
+            let velocity = entityManager.registerComponent(Entities.World.ComponentType.Dynamic, velocityTemplate, velocityInitializer);
             
             entityManager.listen('collision', 'destroy', function(entity) {
                 if (Math.random() < .5) {

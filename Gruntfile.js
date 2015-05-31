@@ -1,14 +1,17 @@
 module.exports = function(grunt) {
   
   grunt.initConfig({
-    jasmine : {
+    mochaTest: {
       test: {
-        src: 'dist/Entities.js',
         options: {
-          specs:   [ 'test/spec/*.js', 'test/spec/world/*.js' ],
-          outfile: 'test/Runner.html'
-        }
-      }
+          reporter: 'spec',
+          clearRequireCache: true
+        },
+        src: [
+          'test/spec/Entities.js',
+          'test/spec/world/*.js'
+        ]
+      },
     },
     jshint : {
       all: {
@@ -28,24 +31,25 @@ module.exports = function(grunt) {
       GG: {
         src: [
           'src/Intro.js',
+          'src/Polyfills.js',
           'src/Entities.js',
-          'src/Outro.js',
-          'src/core/*.js'
+          'src/core/*.js',
+          'src/Outro.js'
         ],
         dest: 'dist/Entities.js'
       }
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-jasmine');
+  grunt.loadNpmTasks('grunt-mocha-test');
   
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  // Load the plugin that provides the "uglify" task.
   grunt.loadNpmTasks('grunt-contrib-concat');
 
-  // Default task(s).
-  grunt.registerTask('default', ['jasmine:test:build', 'jshint', 'clean', 'concat']);
+  grunt.registerTask('default', ['jshint', 'clean', 'concat']);
+  
+  grunt.registerTask('mocha', 'mochaTest');
 };

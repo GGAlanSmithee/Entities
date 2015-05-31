@@ -6,7 +6,7 @@
 
 Entities.World = function(capacity) {
     
-    this.capacity = capacity ? capacity : 100;
+    this.capacity = Number.isInteger(capacity) ? capacity : 100;
     
     this.currentMaxEntity = 0;
     
@@ -38,9 +38,9 @@ Entities.World.ComponentType = {
     Static      : 2
 };
 
-Entities.World.getNextComponentId = function(components) {
+Entities.World.getNextComponentTypeId = function(components) {
     if (!Array.isArray(components)) {
-        throw new TypeError('components argument must be an array');
+        return 0;
     }
     
     let arr  = [];
@@ -60,7 +60,7 @@ Entities.World.getNextComponentId = function(components) {
 
 Entities.World.newComponent = function(object) {
     if (object === null || object === undefined) {
-        throw new TypeError('cannot create a component from ' + object);
+        return null;
     }
     
     let type = typeof object;
@@ -89,7 +89,7 @@ Entities.World.newComponent = function(object) {
 
 Entities.World.getEntities = function(world, returnDetails) {
     if (!(world instanceof Entities.World)) {
-        throw new TypeError('world argument must be an instance of Entities.World');
+        return [];
     }
     
     if (returnDetails) {
@@ -114,7 +114,7 @@ Entities.World.prototype = {
     constructor : Entities.World,
     
     registerComponent : function(type, object, returnDetails) {
-        let id = Entities.World.getNextComponentId(this.components);
+        let id = Entities.World.getNextComponentTypeId(this.components);
         
         let component = {
             id     : id,

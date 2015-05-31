@@ -17,7 +17,7 @@ Entities.EntityManager = function(world, entityFactory, systemManager, eventHand
 };
 
 Entities.EntityManager.getEntityIndex = function(world, entity) {
-    return typeof entity === 'number' ? entity : typeof entity === 'object' && entity.index ? entity.index : world.capacity;
+    return Number.isInteger(entity) ? entity : entity instanceof Object ? entity.index : world.capacity;
 };
 
 Entities.EntityManager.prototype = {

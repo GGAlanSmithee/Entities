@@ -16,6 +16,13 @@ if (typeof exports === 'undefined') {
 
 
 
+if (!Number.isInteger) {
+    Number.isInteger = function isInteger (nVal) {
+        return typeof nVal === "number" && isFinite(nVal) && nVal > -9007199254740992 && nVal < 9007199254740992 && Math.floor(nVal) === nVal;
+    };
+}
+
+
 /* global Entites:true */
 /**
 * @author       Alan Smithee <ggnore.alan.smithee@gmail.com>
@@ -29,30 +36,6 @@ if (typeof exports === 'undefined') {
 var Entities = Entities || {
 	VERSION: '0.0.1'
 };
-
-
-/**
-* @author       Alan Smithee <ggnore.alan.smithee@gmail.com>
-* @copyright    2015 GGNoRe.
-* @license      {@link https://github.com/GGAlanSmithee/Entities/blob/master/LICENSE|MIT License}
-*/
-
-    if (typeof exports !== 'undefined') {    
-        if (typeof module !== 'undefined' && module.exports) {
-            exports = module.exports = Entities;
-        }
-        exports.Entities = Entities;
-    } else if (typeof define !== 'undefined' && define.amd) {
-        define('Entities', (function() { return root.Entities = Entities; }) ());
-    } else {
-        root.Entities = Entities;
-    }
-}).call(this);
-
-/*
-* "What matters in this life is not what we do but what we do for others, the legacy we leave and the imprint we make." - Eric Meyer
-*/
-
 
 
 /**
@@ -184,7 +167,7 @@ Entities.EntityManager = function(world, entityFactory, systemManager, eventHand
 };
 
 Entities.EntityManager.getEntityIndex = function(world, entity) {
-    return typeof entity === 'number' ? entity : typeof entity === 'object' && entity.index ? entity.index : world.capacity;
+    return Number.isInteger(entity) ? entity : entity instanceof Object ? entity.index : world.capacity;
 };
 
 Entities.EntityManager.prototype = {
@@ -395,7 +378,7 @@ Entities.EventHandler.prototype = {
         
         let timeout = Array.prototype.splice.call(args, 0, 1)[0];
         
-        if (typeof timeout !== 'number') {
+        if (!Number.IsInteger(timeout)) {
             return Entities.EventHandler.EmptyPromise();
         }
         
@@ -486,7 +469,7 @@ Entities.SystemManager.prototype = {
 
 Entities.World = function(capacity) {
     
-    this.capacity = capacity ? capacity : 100;
+    this.capacity = Number.isInteger(capacity) ? capacity : 100;
     
     this.currentMaxEntity = 0;
     
@@ -518,9 +501,9 @@ Entities.World.ComponentType = {
     Static      : 2
 };
 
-Entities.World.getNextComponentId = function(components) {
+Entities.World.getNextComponentTypeId = function(components) {
     if (!Array.isArray(components)) {
-        throw new TypeError('components argument must be an array');
+        return 0;
     }
     
     let arr  = [];
@@ -540,7 +523,7 @@ Entities.World.getNextComponentId = function(components) {
 
 Entities.World.newComponent = function(object) {
     if (object === null || object === undefined) {
-        throw new TypeError('cannot create a component from ' + object);
+        return null;
     }
     
     let type = typeof object;
@@ -569,7 +552,7 @@ Entities.World.newComponent = function(object) {
 
 Entities.World.getEntities = function(world, returnDetails) {
     if (!(world instanceof Entities.World)) {
-        throw new TypeError('world argument must be an instance of Entities.World');
+        return [];
     }
     
     if (returnDetails) {
@@ -594,7 +577,7 @@ Entities.World.prototype = {
     constructor : Entities.World,
     
     registerComponent : function(type, object, returnDetails) {
-        let id = Entities.World.getNextComponentId(this.components);
+        let id = Entities.World.getNextComponentTypeId(this.components);
         
         let component = {
             id     : id,
@@ -800,3 +783,26 @@ Entities.World.prototype = {
         return ret;
     }
 };
+
+
+/**
+* @author       Alan Smithee <ggnore.alan.smithee@gmail.com>
+* @copyright    2015 GGNoRe.
+* @license      {@link https://github.com/GGAlanSmithee/Entities/blob/master/LICENSE|MIT License}
+*/
+
+    if (typeof exports !== 'undefined') {    
+        if (typeof module !== 'undefined' && module.exports) {
+            exports = module.exports = Entities;
+        }
+        exports.Entities = Entities;
+    } else if (typeof define !== 'undefined' && define.amd) {
+        define('Entities', (function() { return root.Entities = Entities; }) ());
+    } else {
+        root.Entities = Entities;
+    }
+}).call(this);
+
+/*
+* "What matters in this life is not what we do but what we do for others, the legacy we leave and the imprint we make." - Eric Meyer
+*/
