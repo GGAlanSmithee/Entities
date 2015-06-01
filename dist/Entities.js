@@ -482,13 +482,11 @@ Entities.World = function(capacity) {
         ++i;
     }
     
-    this.components = [
-        {
-            id     : Entities.World.None,
-            type   : null,
-            object : null
-        }
-    ];
+    this.components = [{
+        id     : Entities.World.None,
+        type   : null,
+        object : null
+    }];
     
     return this;
 };
@@ -585,7 +583,7 @@ Entities.World.prototype = {
             object : object
         };
         
-        this.components[id] = component;
+        this.components.push(component);
         
         if (type === Entities.World.ComponentType.Static) {
             let entity = 0;

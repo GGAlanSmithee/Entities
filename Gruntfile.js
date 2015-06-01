@@ -4,12 +4,12 @@ module.exports = function(grunt) {
     mochacov: {
       test: {
         options: {
-          reporter: 'dot',
-          'check-leaks' : true
+          reporter: 'dot'
         }
       },
       options: {
         clearRequireCache: true,
+        'check-leaks' : true,
         harmony : true,
         files: 'test/spec/*'
       }
@@ -50,5 +50,7 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-concat');
 
-  grunt.registerTask('default', ['mochacov:test', 'jshint', 'clean', 'concat']);
+  grunt.registerTask('default', ['jshint', 'clean', 'concat', 'mochacov:test']);
+  
+  grunt.registerTask('test', ['mochacov:test']);
 };
