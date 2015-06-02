@@ -73,13 +73,11 @@ describe('Entities.World implementation', function() {
             
             var registeredComponent = this.world.registerComponent(Entities.World.ComponentType.Static, component, true);
             
-            expect(registeredComponent).to.have.property('id');
             expect(registeredComponent).to.have.property('object');
             expect(registeredComponent).to.have.property('type');
             
-            expect(registeredComponent).property('id').to.equal(1);
             expect(registeredComponent).property('object').to.equal(component);
-            expect(registeredComponent.type).to.equal(Entities.World.ComponentType.Static);
+            expect(registeredComponent).property('type').to.equal(Entities.World.ComponentType.Static);
         });
         
         it('succesfully registers a dynamic component', function() {
@@ -89,11 +87,9 @@ describe('Entities.World implementation', function() {
             
             var registeredComponent = this.world.registerComponent(Entities.World.ComponentType.Dynamic, component, true);
             
-            expect(registeredComponent).to.have.property('id');
             expect(registeredComponent).to.have.property('object');
             expect(registeredComponent).to.have.property('type');
             
-            expect(registeredComponent).property('id').to.equal(1);
             expect(registeredComponent).property('object').to.equal(component);
             expect(registeredComponent.type).to.equal(Entities.World.ComponentType.Dynamic);
         });
@@ -105,13 +101,11 @@ describe('Entities.World implementation', function() {
             
             var registeredComponent = this.world.registerComponent(Entities.World.ComponentType.SemiDynamic, component, true);
             
-            expect(registeredComponent).to.have.property('id');
             expect(registeredComponent).to.have.property('object');
             expect(registeredComponent).to.have.property('type');
             
-            expect(registeredComponent).property('id').to.equal(1);
             expect(registeredComponent).property('object').to.equal(component);
-            expect(registeredComponent.type).to.equal(Entities.World.ComponentType.SemiDynamic);
+            expect(registeredComponent).property('type').to.equal(Entities.World.ComponentType.SemiDynamic);
         });
         
         it('adds a component to all existing entities when registering a static component', function() {

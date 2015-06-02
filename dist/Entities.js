@@ -125,7 +125,7 @@ Entities.EntityFactory.prototype = {
             
             let j = entityComponents.length - 1;
             while (j >= 0) {
-                let component = Number(entityComponents[j]);
+                let component = Math.floor(entityComponents[j]);
                 
                 if (Number.isInteger(component) && (entity.id & component) === component) {
                     let result = configuration[component].initializer.call(entity[component]);
@@ -482,11 +482,12 @@ Entities.World = function(capacity) {
         ++i;
     }
     
-    this.components = [{
-        id     : Entities.World.None,
+    this.components = { };
+    
+    this.components[Entities.World.None] = {
         type   : null,
         object : null
-    }];
+    };
     
     return this;
 };
@@ -500,7 +501,7 @@ Entities.World.ComponentType = {
 };
 
 Entities.World.getNextComponentTypeId = function(components) {
-    if (!Array.isArray(components)) {
+    if (components === undefined || components === null || typeof components !== 'object') {
         return 0;
     }
     
@@ -509,7 +510,7 @@ Entities.World.getNextComponentTypeId = function(components) {
     
     let i = 0, length = keys.length;
     while (i < length) {
-        arr.push(components[keys[i]].id);
+        arr.push(Math.floor(keys[i]));
         
         ++i;
     }
@@ -578,12 +579,11 @@ Entities.World.prototype = {
         let id = Entities.World.getNextComponentTypeId(this.components);
         
         let component = {
-            id     : id,
             type   : type,
             object : object
         };
         
-        this.components.push(component);
+        this.components[id] = component;
         
         if (type === Entities.World.ComponentType.Static) {
             let entity = 0;
@@ -598,51 +598,51 @@ Entities.World.prototype = {
         return returnDetails ? this.components[id] : id;
     },
     
-    addComponent : function(entity, component, returnDetails) {
-        if (!this.components[component]) {
-            throw new Error('cannot add component: there is no registered component template ', component);
+    addComponent : function(entity, componentId) {
+        let component = this.components[componentId];
+        
+        if (!component) {
+            return;
         }
 
-        if ((this.entities[entity].id & this.components[component].id) === this.components[component].id) {
+        if ((this.entities[entity].id & componentId) === componentId) {
             return;
         }
         
-        this.entities[entity].id |= this.components[component].id;
+        this.entities[entity].id |= componentId;
         
-        if (this.components[component].type === Entities.World.ComponentType.Static) {
+        if (component.type === Entities.World.ComponentType.Static) {
             return;
         }
         
-        if (this.entities[entity][component] !== null && this.entities[entity][component] !== undefined) {
+        if (this.entities[entity][componentId] !== null && this.entities[entity][componentId] !== undefined) {
             return;
         }
         
-        this.entities[entity][component] = Entities.World.newComponent(this.components[component].object);
-        
-        return returnDetails ? this.entities[entity][component] : component;
+        this.entities[entity][componentId] = Entities.World.newComponent(component.object);
     },
     
-    removeComponent : function(entity, component) {
-        if (!this.components[component]) {
-            throw 'cannot remove component: there is no registered component template ' + component;
-        }
+    removeComponent : function(entity, componentId) {
+        let component = this.components[componentId];
         
-        if ((this.entities[entity].id & this.components[component].id) !== this.components[component].id) {
+        if (!component) {
             return;
         }
         
-        this.entities[entity].id &= ~this.components[component].id;
-        
-        if (this.components[component].type === Entities.World.ComponentType.Static ||
-            this.components[component].type === Entities.World.ComponentType.SemiDynamic) {
+        if ((this.entities[entity].id & componentId) !== componentId) {
             return;
         }
         
-        if (this.entities[entity][component] === null || this.entities[entity][component] === undefined) {
+        this.entities[entity].id &= ~componentId;
+        
+        if (component.type === Entities.World.ComponentType.Static ||
+            component.type === Entities.World.ComponentType.SemiDynamic ||
+            this.entities[entity][componentId] === null ||
+            this.entities[entity][componentId] === undefined) {
             return;
         }
         
-        this.entities[entity][component] = null;
+        this.entities[entity][componentId] = null;
     },
     
     getFirstUnusedEntity : function() {
@@ -681,7 +681,7 @@ Entities.World.prototype = {
         
         let i = 0, length = keys.length;
         while (i < length) {
-            componentId = this.components[keys[i]].id;
+            componentId = Math.floor(keys[i]);
             
             if ((components & componentId) === componentId) {
                 this.addComponent(entity, componentId);
@@ -704,7 +704,7 @@ Entities.World.prototype = {
         
         let i = 0, length = keys.length;
         while (i < length) {
-            this.removeComponent(entity, keys[i]);
+            this.removeComponent(entity, Math.floor(keys[i]));
             
             ++i;
         }

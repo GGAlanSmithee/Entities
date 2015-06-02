@@ -33,8 +33,7 @@ describe('Entites.World', function() {
         });
         
         it('registers only the "None" (0) component type', function() {
-            expect(this.world.components).to.be.an('array');
-            expect(this.world.components).property('length').to.equal(1);
+            expect(this.world.components).to.be.an('object');
             
             expect(this.world.components[0]).to.be.an('object');
             expect(this.world.components[0]).property('type').to.be.null;

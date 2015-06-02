@@ -118,12 +118,12 @@ describe('Entities.World helpers', function() {
         });
         
         it('returns the correct component type id under normal circumstances', function() {
-            var components = [
-                { id : 0 },
-                { id : 1 },
-                { id : 2 },
-                { id : 4 }
-            ];
+            var components = {
+                0 : { },
+                1 : { },
+                2 : { },
+                4 : { }
+            };
             
             var nextComponent = Entities.World.getNextComponentTypeId(components);
             
@@ -131,10 +131,10 @@ describe('Entities.World helpers', function() {
         });
         
         it('returns the correct component type id when there is a gap in the existing ids', function() {
-            var components = [
-                { id : 0 },
-                { id : 4 }
-            ];
+            var components = {
+                0 : { },
+                4 : { }
+            };
             
             var nextComponent = Entities.World.getNextComponentTypeId(components);
             
@@ -142,11 +142,11 @@ describe('Entities.World helpers', function() {
         });
         
         it('returns the correct component type id when only the "None" component exists', function() {
-            expect(Entities.World.getNextComponentTypeId([{ id : 0 }])).to.equal(1);
+            expect(Entities.World.getNextComponentTypeId({ 0 : { } })).to.equal(1);
         });
         
         it('returns the correct component type id when there is no prior components', function() {
-            expect(Entities.World.getNextComponentTypeId([])).to.equal(0);
+            expect(Entities.World.getNextComponentTypeId({})).to.equal(0);
         });
         
         it('returns the "None" component type id on bad input', function() {
