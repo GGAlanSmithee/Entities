@@ -25,19 +25,65 @@ describe('Entities.World implementation', function() {
             expect(registeredComponent).to.be.an('object');
         });
         
-        it('returns an id (number) when [returnDetails] is false or omitted', function() {
+        it('returns an id (number) when [returnDetails] is false', function() {
             var component = {
                 x : 20
             };
             
             var registeredComponent = this.world.registerComponent(Entities.World.ComponentType.Static, component, false);
             expect(registeredComponent).to.be.a('number');
+        });
+        
+        it('returns an id (number) when [returnDetails] is omitted', function() {
+            var component = {
+                x : 20
+            };
             
-            registeredComponent = this.world.registerComponent(Entities.World.ComponentType.Static, component);
+            var registeredComponent = this.world.registerComponent(Entities.World.ComponentType.Static, component);
             expect(registeredComponent).to.be.a('number');
         });
         
-        it('increments component ids as bytes [1, 2, 4, 8, 16, ...] when components are registered', function() {
+        it('gives an error (exception) when [type] or [object] is omitted', function() {
+            var self = this;
+            
+            var noArgs = function() {
+                self.world.registerComponent();
+            }
+            
+            expect(noArgs).to.throw(Error);
+            
+            var noObj = function() {
+                self.world.registerComponent(Entities.World.ComponentType.Static);
+            }
+            
+            expect(noObj).to.throw(Error);
+        });
+        
+        it('creates a component with type set as static when a bad type is givven', function() {
+            var component = {
+                x : 20
+            };
+            
+            var component = this.world.registerComponent('a bad type', component, true);
+            
+            expect(component).to.be.an('object');
+            expect(component).to.have.property('type');
+            expect(component).property('type').to.equal(Entities.World.ComponentType.Static);
+            
+            component = this.world.registerComponent(3, component, true);
+            
+            expect(component).to.be.an('object');
+            expect(component).to.have.property('type');
+            expect(component).property('type').to.equal(Entities.World.ComponentType.Static);
+            
+            component = this.world.registerComponent(-1, component, true);
+            
+            expect(component).to.be.an('object');
+            expect(component).to.have.property('type');
+            expect(component).property('type').to.equal(Entities.World.ComponentType.Static);
+        });
+        
+        it('increments component ids as bits [1, 2, 4, 8, 16, ...] when components are registered', function() {
             var component = {
                 x : 20
             };
@@ -130,9 +176,34 @@ describe('Entities.World implementation', function() {
             var componentId = this.world.registerComponent(Entities.World.ComponentType.Static, component);
             
             for (var i = 0; i < this.world.entities.length; ++i) {
-                expect(this.world.entities[i][componentId]).to.be.an('object');
-                expect(this.world.entities[i][componentId]).to.have.property('x');
-                expect(this.world.entities[i][componentId]).property('x').to.equal(20);
+                expect(this.world.entities[i]).to.have.property([componentId]);
+                expect(this.world.entities[i]).property([componentId]).to.be.an('object');
+                expect(this.world.entities[i]).property([componentId]).to.have.property('x');
+                expect(this.world.entities[i]).property([componentId]).property('x').to.equal(20);
+            }
+        });
+        
+        it('does not add a component to all existing entities when registering a semi dynamic component', function() {
+            var component = {
+                x : 20
+            };
+            
+            var componentId = this.world.registerComponent(Entities.World.ComponentType.SemiDynamic, component);
+            
+            for (var i = 0; i < this.world.entities.length; ++i) {
+                expect(this.world.entities[i]).to.not.have.property([componentId]);
+            }
+        });
+        
+        it('does not add a component to all existing entities when registering a dynamic component', function() {
+            var component = {
+                x : 20
+            };
+            
+            var componentId = this.world.registerComponent(Entities.World.ComponentType.Dynamic, component);
+            
+            for (var i = 0; i < this.world.entities.length; ++i) {
+                expect(this.world.entities[i]).to.not.have.property([componentId]);
             }
         });
     });

@@ -578,6 +578,14 @@ Entities.World.prototype = {
     registerComponent : function(type, object, returnDetails) {
         let id = Entities.World.getNextComponentTypeId(this.components);
         
+        if (type === undefined || type === null || object === undefined || object === null) {
+            throw new Error('registerComponent expects a type and object.');
+        }
+        
+        if (type !== Entities.World.ComponentType.Dynamic && type !== Entities.World.ComponentType.SemiDynamic) {
+            type = Entities.World.ComponentType.Static;
+        }
+        
         let component = {
             type   : type,
             object : object
