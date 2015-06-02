@@ -25,7 +25,7 @@ describe('Entities.World implementation', function() {
             expect(registeredComponent).to.be.an('object');
         });
         
-        it('returns an index (number) when [returnDetails] is false or omitted', function() {
+        it('returns an id (number) when [returnDetails] is false or omitted', function() {
             var component = {
                 x : 20
             };
@@ -57,12 +57,26 @@ describe('Entities.World implementation', function() {
             componentId = this.world.registerComponent(Entities.World.ComponentType.Static, component);
             expect(componentId).to.equal(16);
             
-            for (var i = 0; i < this.world.components.length; ++i) {
-                if (i === 1) {
-                    expect(this.world.components[i].id).to.equal(1);
-                } else {
-                    expect(this.world.components[i].id % 2).to.equal(0);
+            var components = this.world.components;
+            
+            expect(components).to.be.an('object');
+            expect(components).to.include.keys('0');
+            expect(components).to.include.keys('1');
+            expect(components).to.include.keys('2');
+            expect(components).to.include.keys('4');
+            expect(components).to.include.keys('8');
+            expect(components).to.include.keys('16');
+            
+            var keys = Object.keys(components);
+            var i = keys.length - 1;
+            while (i >= 0) {
+                var id = Math.floor(keys[i]);
+
+                if (id !== 1) {
+                    expect(id % 2).to.equal(0);
                 }
+                
+                --i;
             }
         });
         
