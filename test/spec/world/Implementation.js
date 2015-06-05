@@ -207,4 +207,119 @@ describe('Entities.World implementation', function() {
             }
         });
     });
+    
+    describe('getFirstUnusedEntity()', function() {
+        it('is a function', function() {
+            expect(this.world.getFirstUnusedEntity).to.be.a('function');
+        });
+        
+        it('returns 0 when there is no entity added', function() {
+            expect(this.world.getFirstUnusedEntity()).to.equal(0);
+        });
+        
+        it('returns correct entityId as more entities are added', function() {
+            expect(this.world.getFirstUnusedEntity()).to.equal(0);
+            expect(this.world.getFirstUnusedEntity()).to.equal(0);
+            
+            for (var i = 0; i < 20; ++i) {
+                this.world.entities[i].id = 1;
+                expect(this.world.getFirstUnusedEntity()).to.equal(i + 1);
+            }
+        });
+        
+        it('returns correct entityId when there is a gap in used entities', function() {
+            expect(this.world.getFirstUnusedEntity()).to.equal(0);
+            expect(this.world.getFirstUnusedEntity()).to.equal(0);
+            
+            for (var i = 0; i < 20; ++i) {
+                this.world.entities[i].id = 1;
+            }
+            
+            this.world.entities[10].id = 0;
+            
+            expect(this.world.getFirstUnusedEntity()).to.equal(10);
+            expect(this.world.getFirstUnusedEntity()).to.equal(10);
+            
+            this.world.entities[15].id = 0;
+            
+            expect(this.world.getFirstUnusedEntity()).to.equal(10);
+            expect(this.world.getFirstUnusedEntity()).to.equal(10);
+            
+            this.world.entities[10].id = 1;
+            
+            expect(this.world.getFirstUnusedEntity()).to.equal(15);
+            expect(this.world.getFirstUnusedEntity()).to.equal(15);
+            
+            this.world.entities[15].id = 1;
+            
+            expect(this.world.getFirstUnusedEntity()).to.equal(20);
+            expect(this.world.getFirstUnusedEntity()).to.equal(20);
+        });
+    });
+    
+    describe('addEntity(entity, componentId)', function() {
+        beforeEach(function() {
+            this.components = this.world.registerComponent(Entities.World.ComponentType.Static, { x : 10, y : 20 }) |
+                              this.world.registerComponent(Entities.World.ComponentType.Static, { name : 'Testing' }) |
+                              this.world.registerComponent(Entities.World.ComponentType.Static, 5.5);
+        });
+        
+        it('is a function', function() {
+            expect(this.world.addEntity).to.be.a('function');
+        });
+        
+        it('adds and returns an entity, given correct [components] input', function() {
+            var entity = this.world.addEntity(this.components);
+            
+            expect(this.entity).to.not.be.null;
+            
+            entity = this.world.addEntity(this.components, true);
+            
+            expect(this.entity).to.not.be.null;
+        });
+
+        it('does not add an entitty and returns null, givven wrong [components] input', function() {
+            /*var entity = this.world.addEntity();
+            
+            expect(entity).to.be.null;
+            
+            entity = this.world.addEntity('not a number');
+            
+            expect(entity).to.be.null;
+            
+            entity = this.world.addEntity('');
+            
+            expect(entity).to.be.null;
+            
+            entity = this.world.addEntity(null);
+            
+            expect(entity).to.be.null;
+            
+            entity = this.world.addEntity(-1);
+            
+            expect(entity).to.be.null;
+            
+            entity = this.world.addEntity(0);
+            
+            expect(entity).to.be.null;
+            
+            entity = this.world.addEntity({});
+            
+            expect(entity).to.be.null;
+            
+            entity = this.world.addEntity([]);
+            
+            expect(entity).to.be.null;*/
+        });
+        
+        it('creates an entity containing [components]', function() {
+            var entity = this.world.addEntity(this.components);
+        });
+    });
+        
+    describe('addComponent(entity, componentId)', function() {
+        it('is a function', function() {
+            expect(this.world.addComponent).to.be.a('function');
+        });
+    });
 });
