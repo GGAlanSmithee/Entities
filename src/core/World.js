@@ -204,17 +204,20 @@ Entities.World.prototype = {
         return this.capacity;
     },
     
+    increaseCapacity : function() {
+        let i = (this.capacity *= 2) / 2;
+        while (i < this.capacity) {
+            this.entities[i] = { index : i, id : 0 };
+            
+            ++i;
+        }
+    },
+    
     addEntity : function(components, returnDetails) {
         let entity = this.getFirstUnusedEntity();
         
         if (entity === this.capacity) {
-            
-            let i = this.capacity, length = (this.capacity *= 2);
-            while (i < length) {
-                this.entities[i] = { index : i, id : 0 };
-                
-                ++i;
-            }
+            this.increaseCapacity();
         }
         
         if (entity > this.currentMaxEntity) {
