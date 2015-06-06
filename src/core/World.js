@@ -214,6 +214,10 @@ Entities.World.prototype = {
     },
     
     addEntity : function(components, returnDetails) {
+        if (typeof components !== 'number' || components <= 0) {
+            return null;
+        }
+        
         let entity = this.getFirstUnusedEntity();
         
         if (entity === this.capacity) {

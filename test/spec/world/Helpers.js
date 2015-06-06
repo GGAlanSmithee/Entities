@@ -1,7 +1,7 @@
 var expect   = require("chai").expect;
 var Entities = require('../../../dist/Entities');
 
-describe('Entities.World helpers', function() {
+describe('Entities.World', function() {
     beforeEach(function() {
         this.world = new Entities.World();
     });

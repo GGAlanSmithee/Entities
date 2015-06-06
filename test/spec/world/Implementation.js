@@ -1,7 +1,7 @@
 var expect   = require("chai").expect;
 var Entities = require('../../../dist/Entities');
 
-describe('Entities.World implementation', function() {
+describe('Entities.World', function() {
     beforeEach(function() {
         this.world = new Entities.World();
     });
@@ -254,14 +254,29 @@ describe('Entities.World implementation', function() {
             
             expect(this.world.getFirstUnusedEntity()).to.equal(20);
             expect(this.world.getFirstUnusedEntity()).to.equal(20);
+            
+            this.world.entities[0].id = 0;
+            
+            expect(this.world.getFirstUnusedEntity()).to.equal(0);
+            expect(this.world.getFirstUnusedEntity()).to.equal(0);
+        });
+        
+        it('returns [capacity] when there is no entities left in the world', function() {
+            for (var i = 0; i < this.world.capacity; ++i) {
+                this.world.entities[i].id = 1;
+            }
+            
+            expect(this.world.getFirstUnusedEntity()).to.equal(this.world.capacity);
         });
     });
     
     describe('addEntity(entity, componentId)', function() {
         beforeEach(function() {
-            this.components = this.world.registerComponent(Entities.World.ComponentType.Static, { x : 10, y : 20 }) |
-                              this.world.registerComponent(Entities.World.ComponentType.Static, { name : 'Testing' }) |
-                              this.world.registerComponent(Entities.World.ComponentType.Static, 5.5);
+            this.posComponent  = this.world.registerComponent(Entities.World.ComponentType.Static, { x : 10, y : 20 });
+            this.nameComponent = this.world.registerComponent(Entities.World.ComponentType.Static, { name : 'Testing' });
+            this.velComponent  = this.world.registerComponent(Entities.World.ComponentType.Static, 5.5);
+                              
+            this.components = this.posComponent | this.nameComponent | this.velComponent;
         });
         
         it('is a function', function() {
@@ -278,8 +293,8 @@ describe('Entities.World implementation', function() {
             expect(this.entity).to.not.be.null;
         });
 
-        it('does not add an entitty and returns null, givven wrong [components] input', function() {
-            /*var entity = this.world.addEntity();
+        it('does not add an entitty and returns null, given wrong [components] input', function() {
+            var entity = this.world.addEntity();
             
             expect(entity).to.be.null;
             
@@ -309,11 +324,25 @@ describe('Entities.World implementation', function() {
             
             entity = this.world.addEntity([]);
             
-            expect(entity).to.be.null;*/
+            expect(entity).to.be.null;
         });
         
-        it('creates an entity containing [components]', function() {
-            var entity = this.world.addEntity(this.components);
+        it('added entity has [components]', function() {
+            var entityIndex = this.world.addEntity(this.components);
+            var entity = this.world.entities[entityIndex];
+            
+            expect(entity).property('id').to.equal(this.components);
+            expect(entity).to.have.property(this.posComponent);
+            expect(entity).property(this.posComponent).to.not.be.null;
+            expect(entity).to.have.property(this.nameComponent);
+            expect(entity).property(this.nameComponent).to.not.be.null;
+            expect(entity).to.have.property(this.velComponent);
+            expect(entity).property(this.velComponent).to.not.be.null;
+        });
+        
+        it('returns an entity object when [returnDetails] = true', function() {
+            var entity = this.world.addEntity(this.components, true);
+            expect(entity).to.be.an('object');
         });
     });
         
