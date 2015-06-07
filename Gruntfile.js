@@ -32,8 +32,8 @@ module.exports = function(grunt) {
       GG: {
         src: [
           'src/Intro.js',
-          'src/Polyfills.js',
           'src/Entities.js',
+          'src/Utils.js',
           'src/core/*.js',
           'src/Outro.js'
         ],

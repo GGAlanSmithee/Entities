@@ -97,7 +97,7 @@ Entities.EventHandler.prototype = {
         
         let timeout = Array.prototype.splice.call(args, 0, 1)[0];
         
-        if (!Number.IsInteger(timeout)) {
+        if (typeof timeout !== 'number') {
             return Entities.EventHandler.EmptyPromise();
         }
         

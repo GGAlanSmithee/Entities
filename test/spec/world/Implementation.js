@@ -9,7 +9,7 @@ describe('Entities.World', function() {
     afterEach(function() {
         delete this.world;
     });
-        
+    
     describe('registerComponent(type, object, returnDetails)', function() {
         it('is a function', function() {
             expect(this.world.registerComponent).to.be.a('function');
@@ -208,6 +208,58 @@ describe('Entities.World', function() {
         });
     });
     
+    describe('addComponent(entity, componentId)', function() {
+        beforeEach(function() {
+            this.component = this.world.registerComponent(Entities.World.ComponentType.Static, { x : 10, y : 20 });
+            this.entity = 0;
+        });
+        
+        it('is a function', function() {
+            expect(this.world.addComponent).to.be.a('function');
+        });
+        
+        it('adds a component with [componentId] to the [entity]', function() {
+            expect(this.world.entities[this.entity].id).to.equal(0);
+            
+            this.world.addComponent(this.entity, this.component);
+            
+            expect(this.world.entities[this.entity].id).to.equal(this.component);
+            expect(this.world.entities[this.entity]).to.have.property(this.component);
+            expect(this.world.entities[this.entity]).property(this.component).to.be.an('object');
+        });
+        
+        it('does not add a component with [componentId] if the component has not been registered', function() {
+            expect(this.world.entities[this.entity].id).to.equal(0);
+            
+            this.world.addComponent(this.entity, 99);
+            
+            expect(this.world.entities[this.entity].id).to.equal(0);
+            expect(this.world.entities[this.entity]).to.not.have.property(99);
+        });
+        
+        it('does not add a component if [componentId] is not a valid input', function() {
+            expect(this.world.entities[this.entity].id).to.equal(0);
+            
+            this.world.addComponent(this.entity);
+            expect(this.world.entities[this.entity].id).to.equal(0);
+            
+            this.world.addComponent(this.entity, null);
+            expect(this.world.entities[this.entity].id).to.equal(0);
+            
+            this.world.addComponent(this.entity, 'not a number');
+            expect(this.world.entities[this.entity].id).to.equal(0);
+            
+            this.world.addComponent(this.entity, []);
+            expect(this.world.entities[this.entity].id).to.equal(0);
+            
+            this.world.addComponent(this.entity, {});
+            expect(this.world.entities[this.entity].id).to.equal(0);
+            
+            this.world.addComponent(this.entity, 1.2);
+            expect(this.world.entities[this.entity].id).to.equal(0);
+        });
+    });
+    
     describe('getFirstUnusedEntity()', function() {
         it('is a function', function() {
             expect(this.world.getFirstUnusedEntity).to.be.a('function');
@@ -327,7 +379,20 @@ describe('Entities.World', function() {
             expect(entity).to.be.null;
         });
         
-        it('added entity has [components]', function() {
+        it('returns an index when [returnDetails] = false or omitted', function() {
+            var entity = this.world.addEntity(this.components, false);
+            expect(entity).to.be.a('number');
+            
+            entity = this.world.addEntity(this.components);
+            expect(entity).to.be.a('number');
+        });
+        
+        it('returns an entity object when [returnDetails] = true', function() {
+            var entity = this.world.addEntity(this.components, true);
+            expect(entity).to.be.an('object');
+        });
+        
+        it('returns a entity containing [components]', function() {
             var entityIndex = this.world.addEntity(this.components);
             var entity = this.world.entities[entityIndex];
             
@@ -340,15 +405,15 @@ describe('Entities.World', function() {
             expect(entity).property(this.velComponent).to.not.be.null;
         });
         
-        it('returns an entity object when [returnDetails] = true', function() {
-            var entity = this.world.addEntity(this.components, true);
-            expect(entity).to.be.an('object');
-        });
-    });
-        
-    describe('addComponent(entity, componentId)', function() {
-        it('is a function', function() {
-            expect(this.world.addComponent).to.be.a('function');
+        it('returns a entity only containing registered [components] if on or more [components] are not registered', function() {
+            var entityIndex = this.world.addEntity(1 | 16 | 32);
+            var entity = this.world.entities[entityIndex];
+            
+            expect(entity).property('id').to.equal(1);
+            expect(entity).to.have.property(1);
+            expect(entity).property(1).to.be.an('object');
+            expect(entity).to.not.have.property(16);
+            expect(entity).to.not.have.property(32);
         });
     });
 });

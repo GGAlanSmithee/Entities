@@ -196,14 +196,14 @@ describe('Entities.World', function() {
             var component = Entities.World.newComponent(5.5);
             
             expect(component).to.be.a('number');
-            expect(Number.isInteger(component)).to.be.false;
+            expect(Entities.isInt(component)).to.be.false;
             expect(component).to.equal(5.5);
             expect(component).to.not.equal(5);
             
             component = Entities.World.newComponent(-20.5);
             
             expect(component).to.be.a('number');
-            expect(Number.isInteger(component)).to.be.false;
+            expect(Entities.isInt(component)).to.be.false;
             expect(component).to.equal(-20.5);
             expect(component).to.not.equal(-20.0);
         });

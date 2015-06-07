@@ -16,13 +16,6 @@ if (typeof exports === 'undefined') {
 
 
 
-if (!Number.isInteger) {
-    Number.isInteger = function isInteger (nVal) {
-        return typeof nVal === "number" && isFinite(nVal) && nVal > -9007199254740992 && nVal < 9007199254740992 && Math.floor(nVal) === nVal;
-    };
-}
-
-
 /* global Entites:true */
 /**
 * @author       Alan Smithee <ggnore.alan.smithee@gmail.com>
@@ -36,6 +29,11 @@ if (!Number.isInteger) {
 var Entities = Entities || {
 	VERSION: '0.0.1'
 };
+
+
+Entities.isInt = function(n) {
+   return n % 1 === 0;
+}
 
 
 /**
@@ -127,7 +125,7 @@ Entities.EntityFactory.prototype = {
             while (j >= 0) {
                 let component = Math.floor(entityComponents[j]);
                 
-                if (Number.isInteger(component) && (entity.id & component) === component) {
+                if (typeof component === 'number' && (entity.id & component) === component) {
                     let result = configuration[component].initializer.call(entity[component]);
                     
                     if (typeof entity[component] !== 'function' && typeof entity[component] !== 'object' && result !== undefined) {
@@ -167,7 +165,7 @@ Entities.EntityManager = function(world, entityFactory, systemManager, eventHand
 };
 
 Entities.EntityManager.getEntityIndex = function(world, entity) {
-    return Number.isInteger(entity) ? entity : entity instanceof Object ? entity.index : world.capacity;
+    return typeof entity === 'number' ? entity : entity instanceof Object ? entity.index : world.capacity;
 };
 
 Entities.EntityManager.prototype = {
@@ -378,7 +376,7 @@ Entities.EventHandler.prototype = {
         
         let timeout = Array.prototype.splice.call(args, 0, 1)[0];
         
-        if (!Number.IsInteger(timeout)) {
+        if (typeof timeout !== 'number') {
             return Entities.EventHandler.EmptyPromise();
         }
         
@@ -469,7 +467,7 @@ Entities.SystemManager.prototype = {
 
 Entities.World = function(capacity) {
     
-    this.capacity = Number.isInteger(capacity) ? capacity : 100;
+    this.capacity = typeof capacity === 'number' ? capacity : 100;
     
     this.currentMaxEntity = 0;
     

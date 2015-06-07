@@ -6,7 +6,7 @@
 
 Entities.World = function(capacity) {
     
-    this.capacity = Number.isInteger(capacity) ? capacity : 100;
+    this.capacity = typeof capacity === 'number' ? capacity : 100;
     
     this.currentMaxEntity = 0;
     

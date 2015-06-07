@@ -87,7 +87,7 @@ Entities.EntityFactory.prototype = {
             while (j >= 0) {
                 let component = Math.floor(entityComponents[j]);
                 
-                if (Number.isInteger(component) && (entity.id & component) === component) {
+                if (typeof component === 'number' && (entity.id & component) === component) {
                     let result = configuration[component].initializer.call(entity[component]);
                     
                     if (typeof entity[component] !== 'function' && typeof entity[component] !== 'object' && result !== undefined) {
