@@ -25,6 +25,10 @@
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-concat": "^0.5.1",
     "grunt-contrib-jshint": "^0.11.2",
-    "grunt-mocha-cov": "^0.4.0"
+    "istanbul": "^0.3.14",
+    "mocha": "^2.2.5"
+  },
+  "scripts": {
+    "test": "node --harmony ./node_modules/.bin/istanbul cover _mocha test/spec/* -- -R dot"
   }
 }

@@ -1,19 +1,6 @@
 module.exports = function(grunt) {
   
   grunt.initConfig({
-    mochacov: {
-      test: {
-        options: {
-          reporter: 'dot'
-        }
-      },
-      options: {
-        clearRequireCache: true,
-        'check-leaks' : true,
-        harmony : true,
-        files: 'test/spec/*'
-      }
-    },
     jshint : {
       all: {
         options : {
@@ -41,8 +28,6 @@ module.exports = function(grunt) {
       }
     }
   });
-
-  grunt.loadNpmTasks('grunt-mocha-cov');
   
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
@@ -50,7 +35,5 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-concat');
 
-  grunt.registerTask('default', ['jshint', 'clean', 'concat', 'mochacov:test']);
-  
-  grunt.registerTask('test', ['mochacov:test']);
+  grunt.registerTask('default', ['jshint', 'clean', 'concat']);
 };
