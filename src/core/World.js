@@ -209,6 +209,16 @@ Entities.World.prototype = {
         while (i < this.capacity) {
             this.entities[i] = { index : i, id : 0 };
             
+            let keys = Object.keys(this.components);
+            let k    = keys.length - 1;
+            while (k >= 0) {
+                if (keys[k].type === Entities.World.ComponentType.Static) {
+                    this.entities[i][k] = Entities.World.newComponent(keys[k].object);
+                }
+                
+                --k;
+            }
+            
             ++i;
         }
     },

@@ -255,8 +255,6 @@ describe('Entities.World', function() {
             expect(this.world.entities[this.entity].id & semiDynamicComponent).to.equal(semiDynamicComponent);
             expect(this.world.entities[this.entity]).to.have.property(semiDynamicComponent);
             expect(this.world.entities[this.entity]).property(semiDynamicComponent).to.not.be.null;
-            
-            console.log(this.world.entities[this.entity]);
         });
         
         it('does not instatiate a dynamic component twice if already instantiated when added (error situation)', function() {
@@ -324,6 +322,95 @@ describe('Entities.World', function() {
         });
     });
     
+    describe('removeComponent(entity, componentId)', function() {
+        beforeEach(function() {
+            this.component = this.world.registerComponent(Entities.World.ComponentType.Static, { x : 10, y : 20 });
+            this.semiDynamicComponent = this.world.registerComponent(Entities.World.ComponentType.SemiDynamic, { x : 10, y : 20 });
+            this.dynamicComponent = this.world.registerComponent(Entities.World.ComponentType.Dynamic, { x : 10, y : 20 });
+            this.entity = 0;
+            
+            this.world.addComponent(this.entity, this.component);
+            this.world.addComponent(this.entity, this.semiDynamicComponent);
+            this.world.addComponent(this.entity, this.dynamicComponent);
+        });
+        
+        it('is a function', function() {
+            expect(this.world.removeComponent).to.be.a('function');
+        });
+        
+        it('removes a component', function() {
+            expect(this.world.entities[this.entity].id & this.component).to.equal(this.component);
+            expect(this.world.entities[this.entity].id & this.semiDynamicComponent).to.equal(this.semiDynamicComponent);
+            expect(this.world.entities[this.entity].id & this.dynamicComponent).to.equal(this.dynamicComponent);
+            
+            this.world.removeComponent(this.entity, this.component);
+            
+            expect(this.world.entities[this.entity].id & this.component).to.not.equal(this.component);
+            expect(this.world.entities[this.entity].id & this.semiDynamicComponent).to.equal(this.semiDynamicComponent);
+            expect(this.world.entities[this.entity].id & this.dynamicComponent).to.equal(this.dynamicComponent);
+            
+            this.world.removeComponent(this.entity, this.semiDynamicComponent);
+            
+            expect(this.world.entities[this.entity].id & this.component).to.not.equal(this.component);
+            expect(this.world.entities[this.entity].id & this.semiDynamicComponent).to.not.equal(this.semiDynamicComponent);
+            expect(this.world.entities[this.entity].id & this.dynamicComponent).to.equal(this.dynamicComponent);
+            
+            this.world.removeComponent(this.entity, this.dynamicComponent);
+            
+            expect(this.world.entities[this.entity].id & this.component).to.not.equal(this.component);
+            expect(this.world.entities[this.entity].id & this.semiDynamicComponent).to.not.equal(this.semiDynamicComponent);
+            expect(this.world.entities[this.entity].id & this.dynamicComponent).to.not.equal(this.dynamicComponent);
+        });
+        
+        it('leaves the actual component is but removes its id when a static component is removed', function() {
+            expect(this.world.entities[this.entity]).to.have.property(this.component);
+            expect(this.world.entities[this.entity]).property(this.component).to.not.be.null;
+            
+            this.world.removeComponent(this.entity, this.component);
+            
+            expect(this.world.entities[this.entity]).to.have.property(this.component);
+            expect(this.world.entities[this.entity]).property(this.component).to.not.be.null;
+        });
+
+        it('leaves the actual component is but removes its id when a semi dynamic component is removed', function() {
+            expect(this.world.entities[this.entity]).to.have.property(this.semiDynamicComponent);
+            expect(this.world.entities[this.entity]).property(this.semiDynamicComponent).to.not.be.null;
+            
+            this.world.removeComponent(this.entity, this.semiDynamicComponent);
+            
+            expect(this.world.entities[this.entity]).to.have.property(this.semiDynamicComponent);
+            expect(this.world.entities[this.entity]).property(this.semiDynamicComponent).to.not.be.null;
+        });
+        
+        it('removes the actual component and its id when a dyanmic component is removed', function() {
+            expect(this.world.entities[this.entity]).to.have.property(this.dynamicComponent);
+            expect(this.world.entities[this.entity]).property(this.dynamicComponent).to.not.be.null;
+            
+            this.world.removeComponent(this.entity, this.dynamicComponent);
+            
+            expect(this.world.entities[this.entity]).to.have.property(this.dynamicComponent);
+            expect(this.world.entities[this.entity]).property(this.dynamicComponent).to.be.null;
+        });
+        
+        it('does not remove a component when a bad [comonentId] is passed in', function() {
+            expect(this.world.entities[this.entity].id & this.component).to.equal(this.component);
+            expect(this.world.entities[this.entity].id & this.semiDynamicComponent).to.equal(this.semiDynamicComponent);
+            expect(this.world.entities[this.entity].id & this.dynamicComponent).to.equal(this.dynamicComponent);
+            
+            this.world.removeComponent(this.entity, 25);
+            this.world.removeComponent(this.entity, -1);
+            this.world.removeComponent(this.entity, 'not a number');
+            this.world.removeComponent(this.entity);
+            this.world.removeComponent(this.entity, null);
+            this.world.removeComponent(this.entity, []);
+            this.world.removeComponent(this.entity, {});
+            
+            expect(this.world.entities[this.entity].id & this.component).to.equal(this.component);
+            expect(this.world.entities[this.entity].id & this.semiDynamicComponent).to.equal(this.semiDynamicComponent);
+            expect(this.world.entities[this.entity].id & this.dynamicComponent).to.equal(this.dynamicComponent);
+        });
+    });
+    
     describe('getFirstUnusedEntity()', function() {
         it('is a function', function() {
             expect(this.world.getFirstUnusedEntity).to.be.a('function');
@@ -383,6 +470,12 @@ describe('Entities.World', function() {
             }
             
             expect(this.world.getFirstUnusedEntity()).to.equal(this.world.capacity);
+        });
+    });
+    
+    describe('increaseCapacity()', function() {
+        it('is a function', function() {
+            expect(this.world.increaseCapacity).to.be.a('function');
         });
     });
     
