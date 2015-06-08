@@ -205,15 +205,20 @@ Entities.World.prototype = {
     },
     
     increaseCapacity : function() {
+        let keys      = Object.keys(this.components);
+        let k         = keys.length - 1;
+        let component = null;
+        
         let i = (this.capacity *= 2) / 2;
         while (i < this.capacity) {
             this.entities[i] = { index : i, id : 0 };
-            
-            let keys = Object.keys(this.components);
-            let k    = keys.length - 1;
+
+            k = keys.length - 1;
             while (k >= 0) {
-                if (keys[k].type === Entities.World.ComponentType.Static) {
-                    this.entities[i][k] = Entities.World.newComponent(keys[k].object);
+                component = this.components[keys[k]];
+                
+                if (component.type === Entities.World.ComponentType.Static) {
+                    this.entities[i][keys[k]] = Entities.World.newComponent(component.object);
                 }
                 
                 --k;

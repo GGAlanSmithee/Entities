@@ -29,6 +29,6 @@
     "mocha": "^2.2.5"
   },
   "scripts": {
-    "test": "node --harmony ./node_modules/.bin/istanbul cover _mocha test/spec/* -- -R dot"
+    "test": "node --harmony ./node_modules/.bin/istanbul cover _mocha test/spec/* -- -R spec"
   }
 }

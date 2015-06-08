@@ -474,8 +474,63 @@ describe('Entities.World', function() {
     });
     
     describe('increaseCapacity()', function() {
+        beforeEach(function() {
+            this.component = this.world.registerComponent(Entities.World.ComponentType.Static, { x : 10, y : 10 });
+            this.semiDynamicComponent = this.world.registerComponent(Entities.World.ComponentType.SemiDynamic, { x : 10, y : 10 });
+            this.dynamicComponent = this.world.registerComponent(Entities.World.ComponentType.Dynamic, { x : 10, y : 10 });
+        });
+        
         it('is a function', function() {
             expect(this.world.increaseCapacity).to.be.a('function');
+        });
+        
+        it('increases capacity to be twice its old size', function() {
+            expect(this.world.capacity).to.equal(100);
+            
+            this.world.increaseCapacity();
+            
+            expect(this.world.capacity).to.equal(200);
+            
+            this.world.increaseCapacity();
+            
+            expect(this.world.capacity).to.equal(400);
+            
+            this.world.increaseCapacity();
+            
+            expect(this.world.capacity).to.equal(800);
+        });
+        
+        it('adds entities as capacity is increased', function() {
+            expect(this.world.entities).property('length').to.equal(100);
+            
+            this.world.increaseCapacity();
+            
+            expect(this.world.entities).property('length').to.equal(200);
+            for (var i = 0; i < this.world.capacity; ++i) {
+                expect(this.world.entities[i]).to.be.an('object');
+            }
+        });
+        
+        it('adds static components to entities as capacity is increased', function() {
+            expect(this.world.entities).property('length').to.equal(100);
+            
+            for (var i = 0; i < this.world.capacity; ++i) {
+                expect(this.world.entities[i]).property('id').to.equal(0);
+                expect(this.world.entities[i]).to.have.property(this.component);
+                expect(this.world.entities[i]).to.not.have.property(this.semiDynamicComponent);
+                expect(this.world.entities[i]).to.not.have.property(this.dynamicComponent);
+            }
+            
+            this.world.increaseCapacity();
+            
+            expect(this.world.entities).property('length').to.equal(200);
+            
+            for (var i = 0; i < this.world.capacity; ++i) {
+                expect(this.world.entities[i]).property('id').to.equal(0);
+                expect(this.world.entities[i]).to.have.property(this.component);
+                expect(this.world.entities[i]).to.not.have.property(this.semiDynamicComponent);
+                expect(this.world.entities[i]).to.not.have.property(this.dynamicComponent);
+            }
         });
     });
     
