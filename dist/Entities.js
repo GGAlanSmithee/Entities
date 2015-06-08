@@ -697,7 +697,7 @@ Entities.World.prototype = {
         let entity = this.getFirstUnusedEntity();
         
         if (entity === this.capacity) {
-            this.increaseCapacity();
+            return this.capacity;
         }
         
         if (entity > this.currentMaxEntity) {

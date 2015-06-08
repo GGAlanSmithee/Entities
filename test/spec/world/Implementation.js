@@ -627,5 +627,23 @@ describe('Entities.World', function() {
             expect(entity).to.not.have.property(16);
             expect(entity).to.not.have.property(32);
         });
+        
+        it('returns capacity and does not add an entity if ther eis no more space in the world', function() {
+            for (var i = 0; i < this.world.capacity; ++i) {
+                this.world.addEntity(1 | 16 | 32);
+            }
+            
+            var entityIndex = this.world.addEntity(1 | 16 | 32);
+            expect(entityIndex).to.equal(this.world.capacity);
+            
+            entityIndex = this.world.addEntity(1 | 16 | 32);
+            expect(entityIndex).to.equal(this.world.capacity);
+            
+            entityIndex = this.world.addEntity(1 | 16 | 32);
+            expect(entityIndex).to.equal(this.world.capacity);
+            
+            entityIndex = this.world.addEntity(1 | 16 | 32);
+            expect(entityIndex).to.equal(this.world.capacity);
+        });
     });
 });
