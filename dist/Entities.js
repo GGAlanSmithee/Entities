@@ -732,7 +732,11 @@ Entities.World.prototype = {
         
         let i = 0, length = keys.length;
         while (i < length) {
-            this.removeComponent(entity, Math.floor(keys[i]));
+            let componentId = Math.floor(keys[i]);
+            
+            if (componentId !== 0) {
+                this.removeComponent(entity, componentId);
+            }
             
             ++i;
         }

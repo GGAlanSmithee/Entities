@@ -1,5 +1,6 @@
 var expect   = require("chai").expect;
 var Entities = require('../../../dist/Entities');
+var sinon    = require('sinon');
 
 describe('Entities.World', function() {
     beforeEach(function() {
@@ -628,7 +629,7 @@ describe('Entities.World', function() {
             expect(entity).to.not.have.property(32);
         });
         
-        it('returns capacity and does not add an entity if ther eis no more space in the world', function() {
+        it('returns capacity and does not add an entity if there is no more space in the world', function() {
             for (var i = 0; i < this.world.capacity; ++i) {
                 this.world.addEntity(1 | 16 | 32);
             }
@@ -644,6 +645,44 @@ describe('Entities.World', function() {
             
             entityIndex = this.world.addEntity(1 | 16 | 32);
             expect(entityIndex).to.equal(this.world.capacity);
+        });
+    });
+    
+    describe('removeEntity(entity)', function() {
+        beforeEach(function() {
+            this.posComponent  = this.world.registerComponent(Entities.World.ComponentType.Static, { x : 10, y : 20 });
+            this.nameComponent = this.world.registerComponent(Entities.World.ComponentType.Static, { name : 'Testing' });
+            this.velComponent  = this.world.registerComponent(Entities.World.ComponentType.Static, 5.5);
+                              
+            this.components = this.posComponent | this.nameComponent | this.velComponent;
+            
+            this.entity = 0;
+            
+            this.world.entities[this.entity].id = this.components;
+            
+            sinon.spy(this.world, "removeComponent");
+        });
+        
+        afterEach(function() {
+            this.world.removeComponent.restore();
+        });
+        
+        it('is a function', function() {
+            expect(this.world.removeEntity).to.be.a('function');
+        });
+        
+        it('removes an entity by setting its id to 0', function() {
+            expect(this.world.entities[this.entity]).property('id').to.equal(this.components);
+            
+            this.world.removeEntity(this.entity);
+            
+            expect(this.world.entities[this.entity]).property('id').to.equal(0);
+        });
+        
+        it('invokes removeComponent for every component the removed entity has', function() {
+            this.world.removeEntity(this.entity);
+            
+            expect(this.world.removeComponent.callCount).to.equal(3);
         });
     });
 });
