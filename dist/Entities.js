@@ -6,10 +6,6 @@
 * @license      {@link https://github.com/GGAlanSmithee/Entities/blob/master/LICENSE|MIT License}
 */
 
-if (typeof exports === 'undefined') {
-    var global = window;
-}
-
 (function(){
 
     var root = this;

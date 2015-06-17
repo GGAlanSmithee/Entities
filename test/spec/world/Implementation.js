@@ -659,12 +659,6 @@ describe('Entities.World', function() {
             this.entity = 0;
             
             this.world.entities[this.entity].id = this.components;
-            
-            sinon.spy(this.world, "removeComponent");
-        });
-        
-        afterEach(function() {
-            this.world.removeComponent.restore();
         });
         
         it('is a function', function() {
@@ -680,9 +674,22 @@ describe('Entities.World', function() {
         });
         
         it('invokes removeComponent for every component the removed entity has', function() {
+            sinon.spy(this.world, "removeComponent");
+            
             this.world.removeEntity(this.entity);
             
             expect(this.world.removeComponent.callCount).to.equal(3);
+            
+            this.world.removeComponent.restore();
+        });
+        
+        it('exits early when [entity] is more than [maxEntity]', function() {
+            
+            var oldLength = this.world.entities.length;
+            
+            this.world.removeEntity(this.world.currentMaxEntity + 1);
+            
+            expect(this.world.entities).property('length').to.equal(oldLength);
         });
     });
 });
