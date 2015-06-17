@@ -3,6 +3,18 @@
   "version": "0.0.1",
   "description": "efficient and easy-to-use Entity-Component System in JavaScript",
   "main": "Gruntfile.js",
+  "scripts": {
+    "babel": "babel ./dist/es6.js --out-file ./dist/es5.js",
+    "bundle": "node ./build/bundle",
+    "clean": "./node_modules/.bin/rimraf ./dist/*",
+    "jshint": "jshint ./src/core",
+    "test": "./node_modules/.bin/istanbul cover _mocha test/* -- --compilers js:babel/register -R dot",
+    "prebuild": "npm run jshint && npm run clean && npm run bundle",
+    "build": "npm run babel",
+    "postbuild": "npm run test",
+    "predeploy": "npm run build",
+    "deploy": "browserify ./example/client.js -t babelify --outfile ./dist/client.js"
+  },
   "directories": {
     "examples": "examples"
   },
@@ -20,16 +32,15 @@
   "author": "Alan Smithee",
   "license": "MIT",
   "devDependencies": {
-    "chai": "^2.3.0",
-    "grunt": "^0.4.5",
-    "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-concat": "^0.5.1",
-    "grunt-contrib-jshint": "^0.11.2",
-    "istanbul": "^0.3.14",
+    "babel": "^5.5.7",
+    "babelify": "^6.1.2",
+    "browserify": "^10.2.4",
+    "chai": "^3.0.0",
+    "esperanto": "^0.7.2",
+    "istanbul": "^0.3.15",
+    "jshint": "^2.8.0",
     "mocha": "^2.2.5",
-    "sinon": "^1.14.1"
-  },
-  "scripts": {
-    "test": "node --harmony ./node_modules/.bin/istanbul cover _mocha test/spec/* -- -R spec"
+    "rimraf": "^2.4.0",
+    "sinon": "^1.15.3"
   }
 }
