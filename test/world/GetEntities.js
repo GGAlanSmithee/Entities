@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import   World    from '../../src/core/World';
 
 describe('World', function() {    
-    describe('getEntities(world, returnDetails)', () => {
+    describe('getEntities(returnDetails = true)', () => {
         beforeEach(() => {
             this.world = new World();
         });
@@ -35,7 +35,7 @@ describe('World', function() {
             expect(it.next()).property('value').to.be.undefined;
         });
         
-        it('returns an entity\'s component id when [returnDetails] = true or omitted', () => {
+        it('returns an entitys components when [returnDetails] = true or omitted', () => {
             this.world.currentMaxEntity = 20;
             
             for (let entity of this.world.getEntities()) {
@@ -47,7 +47,7 @@ describe('World', function() {
             }
         });
         
-        it('returns an entity\'s component id when [returnDetails] = false', () => {
+        it('returns an entitys id when [returnDetails] = false', () => {
             this.world.currentMaxEntity = 20;
             
             let i = 0;

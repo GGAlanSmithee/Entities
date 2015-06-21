@@ -31,4 +31,52 @@ export default class World {
             yield returnDetails ? this.entities[entity] : Math.floor(entity);
         }
     }
+    
+    *getEntitiesWith(components, returnDetails = true) {
+        if (!components) {
+            yield *this.getEntities(returnDetails);
+        }
+        
+        for (let entity in this.entities) {
+            if (entity > this.currentMaxEntity) {
+                return;
+            }
+            
+            if (this.entities[entity] !== NoneComponent && (this.entities[entity] & components) === components) {
+                yield returnDetails ? this.entities[entity] : Math.floor(entity);
+            }
+        }
+    }
+    
+    *getEntitiesWithOnly(components, returnDetails = true) {
+        if (!components) {
+            yield *this.getEntities(returnDetails);
+        }
+        
+        for (let entity in this.entities) {
+            if (entity > this.currentMaxEntity) {
+                return;
+            }
+            
+            if (this.entities[entity] !== NoneComponent && this.entities[entity] === components) {
+                yield returnDetails ? this.entities[entity] : Math.floor(entity);
+            }
+        }
+    }
+    
+    *getEntitiesWithout(components, returnDetails = true) {
+        if (!components) {
+            yield *this.getEntities(returnDetails);
+        }
+        
+        for (let entity in this.entities) {
+            if (entity > this.currentMaxEntity) {
+                return;
+            }
+            
+            if (this.entities[entity] !== NoneComponent && (this.entities[entity] & components) !== components) {
+                yield returnDetails ? this.entities[entity] : Math.floor(entity);
+            }
+        }
+    }
 }

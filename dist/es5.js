@@ -83,6 +83,162 @@ var World = (function () {
                 }
             }, getEntities, this);
         })
+    }, {
+        key: 'getEntitiesWith',
+        value: regeneratorRuntime.mark(function getEntitiesWith(components) {
+            var returnDetails = arguments[1] === undefined ? true : arguments[1];
+            var entity;
+            return regeneratorRuntime.wrap(function getEntitiesWith$(context$2$0) {
+                while (1) switch (context$2$0.prev = context$2$0.next) {
+                    case 0:
+                        if (components) {
+                            context$2$0.next = 2;
+                            break;
+                        }
+
+                        return context$2$0.delegateYield(this.getEntities(returnDetails), 't0', 2);
+
+                    case 2:
+                        context$2$0.t1 = regeneratorRuntime.keys(this.entities);
+
+                    case 3:
+                        if ((context$2$0.t2 = context$2$0.t1()).done) {
+                            context$2$0.next = 12;
+                            break;
+                        }
+
+                        entity = context$2$0.t2.value;
+
+                        if (!(entity > this.currentMaxEntity)) {
+                            context$2$0.next = 7;
+                            break;
+                        }
+
+                        return context$2$0.abrupt('return');
+
+                    case 7:
+                        if (!(this.entities[entity] !== NoneComponent && (this.entities[entity] & components) === components)) {
+                            context$2$0.next = 10;
+                            break;
+                        }
+
+                        context$2$0.next = 10;
+                        return returnDetails ? this.entities[entity] : Math.floor(entity);
+
+                    case 10:
+                        context$2$0.next = 3;
+                        break;
+
+                    case 12:
+                    case 'end':
+                        return context$2$0.stop();
+                }
+            }, getEntitiesWith, this);
+        })
+    }, {
+        key: 'getEntitiesWithOnly',
+        value: regeneratorRuntime.mark(function getEntitiesWithOnly(components) {
+            var returnDetails = arguments[1] === undefined ? true : arguments[1];
+            var entity;
+            return regeneratorRuntime.wrap(function getEntitiesWithOnly$(context$2$0) {
+                while (1) switch (context$2$0.prev = context$2$0.next) {
+                    case 0:
+                        if (components) {
+                            context$2$0.next = 2;
+                            break;
+                        }
+
+                        return context$2$0.delegateYield(this.getEntities(returnDetails), 't0', 2);
+
+                    case 2:
+                        context$2$0.t1 = regeneratorRuntime.keys(this.entities);
+
+                    case 3:
+                        if ((context$2$0.t2 = context$2$0.t1()).done) {
+                            context$2$0.next = 12;
+                            break;
+                        }
+
+                        entity = context$2$0.t2.value;
+
+                        if (!(entity > this.currentMaxEntity)) {
+                            context$2$0.next = 7;
+                            break;
+                        }
+
+                        return context$2$0.abrupt('return');
+
+                    case 7:
+                        if (!(this.entities[entity] !== NoneComponent && this.entities[entity] === components)) {
+                            context$2$0.next = 10;
+                            break;
+                        }
+
+                        context$2$0.next = 10;
+                        return returnDetails ? this.entities[entity] : Math.floor(entity);
+
+                    case 10:
+                        context$2$0.next = 3;
+                        break;
+
+                    case 12:
+                    case 'end':
+                        return context$2$0.stop();
+                }
+            }, getEntitiesWithOnly, this);
+        })
+    }, {
+        key: 'getEntitiesWithout',
+        value: regeneratorRuntime.mark(function getEntitiesWithout(components) {
+            var returnDetails = arguments[1] === undefined ? true : arguments[1];
+            var entity;
+            return regeneratorRuntime.wrap(function getEntitiesWithout$(context$2$0) {
+                while (1) switch (context$2$0.prev = context$2$0.next) {
+                    case 0:
+                        if (components) {
+                            context$2$0.next = 2;
+                            break;
+                        }
+
+                        return context$2$0.delegateYield(this.getEntities(returnDetails), 't0', 2);
+
+                    case 2:
+                        context$2$0.t1 = regeneratorRuntime.keys(this.entities);
+
+                    case 3:
+                        if ((context$2$0.t2 = context$2$0.t1()).done) {
+                            context$2$0.next = 12;
+                            break;
+                        }
+
+                        entity = context$2$0.t2.value;
+
+                        if (!(entity > this.currentMaxEntity)) {
+                            context$2$0.next = 7;
+                            break;
+                        }
+
+                        return context$2$0.abrupt('return');
+
+                    case 7:
+                        if (!(this.entities[entity] !== NoneComponent && (this.entities[entity] & components) !== components)) {
+                            context$2$0.next = 10;
+                            break;
+                        }
+
+                        context$2$0.next = 10;
+                        return returnDetails ? this.entities[entity] : Math.floor(entity);
+
+                    case 10:
+                        context$2$0.next = 3;
+                        break;
+
+                    case 12:
+                    case 'end':
+                        return context$2$0.stop();
+                }
+            }, getEntitiesWithout, this);
+        })
     }]);
 
     return World;
