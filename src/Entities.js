@@ -1,5 +1,4 @@
-export default class Entities {
-    constructor() {
-        this.version = "1.0.0.0";
-    }
-}
+import World from './core/World';
+import { NoneComponent, ComponentType } from './core/Component';
+
+export { NoneComponent, ComponentType, World };
