@@ -45,6 +45,56 @@ var World = (function () {
             return max === undefined || max === null || max === -Infinity ? 0 : max === 0 ? 1 : max * 2;
         }
     }, {
+        key: 'newComponent',
+        value: function newComponent(object) {
+            if (object === null || object === undefined) {
+                return null;
+            }
+
+            switch (typeof object) {
+                case 'function':
+                    return new object();
+                case 'object':
+                    {
+                        return (function (object) {
+                            var ret = {};
+
+                            Object.keys(object).forEach(function (key) {
+                                return ret[key] = object[key];
+                            });
+
+                            return ret;
+                        })(object);
+                    }
+            }
+
+            return object;
+        }
+    }, {
+        key: 'registerComponent',
+        value: function registerComponent(object) {
+            var _this = this;
+
+            var type = arguments[1] === undefined ? ComponentType.Static : arguments[1];
+            var returnDetails = arguments[2] === undefined ? true : arguments[2];
+
+            if (object === null || object === undefined) {
+                throw TypeError('object cannot be null.');
+            }
+
+            var id = this.getNextComponentId(this.components);
+
+            this.components.set(id, { type: type, object: object });
+
+            if (type === ComponentType.Static) {
+                this.entities.forEach(function (entity) {
+                    return entity[id] = _this.newComponent(object);
+                });
+            }
+
+            return returnDetails ? this.components.get(id) : id;
+        }
+    }, {
         key: 'getEntities',
         value: regeneratorRuntime.mark(function getEntities() {
             var returnDetails = arguments[0] === undefined ? true : arguments[0];

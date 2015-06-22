@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import   World    from '../../src/core/World';
 import   sinon    from 'sinon';
 
-describe('World', function() {    
+describe('World', function() {
     describe('getEntitiesWithout(components, returnDetails = true)', () => {
         beforeEach(() => {
             this.world = new World();
@@ -23,23 +23,23 @@ describe('World', function() {
             
             this.world.currentMaxEntity = 20;
             
-            this.world.entities[0] = 1 | 2 | 4;
+            this.world.entities[0].id = 1 | 2 | 4;
             
-            this.world.entities[4] = 1 | 2;
+            this.world.entities[4].id = 1 | 2;
             
-            this.world.entities[6] = 4;
+            this.world.entities[6].id = 4;
             
-            this.world.entities[7] = 1 | 8;
+            this.world.entities[7].id = 1 | 8;
             
-            this.world.entities[19] = 1 | 8;
+            this.world.entities[19].id = 1 | 8;
             
-            this.world.entities[20] = 16;
+            this.world.entities[20].id = 16;
             
-            this.world.entities[21] = 16;
+            this.world.entities[21].id = 16;
             
-            this.world.entities[25] = 1 | 8;
+            this.world.entities[25].id = 1 | 8;
             
-            this.world.entities[40] = 1 | 8;
+            this.world.entities[40].id = 1 | 8;
             
             it = this.world.getEntitiesWithout(1 | 2);
             
@@ -89,11 +89,11 @@ describe('World', function() {
         it('returns an entitys components when [returnDetails] = true or omitted', () => {
             this.world.currentMaxEntity = 20;
             
-            this.world.entities[0] = 1 | 2 | 4;
+            this.world.entities[0].id = 1 | 2 | 4;
             
-            this.world.entities[4] = 1 | 2;
+            this.world.entities[4].id = 1 | 2;
             
-            this.world.entities[8] = 1 | 2 | 8;
+            this.world.entities[8].id = 1 | 2 | 8;
             
             let it = this.world.getEntitiesWithout(4);
             
@@ -116,11 +116,11 @@ describe('World', function() {
         it('returns an entitys id when [returnDetails] = false', () => {
             this.world.currentMaxEntity = 20;
             
-            this.world.entities[0] = 1 | 2 | 4;
+            this.world.entities[0].id = 1 | 2 | 4;
             
-            this.world.entities[4] = 1 | 2;
+            this.world.entities[4].id = 1 | 2;
             
-            this.world.entities[8] = 1 | 2 | 8;
+            this.world.entities[8].id = 1 | 2 | 8;
             
             let it = this.world.getEntitiesWithout(4, false);
             

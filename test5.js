@@ -1,6 +1,6 @@
 "use strict";
 require("babel/polyfill");
-var World         = require('./dist/es5').World;
+var World = require('./dist/es5').World;
 
 var world = new World(1000);
 

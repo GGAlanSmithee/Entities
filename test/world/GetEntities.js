@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import   World    from '../../src/core/World';
 
-describe('World', function() {    
+describe('World', function() {
     describe('getEntities(returnDetails = true)', () => {
         beforeEach(() => {
             this.world = new World();
@@ -39,11 +39,11 @@ describe('World', function() {
             this.world.currentMaxEntity = 20;
             
             for (let entity of this.world.getEntities()) {
-                expect(entity).to.equal(0);
+                expect(entity).property('id').to.equal(0);
             }
             
             for (let entity of this.world.getEntities(true)) {
-                expect(entity).to.equal(0);
+                expect(entity).property('id').to.equal(0);
             }
         });
         

@@ -62,8 +62,8 @@ describe('World', function() {
             expect(this.world).property('entities').to.be.an.instanceof(Array);
             expect(this.world).property('entities').property('length').to.equal(this.capacity);
             
-            for (var i = 0; i < this.world.capacity; ++i) {
-                expect(this.world.entities[i]).to.equal(0);
+            for (let i = 0; i < this.world.capacity; ++i) {
+                expect(this.world.entities[i]).property('id').to.equal(0);
             }
         });
         
@@ -77,8 +77,8 @@ describe('World', function() {
             expect(this.world.capacity).to.equal(100);
             expect(this.world).property('entities').property('length').to.equal(this.world.capacity);
             
-            for (var i = 0; i < this.world.capacity; ++i) {
-                expect(this.world.entities[i]).to.equal(0);
+            for (let i = 0; i < this.world.capacity; ++i) {
+                expect(this.world.entities[i]).property('id').to.equal(0);
             }
         });
     });

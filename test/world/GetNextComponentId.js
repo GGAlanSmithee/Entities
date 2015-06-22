@@ -20,7 +20,7 @@ describe('World', function() {
             this.world.components.set(2, { });
             this.world.components.set(4, { });
             
-            var nextComponent = this.world.getNextComponentId();
+            let nextComponent = this.world.getNextComponentId();
             
             expect(nextComponent).to.equal(8);
         });
@@ -29,7 +29,7 @@ describe('World', function() {
             this.world.components.set(1, { });
             this.world.components.set(4, { });
             
-            var nextComponent = this.world.getNextComponentId();
+            let nextComponent = this.world.getNextComponentId();
             
             expect(nextComponent).to.equal(8);
         });

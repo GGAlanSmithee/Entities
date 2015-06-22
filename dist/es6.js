@@ -33,6 +33,43 @@ class World {
         return max === undefined || max === null || max === -Infinity ? 0: max === 0 ? 1 : max * 2;
     }
 
+    newComponent(object) {
+        if (object === null || object === undefined) {
+            return null;
+        }
+
+        switch (typeof object) {
+            case 'function': return new object();
+            case 'object'  : {
+                return ((object) => {
+                    let ret = {};
+                    
+                    Object.keys(object).forEach(key => ret[key] = object[key]);
+                    
+                    return ret;
+                })(object);
+            }
+        }
+        
+        return object;
+    }
+    
+    registerComponent(object, type = ComponentType.Static, returnDetails = true) {
+        if (object === null || object === undefined) {
+            throw TypeError('object cannot be null.');
+        }
+        
+        let id = this.getNextComponentId(this.components);
+        
+        this.components.set(id, { type, object });
+
+        if (type === ComponentType.Static) {
+            this.entities.forEach(entity => entity[id] = this.newComponent(object));
+        }
+        
+        return returnDetails ? this.components.get(id) : id;
+    }
+    
     *getEntities(returnDetails = true) {
         for (let entity in this.entities) {
             if (entity > this.currentMaxEntity) {
@@ -45,7 +82,7 @@ class World {
     
     *getEntitiesWith(components, returnDetails = true) {
         if (!components) {
-            yield *this.getEntities(returnDetails);
+            yield* this.getEntities(returnDetails);
         }
         
         for (let entity in this.entities) {
@@ -61,7 +98,7 @@ class World {
     
     *getEntitiesWithOnly(components, returnDetails = true) {
         if (!components) {
-            yield *this.getEntities(returnDetails);
+            yield* this.getEntities(returnDetails);
         }
         
         for (let entity in this.entities) {
@@ -77,7 +114,7 @@ class World {
     
     *getEntitiesWithout(components, returnDetails = true) {
         if (!components) {
-            yield *this.getEntities(returnDetails);
+            yield* this.getEntities(returnDetails);
         }
         
         for (let entity in this.entities) {

@@ -16,7 +16,7 @@ describe('World', function() {
         });
         
         it('creates a new component from an object', () => {
-            var component = this.world.newComponent({ x : 10 });
+            let component = this.world.newComponent({ x : 10 });
             
             expect(component).to.be.an('object');
             expect(component).to.have.property('x');
@@ -25,7 +25,7 @@ describe('World', function() {
         });
         
         it('creates a new component from a function', () => {
-            var component = this.world.newComponent(function() { this.x = 10; });
+            let component = this.world.newComponent(function() { this.x = 10; });
             
             expect(component).to.be.an('object');
             expect(component).to.have.property('x');
@@ -34,7 +34,7 @@ describe('World', function() {
         });
         
         it('creates a new component from an int', () => {
-            var component = this.world.newComponent(5);
+            let component = this.world.newComponent(5);
             
             expect(component).to.be.a('number');
             expect(component).to.equal(5);
@@ -46,23 +46,23 @@ describe('World', function() {
         });
         
         it('creates a new component from a float', () => {
-            var component = this.world.newComponent(5.5);
+            let component = this.world.newComponent(5.5);
             
             expect(component).to.be.a('number');
-            //expect(Entities.isInt(component)).to.be.false;
+            expect(Number.isInteger(component)).to.be.false;
             expect(component).to.equal(5.5);
             expect(component).to.not.equal(5);
             
             component = this.world.newComponent(-20.5);
             
             expect(component).to.be.a('number');
-            //expect(Entities.isInt(component)).to.be.false;
+            expect(Number.isInteger(component)).to.be.false;
             expect(component).to.equal(-20.5);
             expect(component).to.not.equal(-20.0);
         });
         
         it('creates a new component from a string', () => {
-            var component = this.world.newComponent('test');
+            let component = this.world.newComponent('test');
             
             expect(component).to.be.a('string');
             expect(component).to.equal('test');
@@ -74,7 +74,7 @@ describe('World', function() {
         });
         
         it('return null on bad input', () => {
-            var component = this.world.newComponent();
+            let component = this.world.newComponent();
             
             expect(component).to.be.null;
             
