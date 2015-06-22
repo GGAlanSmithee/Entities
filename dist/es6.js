@@ -17,7 +17,7 @@ class World {
     
         this.currentMaxEntity = -1;
         
-        this.entities = Array.from({length: this.capacity}, v => v = 0);
+        this.entities = Array.from({length: this.capacity}, v => v = { id : 0 });
         
         this.components = new Map();
         this.components.set(NoneComponent, { type : null, object : null });
@@ -42,7 +42,7 @@ class World {
             case 'function': return new object();
             case 'object'  : {
                 return ((object) => {
-                    let ret = {};
+                    var ret = {};
                     
                     Object.keys(object).forEach(key => ret[key] = object[key]);
                     
@@ -90,7 +90,7 @@ class World {
                 return;
             }
             
-            if (this.entities[entity] !== NoneComponent && (this.entities[entity] & components) === components) {
+            if (this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) === components) {
                 yield returnDetails ? this.entities[entity] : Math.floor(entity);
             }
         }
@@ -106,7 +106,7 @@ class World {
                 return;
             }
             
-            if (this.entities[entity] !== NoneComponent && this.entities[entity] === components) {
+            if (this.entities[entity].id !== NoneComponent && this.entities[entity].id === components) {
                 yield returnDetails ? this.entities[entity] : Math.floor(entity);
             }
         }
@@ -122,7 +122,7 @@ class World {
                 return;
             }
             
-            if (this.entities[entity] !== NoneComponent && (this.entities[entity] & components) !== components) {
+            if (this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) !== components) {
                 yield returnDetails ? this.entities[entity] : Math.floor(entity);
             }
         }

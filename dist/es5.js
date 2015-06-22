@@ -26,7 +26,7 @@ var World = (function () {
         this.currentMaxEntity = -1;
 
         this.entities = Array.from({ length: this.capacity }, function (v) {
-            return v = 0;
+            return v = { id: 0 };
         });
 
         this.components = new Map();
@@ -167,7 +167,7 @@ var World = (function () {
                         return context$2$0.abrupt('return');
 
                     case 7:
-                        if (!(this.entities[entity] !== NoneComponent && (this.entities[entity] & components) === components)) {
+                        if (!(this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) === components)) {
                             context$2$0.next = 10;
                             break;
                         }
@@ -219,7 +219,7 @@ var World = (function () {
                         return context$2$0.abrupt('return');
 
                     case 7:
-                        if (!(this.entities[entity] !== NoneComponent && this.entities[entity] === components)) {
+                        if (!(this.entities[entity].id !== NoneComponent && this.entities[entity].id === components)) {
                             context$2$0.next = 10;
                             break;
                         }
@@ -271,7 +271,7 @@ var World = (function () {
                         return context$2$0.abrupt('return');
 
                     case 7:
-                        if (!(this.entities[entity] !== NoneComponent && (this.entities[entity] & components) !== components)) {
+                        if (!(this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) !== components)) {
                             context$2$0.next = 10;
                             break;
                         }
