@@ -77,6 +77,27 @@ export default class World {
         this.entities[entity][componentId] = this.newComponent(component.object);
     }
     
+    removeComponent(entityId, componentId) {
+        let component = this.components.get(componentId);
+        
+        if (!component) {
+            return;
+        }
+        
+        if ((this.entities[entityId].id & componentId) === componentId) {
+            this.entities[entityId].id &= ~componentId;
+        }
+        
+        if (component.type === ComponentType.Static ||
+            component.type === ComponentType.SemiDynamic ||
+            this.entities[entityId][componentId] === null ||
+            this.entities[entityId][componentId] === undefined) {
+            return;
+        }
+        
+        this.entities[entityId][componentId] = null;
+    }
+    
     *getEntities(returnDetails = true) {
         for (let entity in this.entities) {
             if (entity > this.currentMaxEntity) {
