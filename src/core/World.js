@@ -98,6 +98,16 @@ export default class World {
         this.entities[entityId][componentId] = null;
     }
     
+    getFirstUnusedEntity(returnDetails = false) {
+        this.entities.forEach(entity => {
+            if (entity.id === ComponentType.None) {
+                return returnDetails ? entity : entity.id;
+            }
+        });
+        
+        return this.capacity;
+    }
+    
     *getEntities(returnDetails = true) {
         for (let entity in this.entities) {
             if (entity > this.currentMaxEntity) {

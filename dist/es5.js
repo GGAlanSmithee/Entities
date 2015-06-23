@@ -133,6 +133,19 @@ var World = (function () {
             this.entities[entityId][componentId] = null;
         }
     }, {
+        key: 'getFirstUnusedEntity',
+        value: function getFirstUnusedEntity() {
+            var returnDetails = arguments[0] === undefined ? false : arguments[0];
+
+            this.entities.forEach(function (entity) {
+                if (entity.id === ComponentType.None) {
+                    return returnDetails ? entity : entity.id;
+                }
+            });
+
+            return this.capacity;
+        }
+    }, {
         key: 'getEntities',
         value: regeneratorRuntime.mark(function getEntities() {
             var returnDetails = arguments[0] === undefined ? true : arguments[0];
