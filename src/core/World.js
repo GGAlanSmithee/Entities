@@ -99,13 +99,13 @@ export default class World {
     }
     
     getFirstUnusedEntity(returnDetails = false) {
-        this.entities.forEach(entity => {
-            if (entity.id === ComponentType.None) {
-                return returnDetails ? entity : entity.id;
+        for (let entity in this.entities) {
+            if (this.entities[entity].id === NoneComponent) {
+                return returnDetails ? this.entities[entity] : Math.floor(entity);
             }
-        });
+        }
         
-        return this.capacity;
+        return returnDetails ? null : this.capacity;
     }
     
     *getEntities(returnDetails = true) {

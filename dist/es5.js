@@ -137,13 +137,13 @@ var World = (function () {
         value: function getFirstUnusedEntity() {
             var returnDetails = arguments[0] === undefined ? false : arguments[0];
 
-            this.entities.forEach(function (entity) {
-                if (entity.id === ComponentType.None) {
-                    return returnDetails ? entity : entity.id;
+            for (var entity in this.entities) {
+                if (this.entities[entity].id === NoneComponent) {
+                    return returnDetails ? this.entities[entity] : Math.floor(entity);
                 }
-            });
+            }
 
-            return this.capacity;
+            return returnDetails ? null : this.capacity;
         }
     }, {
         key: 'getEntities',
