@@ -1,14 +1,25 @@
 import { expect } from 'chai';
 import   World from '../../src/core/World';
-import { initializeComponents, initializeEntities } from '../helpers';
+import { registerStaticComponent,
+         registerSemiDynamicComponent,
+         registerDynamicComponent,
+         addAndGetEntityId,
+         addComponentToEntity  } from '../helpers';
 
 describe('World', function() {
     describe('removeComponent(entityId, componentId)', () => {
         beforeEach(() => {
             this.world = new World();
             
-            initializeComponents.call(this);
-            initializeEntities.call(this);
+            registerStaticComponent(this, this.world, 1);
+            registerSemiDynamicComponent(this, this.world, 2);
+            registerDynamicComponent(this, this.world, 4);
+            
+            let entityId = addAndGetEntityId(this);
+            
+            addComponentToEntity(this.world, entityId, 1);
+            addComponentToEntity(this.world, entityId, 2);
+            addComponentToEntity(this.world, entityId, 4);
         });
         
         afterEach(() => {
