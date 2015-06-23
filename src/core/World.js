@@ -98,6 +98,19 @@ export default class World {
         this.entities[entityId][componentId] = null;
     }
     
+    increaseCapacity() {
+        let i = (this.capacity *= 2) / 2;
+        while (i < this.capacity) {
+            this.entities[i] = { index : i, id : 0 };
+
+            Object.keys(this.components).forEach((component, c) => {
+                if (component.type === ComponentType.Static) {
+                    this.entities[i][c] = this.newComponent(component.object);
+                }
+            });
+        }
+    }
+    
     getFirstUnusedEntity(returnDetails = false) {
         for (let entity in this.entities) {
             if (this.entities[entity].id === NoneComponent) {

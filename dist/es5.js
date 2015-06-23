@@ -133,6 +133,22 @@ var World = (function () {
             this.entities[entityId][componentId] = null;
         }
     }, {
+        key: 'increaseCapacity',
+        value: function increaseCapacity() {
+            var _this2 = this;
+
+            var i = (this.capacity *= 2) / 2;
+            while (i < this.capacity) {
+                this.entities[i] = { index: i, id: 0 };
+
+                Object.keys(this.components).forEach(function (component, c) {
+                    if (component.type === ComponentType.Static) {
+                        _this2.entities[i][c] = _this2.newComponent(component.object);
+                    }
+                });
+            }
+        }
+    }, {
         key: 'getFirstUnusedEntity',
         value: function getFirstUnusedEntity() {
             var returnDetails = arguments[0] === undefined ? false : arguments[0];
