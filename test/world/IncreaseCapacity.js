@@ -1,21 +1,22 @@
 import { expect } from 'chai';
 import   World    from '../../src/core/World';
-import * as helpers from '../helpers';
+import { ComponentType } from '../../src/core/Component';
+import { registerComponent, addComponentToEntity } from '../helpers';
 
 describe('World', function() {
     describe('increaseCapacity()', () => {
         beforeEach(() => {
             this.world = new World();
             
-            helpers.registerStaticComponent(this, this.world, 0);
-            helpers.registerSemiDynamicComponent(this, this.world, 1);
-            helpers.registerDynamicComponent(this, this.world, 2);
+            this.staticComponent      = registerComponent(this.world, ComponentType.Static, { x : 10, y : 20 }, 1);
+            this.semiDynamicComponent = registerComponent(this.world, ComponentType.SemiDynamic, { x : 10, y : 20 }, 2);
+            this.dynamicComponent     = registerComponent(this.world, ComponentType.Dynamic, { x : 10, y : 20 }, 4);
             
-            let entityId = helpers.addAndGetEntityId(this);
+            this.entityId = 0;
             
-            helpers.addComponentToEntity(this.world, entityId, 0);
-            helpers.addComponentToEntity(this.world, entityId, 1);
-            helpers.addComponentToEntity(this.world, entityId, 2);
+            addComponentToEntity(this.world, this.entityId, this.staticComponent);
+            addComponentToEntity(this.world, this.entityId, this.semiDynamicComponent);
+            addComponentToEntity(this.world, this.entityId, this.dynamicComponent);
         });
         
         afterEach(() => {
