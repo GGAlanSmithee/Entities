@@ -150,15 +150,13 @@ class World {
     }
     
     removeEntity(entity) {
-        if (entity > this.currentMaxEntity) {
-            return;
-        }
-        
-        Object.keys(this.components).forEach((component, componentId) => {
-            if (componentId !== NoneComponent) {
-                this.removeComponent(entity, componentId);
+        for (let key of this.components.keys()) {
+            if (key === NoneComponent) {
+                continue;
             }
-        });
+            
+            this.removeComponent(entity, key);
+        }
         
         if (entity <= this.currentMaxEntity) {
             return;
@@ -167,7 +165,8 @@ class World {
         for (let i = entity; i >= 0; --i) {
             if (this.entities[i].id !== NoneComponent) {
                 this.currentMaxEntity = i;
-                return;
+                
+                break;
             }
         }
     }

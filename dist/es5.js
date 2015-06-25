@@ -226,17 +226,34 @@ var World = (function () {
     }, {
         key: 'removeEntity',
         value: function removeEntity(entity) {
-            var _this2 = this;
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
 
-            if (entity > this.currentMaxEntity) {
-                return;
-            }
+            try {
+                for (var _iterator3 = this.components.keys()[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var key = _step3.value;
 
-            Object.keys(this.components).forEach(function (component, componentId) {
-                if (componentId !== NoneComponent) {
-                    _this2.removeComponent(entity, componentId);
+                    if (key === NoneComponent) {
+                        continue;
+                    }
+
+                    this.removeComponent(entity, key);
                 }
-            });
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3['return']) {
+                        _iterator3['return']();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
+                    }
+                }
+            }
 
             if (entity <= this.currentMaxEntity) {
                 return;
@@ -245,7 +262,8 @@ var World = (function () {
             for (var i = entity; i >= 0; --i) {
                 if (this.entities[i].id !== NoneComponent) {
                     this.currentMaxEntity = i;
-                    return;
+
+                    break;
                 }
             }
         }
