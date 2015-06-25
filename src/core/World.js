@@ -99,15 +99,16 @@ export default class World {
     }
     
     increaseCapacity() {
-        let i = (this.capacity *= 2) / 2;
-        while (i < this.capacity) {
-            this.entities[i] = { index : i, id : 0 };
+        this.capacity *= 2;
+        
+        for (let i = this.capacity / 2; i < this.capacity; ++i) {
+            this.entities[i] = { id : 0 };
 
-            Object.keys(this.components).forEach((component, c) => {
+            for (let [key, component] of this.components) {
                 if (component.type === ComponentType.Static) {
-                    this.entities[i][c] = this.newComponent(component.object);
+                    this.entities[i][key] = this.newComponent(component.object);
                 }
-            });
+            }
         }
     }
     
