@@ -23,6 +23,20 @@ class World {
         this.components.set(NoneComponent, { type : null, object : null });
     }
 
+    increaseCapacity() {
+        this.capacity *= 2;
+        
+        for (let i = this.capacity / 2; i < this.capacity; ++i) {
+            this.entities[i] = { id : 0 };
+
+            for (let [key, component] of this.components) {
+                if (component.type === ComponentType.Static) {
+                    this.entities[i][key] = this.newComponent(component.object);
+                }
+            }
+        }
+    }
+    
     getNextComponentId() {
         if (this.components === null || this.components === undefined) {
             this.components = new Map();
@@ -109,18 +123,30 @@ class World {
         this.entities[entityId][componentId] = null;
     }
     
-    increaseCapacity() {
-        this.capacity *= 2;
+    newEntity(components, returnDetails = false) {
+        if (typeof components !== 'number' || components <= 0) {
+            return null;
+        }
         
-        for (let i = this.capacity / 2; i < this.capacity; ++i) {
-            this.entities[i] = { id : 0 };
-
-            for (let [key, component] of this.components) {
-                if (component.type === ComponentType.Static) {
-                    this.entities[i][key] = this.newComponent(component.object);
-                }
+        let entity = this.getFirstUnusedEntity();
+        
+        if (entity >= this.capacity) {
+            return returnDetails ? null : this.capacity;
+        }
+        
+        if (entity > this.currentMaxEntity) {
+            this.currentMaxEntity = entity;
+        }
+        
+        for (let component in this.components) {
+            if (component != NoneComponent && (components & component) === component) {
+                this.addComponent(entity, component);
+            } else {
+                this.removeComponent(entity, component);
             }
         }
+        
+        return returnDetails ? this.entities[entity] : entity;
     }
     
     getFirstUnusedEntity(returnDetails = false) {

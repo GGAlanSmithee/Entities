@@ -36,6 +36,45 @@ var World = (function () {
     }
 
     _createClass(World, [{
+        key: 'increaseCapacity',
+        value: function increaseCapacity() {
+            this.capacity *= 2;
+
+            for (var i = this.capacity / 2; i < this.capacity; ++i) {
+                this.entities[i] = { id: 0 };
+
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = this.components[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var _step$value = _slicedToArray(_step.value, 2);
+
+                        var key = _step$value[0];
+                        var component = _step$value[1];
+
+                        if (component.type === ComponentType.Static) {
+                            this.entities[i][key] = this.newComponent(component.object);
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator['return']) {
+                            _iterator['return']();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+            }
+        }
+    }, {
         key: 'getNextComponentId',
         value: function getNextComponentId() {
             if (this.components === null || this.components === undefined) {
@@ -135,43 +174,33 @@ var World = (function () {
             this.entities[entityId][componentId] = null;
         }
     }, {
-        key: 'increaseCapacity',
-        value: function increaseCapacity() {
-            this.capacity *= 2;
+        key: 'newEntity',
+        value: function newEntity(components) {
+            var returnDetails = arguments[1] === undefined ? false : arguments[1];
 
-            for (var i = this.capacity / 2; i < this.capacity; ++i) {
-                this.entities[i] = { id: 0 };
+            if (typeof components !== 'number' || components <= 0) {
+                return null;
+            }
 
-                var _iteratorNormalCompletion = true;
-                var _didIteratorError = false;
-                var _iteratorError = undefined;
+            var entity = this.getFirstUnusedEntity();
 
-                try {
-                    for (var _iterator = this.components[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                        var _step$value = _slicedToArray(_step.value, 2);
+            if (entity >= this.capacity) {
+                return returnDetails ? null : this.capacity;
+            }
 
-                        var key = _step$value[0];
-                        var component = _step$value[1];
+            if (entity > this.currentMaxEntity) {
+                this.currentMaxEntity = entity;
+            }
 
-                        if (component.type === ComponentType.Static) {
-                            this.entities[i][key] = this.newComponent(component.object);
-                        }
-                    }
-                } catch (err) {
-                    _didIteratorError = true;
-                    _iteratorError = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion && _iterator['return']) {
-                            _iterator['return']();
-                        }
-                    } finally {
-                        if (_didIteratorError) {
-                            throw _iteratorError;
-                        }
-                    }
+            for (var component in this.components) {
+                if (component != NoneComponent && (components & component) === component) {
+                    this.addComponent(entity, component);
+                } else {
+                    this.removeComponent(entity, component);
                 }
             }
+
+            return returnDetails ? this.entities[entity] : entity;
         }
     }, {
         key: 'getFirstUnusedEntity',
