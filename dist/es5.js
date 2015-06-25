@@ -224,6 +224,32 @@ var World = (function () {
             return returnDetails ? this.entities[entity] : entity;
         }
     }, {
+        key: 'removeEntity',
+        value: function removeEntity(entity) {
+            var _this2 = this;
+
+            if (entity > this.currentMaxEntity) {
+                return;
+            }
+
+            Object.keys(this.components).forEach(function (component, componentId) {
+                if (componentId !== NoneComponent) {
+                    _this2.removeComponent(entity, componentId);
+                }
+            });
+
+            if (entity <= this.currentMaxEntity) {
+                return;
+            }
+
+            for (var i = entity; i >= 0; --i) {
+                if (this.entities[i].id !== NoneComponent) {
+                    this.currentMaxEntity = i;
+                    return;
+                }
+            }
+        }
+    }, {
         key: 'getFirstUnusedEntity',
         value: function getFirstUnusedEntity() {
             var returnDetails = arguments[0] === undefined ? false : arguments[0];

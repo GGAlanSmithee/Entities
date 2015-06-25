@@ -45,7 +45,7 @@ export default class World {
             case 'function': return new object();
             case 'object'  : {
                 return ((object) => {
-                    var ret = {};
+                    let ret = {};
                     
                     Object.keys(object).forEach(key => ret[key] = object[key]);
                     
@@ -136,6 +136,29 @@ export default class World {
         }
         
         return returnDetails ? this.entities[entity] : entity;
+    }
+    
+    removeEntity(entity) {
+        if (entity > this.currentMaxEntity) {
+            return;
+        }
+        
+        Object.keys(this.components).forEach((component, componentId) => {
+            if (componentId !== NoneComponent) {
+                this.removeComponent(entity, componentId);
+            }
+        });
+        
+        if (entity <= this.currentMaxEntity) {
+            return;
+        }
+        
+        for (let i = entity; i >= 0; --i) {
+            if (this.entities[i].id !== NoneComponent) {
+                this.currentMaxEntity = i;
+                return;
+            }
+        }
     }
     
     getFirstUnusedEntity(returnDetails = false) {
