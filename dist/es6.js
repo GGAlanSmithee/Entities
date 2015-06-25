@@ -125,7 +125,7 @@ class World {
     
     newEntity(components, returnDetails = false) {
         if (typeof components !== 'number' || components <= 0) {
-            return null;
+            return returnDetails ? null : this.capacity;
         }
         
         let entity = this.getFirstUnusedEntity();
@@ -138,8 +138,8 @@ class World {
             this.currentMaxEntity = entity;
         }
         
-        for (let component in this.components) {
-            if (component != NoneComponent && (components & component) === component) {
+        for (let component of this.components.keys()) {
+            if (component !== NoneComponent && (components & component) === component) {
                 this.addComponent(entity, component);
             } else {
                 this.removeComponent(entity, component);

@@ -179,7 +179,7 @@ var World = (function () {
             var returnDetails = arguments[1] === undefined ? false : arguments[1];
 
             if (typeof components !== 'number' || components <= 0) {
-                return null;
+                return returnDetails ? null : this.capacity;
             }
 
             var entity = this.getFirstUnusedEntity();
@@ -192,11 +192,32 @@ var World = (function () {
                 this.currentMaxEntity = entity;
             }
 
-            for (var component in this.components) {
-                if (component != NoneComponent && (components & component) === component) {
-                    this.addComponent(entity, component);
-                } else {
-                    this.removeComponent(entity, component);
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = this.components.keys()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var component = _step2.value;
+
+                    if (component !== NoneComponent && (components & component) === component) {
+                        this.addComponent(entity, component);
+                    } else {
+                        this.removeComponent(entity, component);
+                    }
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2['return']) {
+                        _iterator2['return']();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
                 }
             }
 
