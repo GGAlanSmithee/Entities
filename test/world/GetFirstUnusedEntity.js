@@ -75,7 +75,7 @@ describe('World', function() {
             let entity = this.world.getFirstUnusedEntity(true);
             
             expect(entity).to.be.an('object');
-            expect(entity.id).to.equal(0);
+            expect(entity).property('id').to.equal(0);
         });
         
          it('returns null when there is no entities left in the world and [returnDetails] = true', () => {

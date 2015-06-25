@@ -57,7 +57,7 @@ export default class World {
         return object;
     }
     
-    registerComponent(object, type = ComponentType.Static, returnDetails = true) {
+    registerComponent(object, type = ComponentType.Static, returnDetails = false) {
         if (object === null || object === undefined) {
             throw TypeError('object cannot be null.');
         }
@@ -171,7 +171,7 @@ export default class World {
         return returnDetails ? null : this.capacity;
     }
     
-    *getEntities(returnDetails = true) {
+    *getEntities(returnDetails = false) {
         for (let entity in this.entities) {
             if (entity > this.currentMaxEntity) {
                 return;
@@ -181,7 +181,7 @@ export default class World {
         }
     }
     
-    *getEntitiesWith(components, returnDetails = true) {
+    *getEntitiesWith(components, returnDetails = false) {
         if (!components) {
             yield* this.getEntities(returnDetails);
         }
@@ -197,7 +197,7 @@ export default class World {
         }
     }
     
-    *getEntitiesWithOnly(components, returnDetails = true) {
+    *getEntitiesWithOnly(components, returnDetails = false) {
         if (!components) {
             yield* this.getEntities(returnDetails);
         }
@@ -213,7 +213,7 @@ export default class World {
         }
     }
     
-    *getEntitiesWithout(components, returnDetails = true) {
+    *getEntitiesWithout(components, returnDetails = false) {
         if (!components) {
             yield* this.getEntities(returnDetails);
         }

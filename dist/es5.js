@@ -117,7 +117,7 @@ var World = (function () {
             var _this = this;
 
             var type = arguments[1] === undefined ? ComponentType.Static : arguments[1];
-            var returnDetails = arguments[2] === undefined ? true : arguments[2];
+            var returnDetails = arguments[2] === undefined ? false : arguments[2];
 
             if (object === null || object === undefined) {
                 throw TypeError('object cannot be null.');
@@ -265,7 +265,7 @@ var World = (function () {
     }, {
         key: 'getEntities',
         value: regeneratorRuntime.mark(function getEntities() {
-            var returnDetails = arguments[0] === undefined ? true : arguments[0];
+            var returnDetails = arguments[0] === undefined ? false : arguments[0];
             var entity;
             return regeneratorRuntime.wrap(function getEntities$(context$2$0) {
                 while (1) switch (context$2$0.prev = context$2$0.next) {
@@ -304,7 +304,7 @@ var World = (function () {
     }, {
         key: 'getEntitiesWith',
         value: regeneratorRuntime.mark(function getEntitiesWith(components) {
-            var returnDetails = arguments[1] === undefined ? true : arguments[1];
+            var returnDetails = arguments[1] === undefined ? false : arguments[1];
             var entity;
             return regeneratorRuntime.wrap(function getEntitiesWith$(context$2$0) {
                 while (1) switch (context$2$0.prev = context$2$0.next) {
@@ -356,7 +356,7 @@ var World = (function () {
     }, {
         key: 'getEntitiesWithOnly',
         value: regeneratorRuntime.mark(function getEntitiesWithOnly(components) {
-            var returnDetails = arguments[1] === undefined ? true : arguments[1];
+            var returnDetails = arguments[1] === undefined ? false : arguments[1];
             var entity;
             return regeneratorRuntime.wrap(function getEntitiesWithOnly$(context$2$0) {
                 while (1) switch (context$2$0.prev = context$2$0.next) {
@@ -408,7 +408,7 @@ var World = (function () {
     }, {
         key: 'getEntitiesWithout',
         value: regeneratorRuntime.mark(function getEntitiesWithout(components) {
-            var returnDetails = arguments[1] === undefined ? true : arguments[1];
+            var returnDetails = arguments[1] === undefined ? false : arguments[1];
             var entity;
             return regeneratorRuntime.wrap(function getEntitiesWithout$(context$2$0) {
                 while (1) switch (context$2$0.prev = context$2$0.next) {

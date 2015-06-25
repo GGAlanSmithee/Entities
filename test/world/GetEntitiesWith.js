@@ -3,7 +3,7 @@ import   World    from '../../src/core/World';
 import   sinon    from 'sinon';
 
 describe('World', function() {
-    describe('getEntitiesWith(components, returnDetails = true)', () => {
+    describe('getEntitiesWith(components, returnDetails = false)', () => {
         beforeEach(() => {
             this.world = new World();
         });
@@ -46,12 +46,12 @@ describe('World', function() {
             let next = it.next();
             
             expect(next).property('done').to.be.false;
-            expect(next).property('value').to.equal(this.world.entities[0]);
+            expect(next).property('value').to.equal(0);
             
             next = it.next();
             
             expect(next).property('done').to.be.false;
-            expect(next).property('value').to.equal(this.world.entities[4]);
+            expect(next).property('value').to.equal(4);
             
             next = it.next();
             
@@ -59,34 +59,34 @@ describe('World', function() {
             expect(next).property('value').to.be.undefined;
             
             it = this.world.getEntitiesWith(1);
-            /*
-            next = it.next();
-            
-            expect(next).property('done').to.be.false;
-            expect(next).property('value').to.equal(this.world.entities[0]);
             
             next = it.next();
             
             expect(next).property('done').to.be.false;
-            expect(next).property('value').to.equal(this.world.entities[4]);
+            expect(next).property('value').to.equal(0);
             
             next = it.next();
             
             expect(next).property('done').to.be.false;
-            expect(next).property('value').to.equal(this.world.entities[7]);
+            expect(next).property('value').to.equal(4);
             
             next = it.next();
             
             expect(next).property('done').to.be.false;
-            expect(next).property('value').to.equal(this.world.entities[19]);
+            expect(next).property('value').to.equal(7);
+            
+            next = it.next();
+            
+            expect(next).property('done').to.be.false;
+            expect(next).property('value').to.equal(19);
             
             next = it.next();
             
             expect(next).property('done').to.be.true;
-            expect(next).property('value').to.be.undefined;*/
+            expect(next).property('value').to.be.undefined;
         });
         
-        it('returns an entitys components when [returnDetails] = true or omitted', () => {
+        it('returns an entitys id when [returnDetails] = false or omitted', () => {
             this.world.currentMaxEntity = 20;
             
             this.world.entities[0].id = 1 | 2 | 4;
@@ -98,29 +98,21 @@ describe('World', function() {
             let next = it.next();
             
             expect(next).property('done').to.be.false;
-            expect(next).property('value').to.equal(this.world.entities[0]);
+            expect(next).property('value').to.equal(0);
             
             next = it.next();
             
             expect(next).property('done').to.be.false;
-            expect(next).property('value').to.equal(this.world.entities[4]);
+            expect(next).property('value').to.equal(4);
             
             next = it.next();
             
             expect(next).property('done').to.be.true;
             expect(next).property('value').to.be.undefined;
-        });
-        
-        it('returns an entitys id when [returnDetails] = false', () => {
-            this.world.currentMaxEntity = 20;
             
-            this.world.entities[0].id = 1 | 2 | 4;
+            it = this.world.getEntitiesWith(1 | 2), false;
             
-            this.world.entities[4].id = 1 | 2;
-            
-            let it = this.world.getEntitiesWith(1 | 2, false);
-            
-            let next = it.next();
+            next = it.next();
             
             expect(next).property('done').to.be.false;
             expect(next).property('value').to.equal(0);
@@ -129,6 +121,31 @@ describe('World', function() {
             
             expect(next).property('done').to.be.false;
             expect(next).property('value').to.equal(4);
+            
+            next = it.next();
+            
+            expect(next).property('done').to.be.true;
+            expect(next).property('value').to.be.undefined;
+        });
+        
+        it('returns an actual entity when [returnDetails] = true', () => {
+            this.world.currentMaxEntity = 20;
+            
+            this.world.entities[0].id = 1 | 2 | 4;
+            
+            this.world.entities[4].id = 1 | 2;
+            
+            let it = this.world.getEntitiesWith(1 | 2, true);
+            
+            let next = it.next();
+            
+            expect(next).property('done').to.be.false;
+            expect(next).property('value').to.equal(this.world.entities[0]);
+            
+            next = it.next();
+            
+            expect(next).property('done').to.be.false;
+            expect(next).property('value').to.equal(this.world.entities[4]);
             
             next = it.next();
             

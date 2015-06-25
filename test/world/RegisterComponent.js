@@ -4,7 +4,7 @@ import   sinon           from 'sinon';
 import { ComponentType } from '../../src/core/Component';
 
 describe('World', function() {
-    describe('registerComponent(component, type = ComponentType.Static, returnDetails = true)', () => {
+    describe('registerComponent(component, type = ComponentType.Static, returnDetails = false)', () => {
         beforeEach(() => {
             this.world = new World();
         });
@@ -25,13 +25,26 @@ describe('World', function() {
             expect(spy.calledOnce).to.be.true;
         });
         
-        it('returns an object when [returnDetails] = true or omitted', () => {
+        it('returns the components id (number) when [returnDetails] = false or omitted', () => {
+            var component = {
+                x : 20
+            };
+            
+            var registeredComponent = this.world.registerComponent(component, ComponentType.Static, false);
+            expect(registeredComponent).to.be.a('number');
+            expect(registeredComponent).to.equal(1);
+            
+            registeredComponent = this.world.registerComponent(component);
+            expect(registeredComponent).to.be.a('number');
+            expect(registeredComponent).to.equal(2);
+        });
+        
+        it('returns the actual object when [returnDetails] = true', () => {
             let component = {
                 x : 20
             };
             
-            var registeredComponent = this.world.registerComponent(component);
-            
+            var registeredComponent = this.world.registerComponent(component, ComponentType.Static, true);
             expect(registeredComponent).to.be.an('object');
         });
         
@@ -40,19 +53,10 @@ describe('World', function() {
                 x : 20
             };
             
-            var registeredComponent = this.world.registerComponent(component);
+            var registeredComponent = this.world.components.get(this.world.registerComponent(component));
             
             expect(registeredComponent).to.be.an('object');
             expect(registeredComponent).property('type').to.equal(ComponentType.Static);
-        });
-        
-        it('returns an id (number) when [returnDetails] is false', () => {
-            var component = {
-                x : 20
-            };
-            
-            var registeredComponent = this.world.registerComponent(component, ComponentType.Static, false);
-            expect(registeredComponent).to.be.a('number');
         });
         
         it('gives an error (exception) when [object] = null or omitted', () => {
@@ -112,7 +116,7 @@ describe('World', function() {
                 x : 20
             };
             
-            var registeredComponent = this.world.registerComponent(component);
+            var registeredComponent = this.world.components.get(this.world.registerComponent(component));
             
             expect(registeredComponent).to.have.property('object');
             expect(registeredComponent).to.have.property('type');
@@ -126,7 +130,7 @@ describe('World', function() {
                 x : 20
             };
             
-            var registeredComponent = this.world.registerComponent(component, ComponentType.Dynamic);
+            var registeredComponent = this.world.components.get(this.world.registerComponent(component, ComponentType.Dynamic));
             
             expect(registeredComponent).to.have.property('object');
             expect(registeredComponent).to.have.property('type');
@@ -140,7 +144,7 @@ describe('World', function() {
                 x : 20
             };
             
-            var registeredComponent = this.world.registerComponent(component, ComponentType.SemiDynamic, true);
+            var registeredComponent = this.world.components.get(this.world.registerComponent(component, ComponentType.SemiDynamic));
             
             expect(registeredComponent).to.have.property('object');
             expect(registeredComponent).to.have.property('type');
