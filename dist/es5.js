@@ -481,3 +481,9 @@ var World = (function () {
 })();
 
 exports.World = World;
+
+var SystemManager = function SystemManager() {
+    _classCallCheck(this, SystemManager);
+};
+
+exports.SystemManager = SystemManager;

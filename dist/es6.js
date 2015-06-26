@@ -242,3 +242,8 @@ class World {
 
 exports.World = World;
 
+class SystemManager {
+}
+
+exports.SystemManager = SystemManager;
+

@@ -1,6 +1,9 @@
 "use strict";
 require("babel/polyfill");
 var World = require('./dist/es5').World;
+var SystemManager = require('./dist/es5').SystemManager;
+
+console.log(SystemManager);
 
 var world = new World(1000);
 

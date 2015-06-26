@@ -1,4 +1,6 @@
-import { World, ComponentType, NoneComponent } from './dist/es6';
+import { SystemManager, World, ComponentType, NoneComponent } from './dist/es6';
+
+console.log(SystemManager);
 
 let world = new World(1000);
 
