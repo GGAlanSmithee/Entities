@@ -243,6 +243,12 @@ class World {
 exports.World = World;
 
 class SystemManager {
+    constructor() {
+        this.initSystems    = [];
+        this.logicSystems   = [];
+        this.renderSystems  = [];
+        this.cleanUpSystems = [];
+    }
 }
 
 exports.SystemManager = SystemManager;

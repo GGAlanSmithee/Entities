@@ -484,6 +484,11 @@ exports.World = World;
 
 var SystemManager = function SystemManager() {
     _classCallCheck(this, SystemManager);
+
+    this.initSystems = [];
+    this.logicSystems = [];
+    this.renderSystems = [];
+    this.cleanUpSystems = [];
 };
 
 exports.SystemManager = SystemManager;
