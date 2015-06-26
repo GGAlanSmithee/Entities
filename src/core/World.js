@@ -33,7 +33,7 @@ export default class World {
         
         let max = Math.max(...this.components.keys());
         
-        return max === undefined || max === null || max === -Infinity ? 0: max === 0 ? 1 : max * 2;
+        return max === undefined || max === null || max === -Infinity ? 0 : max === 0 ? 1 : max * 2;
     }
 
     newComponent(object) {

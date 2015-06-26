@@ -503,16 +503,22 @@ var SystemManager = (function () {
 
     _createClass(SystemManager, [{
         key: 'getNextSystemId',
-        value: function getNextSystemId(type) {
-            var system = this.systems.get(type);
-
-            if (system === null) {
-                this.systems.set(type, new Map());
+        value: function getNextSystemId() {
+            if (this.systems === null || this.systems === undefined) {
+                this.systems = new Map();
             }
 
-            var max = Math.max.apply(Math, _toConsumableArray(this.systems.get(system).keys()));
+            var initSystem = this.systems.has(SystemType.Init) ? this.systems.get(SystemType.Init) : this.systems.set(SystemType.Init, new Map());
 
-            return max === undefined || max === null || max === -Infinity ? 0 : max === 0 ? 1 : max * 2;
+            var logicSystem = this.systems.has(SystemType.Logic) ? this.systems.get(SystemType.Logic) : this.systems.set(SystemType.Logic, new Map());
+
+            var renderSystem = this.systems.has(SystemType.Render) ? this.systems.get(SystemType.Render) : this.systems.set(SystemType.Render, new Map());
+
+            var cleanUpSystem = this.systems.has(SystemType.CleanUp) ? this.systems.get(SystemType.CleanUp) : this.systems.set(SystemType.CleanUp, new Map());
+
+            var max = Math.max.apply(Math, _toConsumableArray(initSystem.keys()).concat(_toConsumableArray(logicSystem.keys()), _toConsumableArray(renderSystem.keys()), _toConsumableArray(cleanUpSystem.keys())));
+
+            return max === undefined || max === null || max === -Infinity ? 0 : max + 1;
         }
     }]);
 

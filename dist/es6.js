@@ -44,7 +44,7 @@ class World {
         
         let max = Math.max(...this.components.keys());
         
-        return max === undefined || max === null || max === -Infinity ? 0: max === 0 ? 1 : max * 2;
+        return max === undefined || max === null || max === -Infinity ? 0 : max === 0 ? 1 : max * 2;
     }
 
     newComponent(object) {
@@ -259,16 +259,30 @@ class SystemManager {
         this.systems.set(SystemType.CleanUp, new Map());
     }
     
-    getNextSystemId(type) {
-        let system = this.systems.get(type);
-        
-        if (system === null) {
-            this.systems.set(type, new Map());
+    getNextSystemId() {
+        if (this.systems === null || this.systems === undefined) {
+            this.systems = new Map();
         }
         
-        let max = Math.max(...this.systems.get(system).keys());
+        let initSystem = this.systems.has(SystemType.Init) ?
+            this.systems.get(SystemType.Init) :
+            this.systems.set(SystemType.Init, new Map());
+            
+        let logicSystem   = this.systems.has(SystemType.Logic) ?
+            this.systems.get(SystemType.Logic) :
+            this.systems.set(SystemType.Logic, new Map());
+            
+        let renderSystem  = this.systems.has(SystemType.Render) ?
+            this.systems.get(SystemType.Render) :
+            this.systems.set(SystemType.Render, new Map());
+            
+        let cleanUpSystem = this.systems.has(SystemType.CleanUp) ?
+            this.systems.get(SystemType.CleanUp) :
+            this.systems.set(SystemType.CleanUp, new Map());
         
-        return max === undefined || max === null || max === -Infinity ? 0: max === 0 ? 1 : max * 2;
+        let max = Math.max(...initSystem.keys(), ...logicSystem.keys(), ...renderSystem.keys(), ...cleanUpSystem.keys());
+
+        return max === undefined || max === null || max === -Infinity ? 0 : max + 1;
     }
 }
 
