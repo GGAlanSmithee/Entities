@@ -1,5 +1,5 @@
-import { expect }      from 'chai';
-import   SystemManager from '../../src/core/SystemManager';
+import { expect }    from 'chai';
+import SystemManager from '../../src/core/System';
 
 describe('SystemManager', function() {
     describe('constructor()', () => {

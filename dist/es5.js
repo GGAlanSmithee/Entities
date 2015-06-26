@@ -482,6 +482,13 @@ var World = (function () {
 
 exports.World = World;
 
+var SystemType = {
+    Init: 0,
+    Logic: 1,
+    Render: 2,
+    CleanUp: 3
+};
+
 var SystemManager = function SystemManager() {
     _classCallCheck(this, SystemManager);
 

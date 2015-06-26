@@ -242,6 +242,13 @@ class World {
 
 exports.World = World;
 
+const SystemType = {
+    Init    : 0,
+    Logic   : 1,
+    Render  : 2,
+    CleanUp : 3
+};
+
 class SystemManager {
     constructor() {
         this.initSystems    = [];
