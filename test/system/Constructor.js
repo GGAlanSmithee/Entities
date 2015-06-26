@@ -1,5 +1,5 @@
-import { expect }    from 'chai';
-import SystemManager from '../../src/core/System';
+import { expect } from 'chai';
+import   SystemManager, { SystemType } from '../../src/core/System';
 
 describe('SystemManager', function() {
     describe('constructor()', () => {
@@ -19,28 +19,38 @@ describe('SystemManager', function() {
             expect(this.systemManager).to.be.an.instanceof(SystemManager);
         });
         
-        it('instatiates an empty array of init systems', () => {
-            expect(this.systemManager).to.have.property('initSystems');
-            expect(this.systemManager).property('initSystems').to.be.an.instanceof(Array);
-            expect(this.systemManager).property('initSystems').property('length').to.equal(0);
+        it('instatiates a systems map with a map for each type of system', () => {
+            expect(this.systemManager).to.have.property('systems');
+            expect(this.systemManager).property('systems').to.be.an.instanceof(Map);
+            expect(this.systemManager).property('systems').property('size').to.equal(4);
         });
         
-        it('instatiates an empty array of logic systems', () => {
-            expect(this.systemManager).to.have.property('logicSystems');
-            expect(this.systemManager).property('logicSystems').to.be.an.instanceof(Array);
-            expect(this.systemManager).property('logicSystems').property('length').to.equal(0);
+        it('instantiates systems[SystemType.Init] as an empty array', () => {
+            let initSystems = this.systemManager.systems.get(SystemType.Init);
+            
+            expect(initSystems).to.be.an.instanceof(Map);
+            expect(initSystems).property('size').to.equal(0);
         });
         
-        it('instatiates an empty array of render systems', () => {
-            expect(this.systemManager).to.have.property('renderSystems');
-            expect(this.systemManager).property('renderSystems').to.be.an.instanceof(Array);
-            expect(this.systemManager).property('renderSystems').property('length').to.equal(0);
+        it('instantiates systems[SystemType.Logic] as an empty array', () => {
+            let initSystems = this.systemManager.systems.get(SystemType.Logic);
+            
+            expect(initSystems).to.be.an.instanceof(Map);
+            expect(initSystems).property('size').to.equal(0);
         });
         
-        it('instatiates an empty array of clean up systems', () => {
-            expect(this.systemManager).to.have.property('cleanUpSystems');
-            expect(this.systemManager).property('cleanUpSystems').to.be.an.instanceof(Array);
-            expect(this.systemManager).property('cleanUpSystems').property('length').to.equal(0);
+        it('instantiates systems[SystemType.Render] as an empty array', () => {
+            let initSystems = this.systemManager.systems.get(SystemType.Render);
+            
+            expect(initSystems).to.be.an.instanceof(Map);
+            expect(initSystems).property('size').to.equal(0);
+        });
+        
+        it('instantiates systems[SystemType.CleanUp] as an empty array', () => {
+            let initSystems = this.systemManager.systems.get(SystemType.CleanUp);
+            
+            expect(initSystems).to.be.an.instanceof(Map);
+            expect(initSystems).property('size').to.equal(0);
         });
     });
 });

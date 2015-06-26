@@ -489,13 +489,34 @@ var SystemType = {
     CleanUp: 3
 };
 
-var SystemManager = function SystemManager() {
-    _classCallCheck(this, SystemManager);
+var SystemManager = (function () {
+    function SystemManager() {
+        _classCallCheck(this, SystemManager);
 
-    this.initSystems = [];
-    this.logicSystems = [];
-    this.renderSystems = [];
-    this.cleanUpSystems = [];
-};
+        this.systems = new Map();
+
+        this.systems.set(SystemType.Init, new Map());
+        this.systems.set(SystemType.Logic, new Map());
+        this.systems.set(SystemType.Render, new Map());
+        this.systems.set(SystemType.CleanUp, new Map());
+    }
+
+    _createClass(SystemManager, [{
+        key: 'getNextSystemId',
+        value: function getNextSystemId(type) {
+            var system = this.systems.get(type);
+
+            if (system === null) {
+                this.systems.set(type, new Map());
+            }
+
+            var max = Math.max.apply(Math, _toConsumableArray(this.systems.get(system).keys()));
+
+            return max === undefined || max === null || max === -Infinity ? 0 : max === 0 ? 1 : max * 2;
+        }
+    }]);
+
+    return SystemManager;
+})();
 
 exports.SystemManager = SystemManager;
