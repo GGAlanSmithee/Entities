@@ -488,6 +488,7 @@ var World = (function () {
 })();
 
 exports.World = World;
+exports.SelectorType = SelectorType;
 
 var SystemType = {
     Init: 0,
@@ -576,3 +577,4 @@ var SystemManager = (function () {
 })();
 
 exports.SystemManager = SystemManager;
+exports.SystemType = SystemType;

@@ -248,6 +248,7 @@ class World {
 }
 
 exports.World = World;
+exports.SelectorType = SelectorType;
 
 const SystemType = {
     Init    : 0,
@@ -339,4 +340,5 @@ class SystemManager {
 }
 
 exports.SystemManager = SystemManager;
+exports.SystemType = SystemType;
 
