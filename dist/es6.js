@@ -301,7 +301,7 @@ class SystemManager {
         return this.maxRegisteredSystemId + 1;
     }
     
-    registerSystem(callback, components, type = SystemType.Logic, selector = SelectorType.GetWith) {
+    addSystem(callback, components, type = SystemType.Logic, selector = SelectorType.GetWith) {
     	if (typeof callback !== 'function') {
     		throw TypeError('callback must be a function.');
     	}

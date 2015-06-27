@@ -537,8 +537,8 @@ var SystemManager = (function () {
             return this.maxRegisteredSystemId + 1;
         }
     }, {
-        key: 'registerSystem',
-        value: function registerSystem(callback, components) {
+        key: 'addSystem',
+        value: function addSystem(callback, components) {
             var type = arguments[2] === undefined ? SystemType.Logic : arguments[2];
             var selector = arguments[3] === undefined ? SelectorType.GetWith : arguments[3];
 
