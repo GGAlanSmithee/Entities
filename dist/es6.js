@@ -299,6 +299,43 @@ class SystemManager {
         
         return this.maxRegisteredSystemId + 1;
     }
+    
+    registerSystem(callback, components, type = SystemType.Logic, selector = SelectorType.GetWith) {
+    	if (typeof callback !== 'function') {
+    		throw TypeError('callback must be a function.');
+    	}
+    	
+    	if (!Number.isInteger(components)) {
+    		components = 0;
+    		selector = SelectorType.Get;
+    	}
+    	
+    	if (type !== SystemType.Init &&
+        	type !== SystemType.Logic && 
+        	type !== SystemType.Render &&
+        	type !== SystemType.CleanUp) {
+    		type = SystemType.Logic;
+    	}
+    	
+    	if (selector !== SelectorType.Get &&
+    	    selector !== SelectorType.GetWith &&
+    	    selector !== SelectorType.GetWithOnly &&
+    	    selector !== SelectorType.GetWithout) {
+    		selector = SelectorType.GetWith;
+    	}
+    	
+    	let system = {
+    		selector,
+    		components,
+    		callback
+    	};
+    
+    	let systemId = this.getNextSystemId();
+    	
+    	this.systems.get(type).set(systemId, system);
+
+    	return (this.maxRegisteredSystemId = systemId);
+    }
 }
 
 exports.SystemManager = SystemManager;

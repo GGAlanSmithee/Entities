@@ -535,6 +535,41 @@ var SystemManager = (function () {
 
             return this.maxRegisteredSystemId + 1;
         }
+    }, {
+        key: 'registerSystem',
+        value: function registerSystem(callback, components) {
+            var type = arguments[2] === undefined ? SystemType.Logic : arguments[2];
+            var selector = arguments[3] === undefined ? SelectorType.GetWith : arguments[3];
+
+            if (typeof callback !== 'function') {
+                throw TypeError('callback must be a function.');
+            }
+
+            if (!Number.isInteger(components)) {
+                components = 0;
+                selector = SelectorType.Get;
+            }
+
+            if (type !== SystemType.Init && type !== SystemType.Logic && type !== SystemType.Render && type !== SystemType.CleanUp) {
+                type = SystemType.Logic;
+            }
+
+            if (selector !== SelectorType.Get && selector !== SelectorType.GetWith && selector !== SelectorType.GetWithOnly && selector !== SelectorType.GetWithout) {
+                selector = SelectorType.GetWith;
+            }
+
+            var system = {
+                selector: selector,
+                components: components,
+                callback: callback
+            };
+
+            var systemId = this.getNextSystemId();
+
+            this.systems.get(type).set(systemId, system);
+
+            return this.maxRegisteredSystemId = systemId;
+        }
     }]);
 
     return SystemManager;
