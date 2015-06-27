@@ -19,6 +19,13 @@ var ComponentType = {
 exports.NoneComponent = NoneComponent;
 exports.ComponentType = ComponentType;
 
+var SelectorType = {
+    Get: 0,
+    GetWith: 1,
+    GetWithOnly: 2,
+    GetWithout: 3
+};
+
 var World = (function () {
     function World(capacity) {
         _classCallCheck(this, World);
@@ -499,26 +506,18 @@ var SystemManager = (function () {
         this.systems.set(SystemType.Logic, new Map());
         this.systems.set(SystemType.Render, new Map());
         this.systems.set(SystemType.CleanUp, new Map());
+
+        this.maxRegisteredSystemId = -1;
     }
 
     _createClass(SystemManager, [{
         key: 'getNextSystemId',
         value: function getNextSystemId() {
-            if (this.systems === null || this.systems === undefined) {
-                this.systems = new Map();
+            if (!Number.isInteger(this.maxRegisteredSystemId)) {
+                this.maxRegisteredSystemId = -1;
             }
 
-            var initSystem = this.systems.has(SystemType.Init) ? this.systems.get(SystemType.Init) : this.systems.set(SystemType.Init, new Map());
-
-            var logicSystem = this.systems.has(SystemType.Logic) ? this.systems.get(SystemType.Logic) : this.systems.set(SystemType.Logic, new Map());
-
-            var renderSystem = this.systems.has(SystemType.Render) ? this.systems.get(SystemType.Render) : this.systems.set(SystemType.Render, new Map());
-
-            var cleanUpSystem = this.systems.has(SystemType.CleanUp) ? this.systems.get(SystemType.CleanUp) : this.systems.set(SystemType.CleanUp, new Map());
-
-            var max = Math.max.apply(Math, _toConsumableArray(initSystem.keys()).concat(_toConsumableArray(logicSystem.keys()), _toConsumableArray(renderSystem.keys()), _toConsumableArray(cleanUpSystem.keys())));
-
-            return max === undefined || max === null || max === -Infinity ? 0 : max + 1;
+            return this.maxRegisteredSystemId + 1;
         }
     }]);
 

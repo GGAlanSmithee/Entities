@@ -15,38 +15,38 @@ describe('SystemManager', function() {
             expect(this.systemManager.getNextSystemId).to.be.a('function');
         });
         
-        it('returns [maxRegisteredSystemId]', () => {
+        it('returns [maxRegisteredSystemId] as 0 when there is no system registered', () => {
             expect(this.systemManager.getNextSystemId()).to.equal(0);
         });
         
         it('sets [maxRegisteredSystemId] to 0 and returns it if [maxRegisteredSystemId] is not a number', () => {
             this.systemManager.maxRegisteredSystemId = null;
             expect(this.systemManager.getNextSystemId()).to.equal(0);
-            expect(this.systemManager.maxRegisteredSystemId).to.equal(0);
+            expect(this.systemManager.maxRegisteredSystemId).to.equal(-1);
             
             this.systemManager.maxRegisteredSystemId = undefined;
             expect(this.systemManager.getNextSystemId()).to.equal(0);
-            expect(this.systemManager.maxRegisteredSystemId).to.equal(0);
+            expect(this.systemManager.maxRegisteredSystemId).to.equal(-1);
             
             this.systemManager.maxRegisteredSystemId = { };
             expect(this.systemManager.getNextSystemId()).to.equal(0);
-            expect(this.systemManager.maxRegisteredSystemId).to.equal(0);
+            expect(this.systemManager.maxRegisteredSystemId).to.equal(-1);
             
             this.systemManager.maxRegisteredSystemId = [];
             expect(this.systemManager.getNextSystemId()).to.equal(0);
-            expect(this.systemManager.maxRegisteredSystemId).to.equal(0);
+            expect(this.systemManager.maxRegisteredSystemId).to.equal(-1);
             
             this.systemManager.maxRegisteredSystemId = new Map();
             expect(this.systemManager.getNextSystemId()).to.equal(0);
-            expect(this.systemManager.maxRegisteredSystemId).to.equal(0);
+            expect(this.systemManager.maxRegisteredSystemId).to.equal(-1);
             
             this.systemManager.maxRegisteredSystemId = 'not a number';
             expect(this.systemManager.getNextSystemId()).to.equal(0);
-            expect(this.systemManager.maxRegisteredSystemId).to.equal(0);
+            expect(this.systemManager.maxRegisteredSystemId).to.equal(-1);
             
             this.systemManager.maxRegisteredSystemId = '65';
             expect(this.systemManager.getNextSystemId()).to.equal(0);
-            expect(this.systemManager.maxRegisteredSystemId).to.equal(0);
+            expect(this.systemManager.maxRegisteredSystemId).to.equal(-1);
         });
     });
 });

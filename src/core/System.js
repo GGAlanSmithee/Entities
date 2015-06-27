@@ -1,3 +1,5 @@
+import { SelectorType } from './World';
+
 export const SystemType = {
     Init    : 0,
     Logic   : 1,
@@ -14,14 +16,14 @@ export default class SystemManager {
         this.systems.set(SystemType.Render, new Map());
         this.systems.set(SystemType.CleanUp, new Map());
         
-        this.maxRegisteredSystemId = 0;
+        this.maxRegisteredSystemId = -1;
     }
     
     getNextSystemId() {
         if (!Number.isInteger(this.maxRegisteredSystemId)) {
-            this.maxRegisteredSystemId = 0;
+            this.maxRegisteredSystemId = -1;
         }
         
-        return this.maxRegisteredSystemId;
+        return this.maxRegisteredSystemId + 1;
     }
 }
