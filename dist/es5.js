@@ -573,7 +573,84 @@ var SystemManager = (function () {
         }
     }, {
         key: 'removeSystem',
-        value: function removeSystem(system, type) {}
+        value: function removeSystem(systemId, type) {
+            if (!Number.isInteger(systemId)) {
+                return;
+            }
+
+            if (type === null || type === undefined) {
+                var _iteratorNormalCompletion4 = true;
+                var _didIteratorError4 = false;
+                var _iteratorError4 = undefined;
+
+                try {
+                    for (var _iterator4 = this.systems[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                        var _step4$value = _slicedToArray(_step4.value, 2);
+
+                        var systemType = _step4$value[0];
+                        var system = _step4$value[1];
+                        var _iteratorNormalCompletion5 = true;
+                        var _didIteratorError5 = false;
+                        var _iteratorError5 = undefined;
+
+                        try {
+                            for (var _iterator5 = system[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                                var _step5$value = _slicedToArray(_step5.value, 1);
+
+                                var id = _step5$value[0];
+
+                                if (id === systemId) {
+                                    type = systemType;
+                                    break;
+                                }
+                            }
+                        } catch (err) {
+                            _didIteratorError5 = true;
+                            _iteratorError5 = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion5 && _iterator5['return']) {
+                                    _iterator5['return']();
+                                }
+                            } finally {
+                                if (_didIteratorError5) {
+                                    throw _iteratorError5;
+                                }
+                            }
+                        }
+
+                        if (type !== null && type !== undefined) {
+                            break;
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError4 = true;
+                    _iteratorError4 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion4 && _iterator4['return']) {
+                            _iterator4['return']();
+                        }
+                    } finally {
+                        if (_didIteratorError4) {
+                            throw _iteratorError4;
+                        }
+                    }
+                }
+            }
+
+            if (type === null || type === undefined) {
+                return;
+            }
+
+            var typeSystem = this.systems.get(type);
+
+            if (typeSystem === null || !typeSystem.has(systemId)) {
+                return;
+            }
+
+            typeSystem['delete'](systemId);
+        }
     }]);
 
     return SystemManager;

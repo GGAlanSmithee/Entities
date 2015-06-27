@@ -338,8 +338,37 @@ class SystemManager {
     	return (this.maxRegisteredSystemId = systemId);
     }
     
-    removeSystem(system, type) {
+    removeSystem(systemId, type) {
+        if (!Number.isInteger(systemId)) {
+            return;
+        }
         
+        if (type === null || type === undefined) {
+            for (let [systemType, system] of this.systems) {
+                for (let [id] of system) {
+                    if (id === systemId) {
+                        type = systemType;
+                        break;
+                    }
+                }
+                
+                if (type !== null && type !== undefined) {
+                    break;
+                }
+            }
+        }
+        
+        if (type === null || type === undefined) {
+            return;
+        }
+        
+        let typeSystem = this.systems.get(type);
+        
+        if (typeSystem === null || !typeSystem.has(systemId)) {
+            return;
+        }
+        
+        typeSystem.delete(systemId);
     }
 }
 
