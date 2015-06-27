@@ -119,8 +119,8 @@ var World = (function () {
             return object;
         }
     }, {
-        key: 'registerComponent',
-        value: function registerComponent(object) {
+        key: 'registerComponentType',
+        value: function registerComponentType(object) {
             var _this = this;
 
             var type = arguments[1] === undefined ? ComponentType.Static : arguments[1];
@@ -571,6 +571,9 @@ var SystemManager = (function () {
 
             return this.maxRegisteredSystemId = systemId;
         }
+    }, {
+        key: 'removeSystem',
+        value: function removeSystem(system, type) {}
     }]);
 
     return SystemManager;
