@@ -517,6 +517,22 @@ var SystemManager = (function () {
                 this.maxRegisteredSystemId = -1;
             }
 
+            var systems = this.systems !== null && this.systems !== undefined ? this.systems : this.systems = new Map();
+
+            var initSystems = systems.has(SystemType.Init) ? systems.get(SystemType.Init) : systems.set(SystemType.Init, new Map()).get(SystemType.Init);
+
+            var logicSystems = systems.has(SystemType.Logic) ? systems.get(SystemType.Logic) : systems.set(SystemType.Logic, new Map()).get(SystemType.Logic);
+
+            var renderSystems = systems.has(SystemType.Render) ? systems.get(SystemType.Render) : systems.set(SystemType.Render, new Map()).get(SystemType.Render);
+
+            var cleanUpSystems = systems.has(SystemType.CleanUp) ? systems.get(SystemType.CleanUp) : systems.set(SystemType.CleanUp, new Map()).get(SystemType.CleanUp);
+
+            var maxRegistered = Math.max.apply(Math, _toConsumableArray(initSystems.keys()).concat(_toConsumableArray(logicSystems.keys()), _toConsumableArray(renderSystems.keys()), _toConsumableArray(cleanUpSystems.keys())));
+
+            if (maxRegistered > this.maxRegisteredSystemId) {
+                this.maxRegisteredSystemId = maxRegistered;
+            }
+
             return this.maxRegisteredSystemId + 1;
         }
     }]);
