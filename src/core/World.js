@@ -1,5 +1,12 @@
 import { NoneComponent, ComponentType } from './Component.js';
 
+export const SelectorType = {
+    Get         : 0,
+    GetWith     : 1,
+    GetWithOnly : 2,
+    GetWithout  : 3
+};
+
 export default class World {
     constructor(capacity) {
         this.capacity = typeof capacity === 'number' ? capacity : 100;
