@@ -87,4 +87,8 @@ export default class SystemManager {
 
     	return (this.maxRegisteredSystemId = systemId);
     }
+    
+    removeSystem(system, type) {
+        
+    }
 }
