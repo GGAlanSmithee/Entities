@@ -345,6 +345,28 @@ class SystemManager {
             return typeSystem !== null ? typeSystem.delete(system) : false;
         }
     }
+    
+    getSystem(system, type) {
+        if (!Number.isInteger(system)) {
+            return undefined;
+        }
+        
+        if (type === null || type === undefined) {
+            for (let [,typeSystem] of this.systems) {
+                for (let [id] of typeSystem) {
+                    if (id === system) {
+                        return typeSystem.get(system);
+                    }
+                }
+            }
+            
+            return undefined;
+        } else {
+            let typeSystem = this.systems.get(type);
+
+            return typeSystem !== null ? typeSystem.get(system) : undefined;
+        }
+    }
 }
 
 exports.SystemManager = SystemManager;

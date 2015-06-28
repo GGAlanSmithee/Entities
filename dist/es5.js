@@ -633,6 +633,74 @@ var SystemManager = (function () {
                 return typeSystem !== null ? typeSystem['delete'](system) : false;
             }
         }
+    }, {
+        key: 'getSystem',
+        value: function getSystem(system, type) {
+            if (!Number.isInteger(system)) {
+                return undefined;
+            }
+
+            if (type === null || type === undefined) {
+                var _iteratorNormalCompletion6 = true;
+                var _didIteratorError6 = false;
+                var _iteratorError6 = undefined;
+
+                try {
+                    for (var _iterator6 = this.systems[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                        var _step6$value = _slicedToArray(_step6.value, 2);
+
+                        var typeSystem = _step6$value[1];
+                        var _iteratorNormalCompletion7 = true;
+                        var _didIteratorError7 = false;
+                        var _iteratorError7 = undefined;
+
+                        try {
+                            for (var _iterator7 = typeSystem[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+                                var _step7$value = _slicedToArray(_step7.value, 1);
+
+                                var id = _step7$value[0];
+
+                                if (id === system) {
+                                    return typeSystem.get(system);
+                                }
+                            }
+                        } catch (err) {
+                            _didIteratorError7 = true;
+                            _iteratorError7 = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion7 && _iterator7['return']) {
+                                    _iterator7['return']();
+                                }
+                            } finally {
+                                if (_didIteratorError7) {
+                                    throw _iteratorError7;
+                                }
+                            }
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError6 = true;
+                    _iteratorError6 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion6 && _iterator6['return']) {
+                            _iterator6['return']();
+                        }
+                    } finally {
+                        if (_didIteratorError6) {
+                            throw _iteratorError6;
+                        }
+                    }
+                }
+
+                return undefined;
+            } else {
+                var typeSystem = this.systems.get(type);
+
+                return typeSystem !== null ? typeSystem.get(system) : undefined;
+            }
+        }
     }]);
 
     return SystemManager;

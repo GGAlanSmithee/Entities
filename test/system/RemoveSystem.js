@@ -158,5 +158,14 @@ describe('SystemManager', function() {
             expect(this.systemManager.removeSystem(1, SystemType.Logic)).to.be.false;
             expect(this.systemManager.removeSystem(5, SystemType.Init)).to.be.false;
         });
+        
+        it('returns false on bad input with [type]', () => {
+            expect(this.systemManager.removeSystem(undefined, SystemType.Init)).to.be.false;
+            expect(this.systemManager.removeSystem(null, SystemType.CleanUp)).to.be.false;
+            expect(this.systemManager.removeSystem('not a number', SystemType.Render)).to.be.false;
+            expect(this.systemManager.removeSystem(1.2, SystemType.Logic)).to.be.false;
+            expect(this.systemManager.removeSystem({}, SystemType.Init)).to.be.false;
+            expect(this.systemManager.removeSystem([], SystemType.Init)).to.be.false;
+        });
     });
 });

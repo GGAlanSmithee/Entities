@@ -19,9 +19,9 @@ export function addComponentToEntity(world, entityId, componentId) {
     world.entities[entityId][componentId] = world.components.get(componentId).object;
 }
 
-export function registerSystem(systemManager, systemId, mask, callback, type, selector) {
-    if (mask === undefined || mask === null) {
-        mask = 1 | 2 | 4;
+export function registerSystem(systemManager, systemId, components, callback, type, selector) {
+    if (components === undefined || components === null) {
+        components = 1 | 2 | 4;
     }
     
     if (callback === undefined || callback === null) {
@@ -39,6 +39,6 @@ export function registerSystem(systemManager, systemId, mask, callback, type, se
     systemManager.systems.get(type).set(systemId, {
         callback,
         selector,
-        mask
+        components
     });
 }

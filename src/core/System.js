@@ -92,7 +92,27 @@ export default class SystemManager {
         } else {
             let typeSystem = this.systems.get(type);
 
-            return typeSystem !== null ? typeSystem.delete(system) : false;
+            return typeSystem !== undefined ? typeSystem.delete(system) : false;
+        }
+    }
+    
+    getSystem(system, type) {
+        if (!Number.isInteger(system)) {
+            return;
+        }
+        
+        if (type === null || type === undefined) {
+            for (let [,typeSystem] of this.systems) {
+                for (let [id] of typeSystem) {
+                    if (id === system) {
+                        return typeSystem.get(system);
+                    }
+                }
+            }
+        } else {
+            let typeSystem = this.systems.get(type);
+
+            return typeSystem !== undefined ? typeSystem.get(system) : undefined;
         }
     }
 }
