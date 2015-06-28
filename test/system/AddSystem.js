@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import   sinon from 'sinon';
 import   SystemManager, { SystemType } from '../../src/core/System';
 import { SelectorType } from '../../src/core/World';
 
@@ -16,7 +17,7 @@ describe('SystemManager', function() {
             expect(this.systemManager.addSystem).to.be.a('function');
         });
         
-        it('registers a system under the correct type', () => {
+        it('adds a system under the correct type', () => {
             expect(this.systemManager.systems.get(SystemType.Init)).property('size').to.equal(0);
             expect(this.systemManager.systems.get(SystemType.Logic)).property('size').to.equal(0);
             expect(this.systemManager.systems.get(SystemType.Render)).property('size').to.equal(0);
@@ -33,7 +34,7 @@ describe('SystemManager', function() {
             expect(this.systemManager.systems.get(SystemType.CleanUp)).property('size').to.equal(1);
         });
         
-        it('returns the registered sytems id', () => {
+        it('returns the added sytems id', () => {
             let system = this.systemManager.addSystem(() => { }, 1 | 2);
             
             expect(system).to.equal(0);
@@ -51,7 +52,7 @@ describe('SystemManager', function() {
             expect(system).to.equal(3);
         });
         
-        it('increases [maxRegisteredSystemId] as systems are registered', () => {
+        it('increases [maxRegisteredSystemId] as systems are added', () => {
             expect(this.systemManager).property('maxRegisteredSystemId').to.equal(-1);
             
             this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Init, SelectorType.GetWith);
@@ -87,7 +88,7 @@ describe('SystemManager', function() {
             expect(this.systemManager).property('maxRegisteredSystemId').to.equal(4);
         });
         
-        it('registers a system with the correct [type] and [selector]', () => {
+        it('adds a system with the correct [type] and [selector]', () => {
             let initSystem    = this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Init, SelectorType.Get);
             let logicSystem   = this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Logic, SelectorType.GetWith);
             let renderSystem  = this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Render, SelectorType.GetWithOnly);
@@ -101,7 +102,22 @@ describe('SystemManager', function() {
             expect(systems.get(SystemType.CleanUp).get(cleanUpSystem)).property('selector').to.equal(SelectorType.GetWithout);
         });
         
-        it('registers a system with type SystemType.Logic if [type] is omitted or not a SystemType', () => {
+        it('registeres a system with the correct correct [components] and [callback]', () => {
+            
+            var spy = sinon.spy();
+            
+            let systemId = this.systemManager.addSystem(spy, 1 | 2, SystemType.Init, SelectorType.Get);
+            
+            let system = this.systemManager.systems.get(SystemType.Init).get(systemId);
+            
+            expect(system).property('components').to.equal(1 | 2);
+            
+            system.callback();
+            
+            expect(system.callback.calledOnce).to.be.true;
+        });
+        
+        it('adds a system with type SystemType.Logic if [type] is omitted or not a SystemType', () => {
             this.systemManager.addSystem(() => { }, 1 | 2);
             
             expect(this.systemManager.systems.get(SystemType.Init)).property('size').to.equal(0);
@@ -131,7 +147,7 @@ describe('SystemManager', function() {
             expect(this.systemManager.systems.get(SystemType.CleanUp)).property('size').to.equal(0);
         });
         
-        it('registers a system with selector SelectorType.GetWith if [selector] is omitted or not a SelectorType', () => {
+        it('adds a system with selector SelectorType.GetWith if [selector] is omitted or not a SelectorType', () => {
             let system = this.systemManager.addSystem(() => { }, 1 | 2);
             
             expect(this.systemManager.systems.get(SystemType.Logic).get(system)).property('selector').to.equal(SelectorType.GetWith);
