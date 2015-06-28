@@ -68,26 +68,6 @@ describe('SystemManager', function() {
             expect(this.systemManager).property('maxRegisteredSystemId').to.equal(3);
         });
         
-        it('correctly handles situation where [systems] is null', () => {
-            expect(this.systemManager).property('maxRegisteredSystemId').to.equal(-1);
-            
-            this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Init, SelectorType.GetWith);
-            this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Logic, SelectorType.GetWith);
-            this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Render, SelectorType.GetWith);
-            this.systemManager.addSystem(() => { }, 1 | 2, SystemType.CleanUp, SelectorType.GetWith);
-            
-            this.systemManager.systems = null;
-            
-            this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Render, SelectorType.GetWith);
-            
-            expect(this.systemManager.systems.get(SystemType.Init)).property('size').to.equal(0);
-            expect(this.systemManager.systems.get(SystemType.Logic)).property('size').to.equal(0);
-            expect(this.systemManager.systems.get(SystemType.Render)).property('size').to.equal(1);
-            expect(this.systemManager.systems.get(SystemType.CleanUp)).property('size').to.equal(0);
-            
-            expect(this.systemManager).property('maxRegisteredSystemId').to.equal(4);
-        });
-        
         it('adds a system with the correct [type] and [selector]', () => {
             let initSystem    = this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Init, SelectorType.Get);
             let logicSystem   = this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Logic, SelectorType.GetWith);

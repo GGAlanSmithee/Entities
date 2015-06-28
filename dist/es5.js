@@ -518,20 +518,14 @@ var SystemManager = (function () {
                 this.maxRegisteredSystemId = -1;
             }
 
-            var systems = this.systems !== null && this.systems !== undefined ? this.systems : this.systems = new Map();
+            var max = this.maxRegisteredSystemId;
 
-            var initSystems = systems.has(SystemType.Init) ? systems.get(SystemType.Init) : systems.set(SystemType.Init, new Map()).get(SystemType.Init);
+            this.systems.forEach(function (system) {
+                max = Math.max.apply(Math, [max].concat(_toConsumableArray(system.keys())));
+            });
 
-            var logicSystems = systems.has(SystemType.Logic) ? systems.get(SystemType.Logic) : systems.set(SystemType.Logic, new Map()).get(SystemType.Logic);
-
-            var renderSystems = systems.has(SystemType.Render) ? systems.get(SystemType.Render) : systems.set(SystemType.Render, new Map()).get(SystemType.Render);
-
-            var cleanUpSystems = systems.has(SystemType.CleanUp) ? systems.get(SystemType.CleanUp) : systems.set(SystemType.CleanUp, new Map()).get(SystemType.CleanUp);
-
-            var maxRegistered = Math.max.apply(Math, _toConsumableArray(initSystems.keys()).concat(_toConsumableArray(logicSystems.keys()), _toConsumableArray(renderSystems.keys()), _toConsumableArray(cleanUpSystems.keys())));
-
-            if (maxRegistered > this.maxRegisteredSystemId) {
-                this.maxRegisteredSystemId = maxRegistered;
+            if (max > this.maxRegisteredSystemId) {
+                this.maxRegisteredSystemId = max;
             }
 
             return this.maxRegisteredSystemId + 1;
@@ -636,7 +630,7 @@ var SystemManager = (function () {
             } else {
                 var typeSystem = this.systems.get(type);
 
-                return typeSystem !== null && typeSystem.has(system) ? typeSystem['delete'](system) : false;
+                return typeSystem !== null ? typeSystem['delete'](system) : false;
             }
         }
     }]);

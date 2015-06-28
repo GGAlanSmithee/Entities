@@ -72,21 +72,5 @@ describe('SystemManager', function() {
             expect(this.systemManager.getNextSystemId()).to.equal(11);
             expect(this.systemManager.maxRegisteredSystemId).to.equal(10);
         });
-        
-        it('correct any missing map if there is corrupted data', () => {
-            this.systemManager.maxRegisteredSystemId = 5;
-            
-            this.systemManager.systems.delete(SystemType.Init);
-            this.systemManager.systems.delete(SystemType.Logic);
-            this.systemManager.systems.delete(SystemType.Render);
-            this.systemManager.systems.delete(SystemType.CleanUp);
-            
-            expect(this.systemManager.getNextSystemId()).to.equal(6);
-            
-            expect(this.systemManager.systems.get(SystemType.Init)).to.be.an.instanceof(Map);
-            expect(this.systemManager.systems.get(SystemType.Logic)).to.be.an.instanceof(Map);
-            expect(this.systemManager.systems.get(SystemType.Render)).to.be.an.instanceof(Map);
-            expect(this.systemManager.systems.get(SystemType.CleanUp)).to.be.an.instanceof(Map);
-        });
     });
 });
