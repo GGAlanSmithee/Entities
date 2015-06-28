@@ -11,9 +11,9 @@ export default class SystemManager {
     constructor() {
         this.systems = new Map();
         
-        this.systems.set(SystemType.Init, new Map());
-        this.systems.set(SystemType.Logic, new Map());
-        this.systems.set(SystemType.Render, new Map());
+        this.systems.set(SystemType.Init,    new Map());
+        this.systems.set(SystemType.Logic,   new Map());
+        this.systems.set(SystemType.Render,  new Map());
         this.systems.set(SystemType.CleanUp, new Map());
         
         this.maxRegisteredSystemId = -1;
@@ -42,7 +42,10 @@ export default class SystemManager {
         	systems.get(SystemType.CleanUp) :
         	systems.set(SystemType.CleanUp, new Map()).get(SystemType.CleanUp);
 
-        let maxRegistered = Math.max(...initSystems.keys(), ...logicSystems.keys(), ...renderSystems.keys(), ...cleanUpSystems.keys());
+        let maxRegistered = Math.max(...initSystems.keys(),
+                                     ...logicSystems.keys(),
+                                     ...renderSystems.keys(),
+                                     ...cleanUpSystems.keys());
 
         if (maxRegistered > this.maxRegisteredSystemId) {
             this.maxRegisteredSystemId = maxRegistered;
@@ -88,36 +91,25 @@ export default class SystemManager {
     	return (this.maxRegisteredSystemId = systemId);
     }
     
-    removeSystem(systemId, type) {
-        if (!Number.isInteger(systemId)) {
-            return;
+    removeSystem(system, type) {
+        if (!Number.isInteger(system)) {
+            return false;
         }
         
         if (type === null || type === undefined) {
-            for (let [systemType, system] of this.systems) {
-                for (let [id] of system) {
-                    if (id === systemId) {
-                        type = systemType;
-                        break;
+            for (let [,typeSystem] of this.systems) {
+                for (let [id] of typeSystem) {
+                    if (id === system) {
+                        return typeSystem.delete(system);
                     }
                 }
-                
-                if (type !== null && type !== undefined) {
-                    break;
-                }
             }
+            
+            return false;
+        } else {
+            let typeSystem = this.systems.get(type);
+
+            return typeSystem !== null && typeSystem.has(system) ? typeSystem.delete(system) : false;
         }
-        
-        if (type === null || type === undefined) {
-            return;
-        }
-        
-        let typeSystem = this.systems.get(type);
-        
-        if (typeSystem === null || !typeSystem.has(systemId)) {
-            return;
-        }
-        
-        typeSystem.delete(systemId);
     }
 }

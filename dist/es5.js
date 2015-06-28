@@ -573,9 +573,9 @@ var SystemManager = (function () {
         }
     }, {
         key: 'removeSystem',
-        value: function removeSystem(systemId, type) {
-            if (!Number.isInteger(systemId)) {
-                return;
+        value: function removeSystem(system, type) {
+            if (!Number.isInteger(system)) {
+                return false;
             }
 
             if (type === null || type === undefined) {
@@ -587,21 +587,19 @@ var SystemManager = (function () {
                     for (var _iterator4 = this.systems[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
                         var _step4$value = _slicedToArray(_step4.value, 2);
 
-                        var systemType = _step4$value[0];
-                        var system = _step4$value[1];
+                        var typeSystem = _step4$value[1];
                         var _iteratorNormalCompletion5 = true;
                         var _didIteratorError5 = false;
                         var _iteratorError5 = undefined;
 
                         try {
-                            for (var _iterator5 = system[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                            for (var _iterator5 = typeSystem[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
                                 var _step5$value = _slicedToArray(_step5.value, 1);
 
                                 var id = _step5$value[0];
 
-                                if (id === systemId) {
-                                    type = systemType;
-                                    break;
+                                if (id === system) {
+                                    return typeSystem['delete'](system);
                                 }
                             }
                         } catch (err) {
@@ -618,10 +616,6 @@ var SystemManager = (function () {
                                 }
                             }
                         }
-
-                        if (type !== null && type !== undefined) {
-                            break;
-                        }
                     }
                 } catch (err) {
                     _didIteratorError4 = true;
@@ -637,19 +631,13 @@ var SystemManager = (function () {
                         }
                     }
                 }
+
+                return false;
+            } else {
+                var typeSystem = this.systems.get(type);
+
+                return typeSystem !== null && typeSystem.has(system) ? typeSystem['delete'](system) : false;
             }
-
-            if (type === null || type === undefined) {
-                return;
-            }
-
-            var typeSystem = this.systems.get(type);
-
-            if (typeSystem === null || !typeSystem.has(systemId)) {
-                return;
-            }
-
-            typeSystem['delete'](systemId);
         }
     }]);
 
