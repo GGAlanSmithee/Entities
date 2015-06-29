@@ -1,4 +1,5 @@
 import { SelectorType } from './World';
+import { NoneComponent } from  './Component';
 
 export const SystemType = {
     Init    : 0,
@@ -42,23 +43,9 @@ export default class SystemManager {
     		throw TypeError('callback must be a function.');
     	}
     	
-    	if (!Number.isInteger(components)) {
-    		components = 0;
+    	if (!Number.isInteger(components) || components === NoneComponent) {
+    		components = NoneComponent;
     		selector = SelectorType.Get;
-    	}
-    	
-    	if (type !== SystemType.Init &&
-        	type !== SystemType.Logic && 
-        	type !== SystemType.Render &&
-        	type !== SystemType.CleanUp) {
-    		type = SystemType.Logic;
-    	}
-    	
-    	if (selector !== SelectorType.Get &&
-    	    selector !== SelectorType.GetWith &&
-    	    selector !== SelectorType.GetWithOnly &&
-    	    selector !== SelectorType.GetWithout) {
-    		selector = SelectorType.GetWith;
     	}
     	
     	let system = {

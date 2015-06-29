@@ -540,17 +540,9 @@ var SystemManager = (function () {
                 throw TypeError('callback must be a function.');
             }
 
-            if (!Number.isInteger(components)) {
-                components = 0;
+            if (!Number.isInteger(components) || components === NoneComponent) {
+                components = NoneComponent;
                 selector = SelectorType.Get;
-            }
-
-            if (type !== SystemType.Init && type !== SystemType.Logic && type !== SystemType.Render && type !== SystemType.CleanUp) {
-                type = SystemType.Logic;
-            }
-
-            if (selector !== SelectorType.Get && selector !== SelectorType.GetWith && selector !== SelectorType.GetWithOnly && selector !== SelectorType.GetWithout) {
-                selector = SelectorType.GetWith;
             }
 
             var system = {
@@ -630,14 +622,16 @@ var SystemManager = (function () {
             } else {
                 var typeSystem = this.systems.get(type);
 
-                return typeSystem !== null ? typeSystem['delete'](system) : false;
+                return typeSystem !== undefined ? typeSystem['delete'](system) : false;
             }
         }
     }, {
         key: 'getSystem',
-        value: function getSystem(system, type) {
+        value: function getSystem(system) {
+            var type = arguments[1] === undefined ? SystemType.Logic : arguments[1];
+
             if (!Number.isInteger(system)) {
-                return undefined;
+                return;
             }
 
             if (type === null || type === undefined) {
@@ -693,12 +687,10 @@ var SystemManager = (function () {
                         }
                     }
                 }
-
-                return undefined;
             } else {
                 var typeSystem = this.systems.get(type);
 
-                return typeSystem !== null ? typeSystem.get(system) : undefined;
+                return typeSystem !== undefined ? typeSystem.get(system) : undefined;
             }
         }
     }]);

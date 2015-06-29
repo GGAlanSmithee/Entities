@@ -292,23 +292,9 @@ class SystemManager {
     		throw TypeError('callback must be a function.');
     	}
     	
-    	if (!Number.isInteger(components)) {
-    		components = 0;
+    	if (!Number.isInteger(components) || components === NoneComponent) {
+    		components = NoneComponent;
     		selector = SelectorType.Get;
-    	}
-    	
-    	if (type !== SystemType.Init &&
-        	type !== SystemType.Logic && 
-        	type !== SystemType.Render &&
-        	type !== SystemType.CleanUp) {
-    		type = SystemType.Logic;
-    	}
-    	
-    	if (selector !== SelectorType.Get &&
-    	    selector !== SelectorType.GetWith &&
-    	    selector !== SelectorType.GetWithOnly &&
-    	    selector !== SelectorType.GetWithout) {
-    		selector = SelectorType.GetWith;
     	}
     	
     	let system = {
@@ -342,13 +328,13 @@ class SystemManager {
         } else {
             let typeSystem = this.systems.get(type);
 
-            return typeSystem !== null ? typeSystem.delete(system) : false;
+            return typeSystem !== undefined ? typeSystem.delete(system) : false;
         }
     }
     
-    getSystem(system, type) {
+    getSystem(system, type = SystemType.Logic) {
         if (!Number.isInteger(system)) {
-            return undefined;
+            return;
         }
         
         if (type === null || type === undefined) {
@@ -359,12 +345,10 @@ class SystemManager {
                     }
                 }
             }
-            
-            return undefined;
         } else {
             let typeSystem = this.systems.get(type);
 
-            return typeSystem !== null ? typeSystem.get(system) : undefined;
+            return typeSystem !== undefined ? typeSystem.get(system) : undefined;
         }
     }
 }

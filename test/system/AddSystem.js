@@ -97,32 +97,11 @@ describe('SystemManager', function() {
             expect(system.callback.calledOnce).to.be.true;
         });
         
-        it('adds a system with type SystemType.Logic if [type] is omitted or not a SystemType', () => {
+        it('adds a system with type SystemType.Logic if [type] is omitted', () => {
             this.systemManager.addSystem(() => { }, 1 | 2);
             
             expect(this.systemManager.systems.get(SystemType.Init)).property('size').to.equal(0);
             expect(this.systemManager.systems.get(SystemType.Logic)).property('size').to.equal(1);
-            expect(this.systemManager.systems.get(SystemType.Render)).property('size').to.equal(0);
-            expect(this.systemManager.systems.get(SystemType.CleanUp)).property('size').to.equal(0);
-            
-            this.systemManager.addSystem(() => { }, 1 | 2, 999999999);
-            
-            expect(this.systemManager.systems.get(SystemType.Init)).property('size').to.equal(0);
-            expect(this.systemManager.systems.get(SystemType.Logic)).property('size').to.equal(2);
-            expect(this.systemManager.systems.get(SystemType.Render)).property('size').to.equal(0);
-            expect(this.systemManager.systems.get(SystemType.CleanUp)).property('size').to.equal(0);
-            
-            this.systemManager.addSystem(() => { }, 1 | 2, 4);
-            
-            expect(this.systemManager.systems.get(SystemType.Init)).property('size').to.equal(0);
-            expect(this.systemManager.systems.get(SystemType.Logic)).property('size').to.equal(3);
-            expect(this.systemManager.systems.get(SystemType.Render)).property('size').to.equal(0);
-            expect(this.systemManager.systems.get(SystemType.CleanUp)).property('size').to.equal(0);
-            
-            this.systemManager.addSystem(() => { }, 1 | 2, -1);
-            
-            expect(this.systemManager.systems.get(SystemType.Init)).property('size').to.equal(0);
-            expect(this.systemManager.systems.get(SystemType.Logic)).property('size').to.equal(4);
             expect(this.systemManager.systems.get(SystemType.Render)).property('size').to.equal(0);
             expect(this.systemManager.systems.get(SystemType.CleanUp)).property('size').to.equal(0);
         });
@@ -131,13 +110,9 @@ describe('SystemManager', function() {
             let system = this.systemManager.addSystem(() => { }, 1 | 2);
             
             expect(this.systemManager.systems.get(SystemType.Logic).get(system)).property('selector').to.equal(SelectorType.GetWith);
-            
-            system = this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Render, 'not a selector type');
-            
-            expect(this.systemManager.systems.get(SystemType.Render).get(system)).property('selector').to.equal(SelectorType.GetWith);
         });
         
-        it('sets [components] to 0 and [selector] to SelectorType.Get if components is omitted or not an integer', () => {
+        it('sets [components] to [NoneComponent] and [selector] to SelectorType.Get if components is omitted, not an integer or 0', () => {
             let systemId = this.systemManager.addSystem(() => { });
             
             let system = this.systemManager.systems.get(SystemType.Logic).get(systemId);
@@ -146,6 +121,13 @@ describe('SystemManager', function() {
             expect(system).property('selector').to.equal(SelectorType.Get);
             
             systemId = this.systemManager.addSystem(() => { }, 1.2);
+            
+            system = this.systemManager.systems.get(SystemType.Logic).get(systemId);
+            
+            expect(system).property('components').to.equal(0);
+            expect(system).property('selector').to.equal(SelectorType.Get);
+            
+            systemId = this.systemManager.addSystem(() => { }, 0);
             
             system = this.systemManager.systems.get(SystemType.Logic).get(systemId);
             
