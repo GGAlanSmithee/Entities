@@ -177,60 +177,55 @@ export default class World {
         return returnDetails ? null : this.capacity;
     }
     
-    *getEntities(returnDetails = false) {
-        for (let entity in this.entities) {
-            if (entity > this.currentMaxEntity) {
-                return;
+    *getEntities(type = SelectorType.Get, components = NoneComponent, returnDetails = false) {
+        switch (type) {
+            case SelectorType.GetWith: {
+                for (let entity in this.entities) {
+                    if (entity > this.currentMaxEntity) {
+                        return;
+                    }
+                    
+                    if (this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) === components) {
+                        yield returnDetails ? this.entities[entity] : Math.floor(entity);
+                    }
+                }
+                
+                break;
             }
-            
-            yield returnDetails ? this.entities[entity] : Math.floor(entity);
-        }
-    }
-    
-    *getEntitiesWith(components, returnDetails = false) {
-        if (!components) {
-            yield* this.getEntities(returnDetails);
-        }
-        
-        for (let entity in this.entities) {
-            if (entity > this.currentMaxEntity) {
-                return;
+            case SelectorType.GetWithOnly: {
+                for (let entity in this.entities) {
+                    if (entity > this.currentMaxEntity) {
+                        return;
+                    }
+                    
+                    if (this.entities[entity].id !== NoneComponent && this.entities[entity].id === components) {
+                        yield returnDetails ? this.entities[entity] : Math.floor(entity);
+                    }
+                }
+                
+                break;
             }
-            
-            if (this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) === components) {
-                yield returnDetails ? this.entities[entity] : Math.floor(entity);
+            case SelectorType.GetWithout: {
+                for (let entity in this.entities) {
+                    if (entity > this.currentMaxEntity) {
+                        return;
+                    }
+                    
+                    if (this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) !== components) {
+                        yield returnDetails ? this.entities[entity] : Math.floor(entity);
+                    }
+                }
+                
+                break;
             }
-        }
-    }
-    
-    *getEntitiesWithOnly(components, returnDetails = false) {
-        if (!components) {
-            yield* this.getEntities(returnDetails);
-        }
-        
-        for (let entity in this.entities) {
-            if (entity > this.currentMaxEntity) {
-                return;
-            }
-            
-            if (this.entities[entity].id !== NoneComponent && this.entities[entity].id === components) {
-                yield returnDetails ? this.entities[entity] : Math.floor(entity);
-            }
-        }
-    }
-    
-    *getEntitiesWithout(components, returnDetails = false) {
-        if (!components) {
-            yield* this.getEntities(returnDetails);
-        }
-        
-        for (let entity in this.entities) {
-            if (entity > this.currentMaxEntity) {
-                return;
-            }
-            
-            if (this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) !== components) {
-                yield returnDetails ? this.entities[entity] : Math.floor(entity);
+            default: {
+                for (let entity in this.entities) {
+                    if (entity > this.currentMaxEntity) {
+                        return;
+                    }
+                    
+                    yield returnDetails ? this.entities[entity] : Math.floor(entity);
+                }
             }
         }
     }

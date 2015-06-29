@@ -66,36 +66,5 @@ describe('SystemManager', function() {
             expect(this.systemManager.getSystem({})).to.be.undefined;
             expect(this.systemManager.getSystem([])).to.be.undefined;
         });
-        
-        it('gets a system by [type]', () => {
-            expect(this.systemManager.getSystem(1, SystemType.Init)).to.not.be.undefined;
-            expect(this.systemManager.getSystem(1, SystemType.Logic)).to.be.undefined;
-            expect(this.systemManager.getSystem(1, SystemType.Render)).to.be.undefined;
-            expect(this.systemManager.getSystem(1, SystemType.CleanUp)).to.be.undefined;
-            
-            expect(this.systemManager.getSystem(2, SystemType.Init)).to.be.undefined;
-            expect(this.systemManager.getSystem(2, SystemType.Logic)).to.not.be.undefined;
-            expect(this.systemManager.getSystem(2, SystemType.Render)).to.be.undefined;
-            expect(this.systemManager.getSystem(2, SystemType.CleanUp)).to.be.undefined;
-            
-            expect(this.systemManager.getSystem(3, SystemType.Init)).to.be.undefined;
-            expect(this.systemManager.getSystem(3, SystemType.Logic)).to.be.undefined;
-            expect(this.systemManager.getSystem(3, SystemType.Render)).to.not.be.undefined;
-            expect(this.systemManager.getSystem(3, SystemType.CleanUp)).to.be.undefined;
-            
-            expect(this.systemManager.getSystem(4, SystemType.Init)).to.be.undefined;
-            expect(this.systemManager.getSystem(4, SystemType.Logic)).to.be.undefined;
-            expect(this.systemManager.getSystem(4, SystemType.Render)).to.be.undefined;
-            expect(this.systemManager.getSystem(4, SystemType.CleanUp)).to.not.be.undefined;
-        });
-        
-        it('returns undefined on bad input with [type]', () => {
-            expect(this.systemManager.getSystem(undefined, SystemType.Render)).to.be.undefined;
-            expect(this.systemManager.getSystem(null, SystemType.CleanUp)).to.be.undefined;
-            expect(this.systemManager.getSystem('not a number', SystemType.Init)).to.be.undefined;
-            expect(this.systemManager.getSystem(1.2, SystemType.Render)).to.be.undefined;
-            expect(this.systemManager.getSystem({}, SystemType.Init)).to.be.undefined;
-            expect(this.systemManager.getSystem([], SystemType.Logic)).to.be.undefined;
-        });
     });
 });

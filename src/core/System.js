@@ -38,7 +38,7 @@ export default class SystemManager {
         return this.maxRegisteredSystemId + 1;
     }
     
-    addSystem(callback, components, type = SystemType.Logic, selector = SelectorType.GetWith) {
+    addSystem(callback, components = NoneComponent, type = SystemType.Logic, selector = SelectorType.GetWith) {
     	if (typeof callback !== 'function') {
     		throw TypeError('callback must be a function.');
     	}
@@ -61,45 +61,34 @@ export default class SystemManager {
     	return (this.maxRegisteredSystemId = systemId);
     }
     
-    removeSystem(system, type) {
+    removeSystem(system) {
         if (!Number.isInteger(system)) {
             return false;
         }
-        
-        if (type === null || type === undefined) {
-            for (let [,typeSystem] of this.systems) {
-                for (let [id] of typeSystem) {
-                    if (id === system) {
-                        return typeSystem.delete(system);
-                    }
+
+        for (let [,typeSystem] of this.systems) {
+            for (let [id] of typeSystem) {
+                if (id === system) {
+                    return typeSystem.delete(system);
                 }
             }
-            
-            return false;
-        } else {
-            let typeSystem = this.systems.get(type);
-
-            return typeSystem !== undefined ? typeSystem.delete(system) : false;
         }
+    
+        
+        return false;
     }
     
-    getSystem(system, type) {
+    getSystem(system) {
         if (!Number.isInteger(system)) {
             return;
         }
         
-        if (type === null || type === undefined) {
-            for (let [,typeSystem] of this.systems) {
-                for (let [id] of typeSystem) {
-                    if (id === system) {
-                        return typeSystem.get(system);
-                    }
+        for (let [,typeSystem] of this.systems) {
+            for (let [id] of typeSystem) {
+                if (id === system) {
+                    return typeSystem.get(system);
                 }
             }
-        } else {
-            let typeSystem = this.systems.get(type);
-
-            return typeSystem !== undefined ? typeSystem.get(system) : undefined;
         }
     }
 }

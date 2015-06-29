@@ -188,60 +188,55 @@ class World {
         return returnDetails ? null : this.capacity;
     }
     
-    *getEntities(returnDetails = false) {
-        for (let entity in this.entities) {
-            if (entity > this.currentMaxEntity) {
-                return;
+    *getEntities(type = SelectorType.Get, components = NoneComponent, returnDetails = false) {
+        switch (type) {
+            case SelectorType.GetWith: {
+                for (let entity in this.entities) {
+                    if (entity > this.currentMaxEntity) {
+                        return;
+                    }
+                    
+                    if (this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) === components) {
+                        yield returnDetails ? this.entities[entity] : Math.floor(entity);
+                    }
+                }
+                
+                break;
             }
-            
-            yield returnDetails ? this.entities[entity] : Math.floor(entity);
-        }
-    }
-    
-    *getEntitiesWith(components, returnDetails = false) {
-        if (!components) {
-            yield* this.getEntities(returnDetails);
-        }
-        
-        for (let entity in this.entities) {
-            if (entity > this.currentMaxEntity) {
-                return;
+            case SelectorType.GetWithOnly: {
+                for (let entity in this.entities) {
+                    if (entity > this.currentMaxEntity) {
+                        return;
+                    }
+                    
+                    if (this.entities[entity].id !== NoneComponent && this.entities[entity].id === components) {
+                        yield returnDetails ? this.entities[entity] : Math.floor(entity);
+                    }
+                }
+                
+                break;
             }
-            
-            if (this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) === components) {
-                yield returnDetails ? this.entities[entity] : Math.floor(entity);
+            case SelectorType.GetWithout: {
+                for (let entity in this.entities) {
+                    if (entity > this.currentMaxEntity) {
+                        return;
+                    }
+                    
+                    if (this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) !== components) {
+                        yield returnDetails ? this.entities[entity] : Math.floor(entity);
+                    }
+                }
+                
+                break;
             }
-        }
-    }
-    
-    *getEntitiesWithOnly(components, returnDetails = false) {
-        if (!components) {
-            yield* this.getEntities(returnDetails);
-        }
-        
-        for (let entity in this.entities) {
-            if (entity > this.currentMaxEntity) {
-                return;
-            }
-            
-            if (this.entities[entity].id !== NoneComponent && this.entities[entity].id === components) {
-                yield returnDetails ? this.entities[entity] : Math.floor(entity);
-            }
-        }
-    }
-    
-    *getEntitiesWithout(components, returnDetails = false) {
-        if (!components) {
-            yield* this.getEntities(returnDetails);
-        }
-        
-        for (let entity in this.entities) {
-            if (entity > this.currentMaxEntity) {
-                return;
-            }
-            
-            if (this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) !== components) {
-                yield returnDetails ? this.entities[entity] : Math.floor(entity);
+            default: {
+                for (let entity in this.entities) {
+                    if (entity > this.currentMaxEntity) {
+                        return;
+                    }
+                    
+                    yield returnDetails ? this.entities[entity] : Math.floor(entity);
+                }
             }
         }
     }
@@ -287,7 +282,7 @@ class SystemManager {
         return this.maxRegisteredSystemId + 1;
     }
     
-    addSystem(callback, components, type = SystemType.Logic, selector = SelectorType.GetWith) {
+    addSystem(callback, components = NoneComponent, type = SystemType.Logic, selector = SelectorType.GetWith) {
     	if (typeof callback !== 'function') {
     		throw TypeError('callback must be a function.');
     	}
@@ -310,45 +305,34 @@ class SystemManager {
     	return (this.maxRegisteredSystemId = systemId);
     }
     
-    removeSystem(system, type) {
+    removeSystem(system) {
         if (!Number.isInteger(system)) {
             return false;
         }
-        
-        if (type === null || type === undefined) {
-            for (let [,typeSystem] of this.systems) {
-                for (let [id] of typeSystem) {
-                    if (id === system) {
-                        return typeSystem.delete(system);
-                    }
+
+        for (let [,typeSystem] of this.systems) {
+            for (let [id] of typeSystem) {
+                if (id === system) {
+                    return typeSystem.delete(system);
                 }
             }
-            
-            return false;
-        } else {
-            let typeSystem = this.systems.get(type);
-
-            return typeSystem !== undefined ? typeSystem.delete(system) : false;
         }
+    
+        
+        return false;
     }
     
-    getSystem(system, type = SystemType.Logic) {
+    getSystem(system) {
         if (!Number.isInteger(system)) {
             return;
         }
         
-        if (type === null || type === undefined) {
-            for (let [,typeSystem] of this.systems) {
-                for (let [id] of typeSystem) {
-                    if (id === system) {
-                        return typeSystem.get(system);
-                    }
+        for (let [,typeSystem] of this.systems) {
+            for (let [id] of typeSystem) {
+                if (id === system) {
+                    return typeSystem.get(system);
                 }
             }
-        } else {
-            let typeSystem = this.systems.get(type);
-
-            return typeSystem !== undefined ? typeSystem.get(system) : undefined;
         }
     }
 }

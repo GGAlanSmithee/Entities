@@ -290,197 +290,150 @@ var World = (function () {
     }, {
         key: 'getEntities',
         value: regeneratorRuntime.mark(function getEntities() {
-            var returnDetails = arguments[0] === undefined ? false : arguments[0];
+            var type = arguments[0] === undefined ? SelectorType.Get : arguments[0];
+            var components = arguments[1] === undefined ? NoneComponent : arguments[1];
+            var returnDetails = arguments[2] === undefined ? false : arguments[2];
             var entity;
             return regeneratorRuntime.wrap(function getEntities$(context$2$0) {
                 while (1) switch (context$2$0.prev = context$2$0.next) {
                     case 0:
-                        context$2$0.t0 = regeneratorRuntime.keys(this.entities);
+                        context$2$0.t0 = type;
+                        context$2$0.next = context$2$0.t0 === SelectorType.GetWith ? 3 : context$2$0.t0 === SelectorType.GetWithOnly ? 14 : context$2$0.t0 === SelectorType.GetWithout ? 25 : 36;
+                        break;
 
-                    case 1:
-                        if ((context$2$0.t1 = context$2$0.t0()).done) {
-                            context$2$0.next = 9;
+                    case 3:
+                        context$2$0.t1 = regeneratorRuntime.keys(this.entities);
+
+                    case 4:
+                        if ((context$2$0.t2 = context$2$0.t1()).done) {
+                            context$2$0.next = 13;
                             break;
                         }
 
-                        entity = context$2$0.t1.value;
+                        entity = context$2$0.t2.value;
 
                         if (!(entity > this.currentMaxEntity)) {
-                            context$2$0.next = 5;
+                            context$2$0.next = 8;
                             break;
                         }
 
                         return context$2$0.abrupt('return');
 
-                    case 5:
-                        context$2$0.next = 7;
+                    case 8:
+                        if (!(this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) === components)) {
+                            context$2$0.next = 11;
+                            break;
+                        }
+
+                        context$2$0.next = 11;
                         return returnDetails ? this.entities[entity] : Math.floor(entity);
 
-                    case 7:
-                        context$2$0.next = 1;
+                    case 11:
+                        context$2$0.next = 4;
                         break;
 
-                    case 9:
+                    case 13:
+                        return context$2$0.abrupt('break', 45);
+
+                    case 14:
+                        context$2$0.t3 = regeneratorRuntime.keys(this.entities);
+
+                    case 15:
+                        if ((context$2$0.t4 = context$2$0.t3()).done) {
+                            context$2$0.next = 24;
+                            break;
+                        }
+
+                        entity = context$2$0.t4.value;
+
+                        if (!(entity > this.currentMaxEntity)) {
+                            context$2$0.next = 19;
+                            break;
+                        }
+
+                        return context$2$0.abrupt('return');
+
+                    case 19:
+                        if (!(this.entities[entity].id !== NoneComponent && this.entities[entity].id === components)) {
+                            context$2$0.next = 22;
+                            break;
+                        }
+
+                        context$2$0.next = 22;
+                        return returnDetails ? this.entities[entity] : Math.floor(entity);
+
+                    case 22:
+                        context$2$0.next = 15;
+                        break;
+
+                    case 24:
+                        return context$2$0.abrupt('break', 45);
+
+                    case 25:
+                        context$2$0.t5 = regeneratorRuntime.keys(this.entities);
+
+                    case 26:
+                        if ((context$2$0.t6 = context$2$0.t5()).done) {
+                            context$2$0.next = 35;
+                            break;
+                        }
+
+                        entity = context$2$0.t6.value;
+
+                        if (!(entity > this.currentMaxEntity)) {
+                            context$2$0.next = 30;
+                            break;
+                        }
+
+                        return context$2$0.abrupt('return');
+
+                    case 30:
+                        if (!(this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) !== components)) {
+                            context$2$0.next = 33;
+                            break;
+                        }
+
+                        context$2$0.next = 33;
+                        return returnDetails ? this.entities[entity] : Math.floor(entity);
+
+                    case 33:
+                        context$2$0.next = 26;
+                        break;
+
+                    case 35:
+                        return context$2$0.abrupt('break', 45);
+
+                    case 36:
+                        context$2$0.t7 = regeneratorRuntime.keys(this.entities);
+
+                    case 37:
+                        if ((context$2$0.t8 = context$2$0.t7()).done) {
+                            context$2$0.next = 45;
+                            break;
+                        }
+
+                        entity = context$2$0.t8.value;
+
+                        if (!(entity > this.currentMaxEntity)) {
+                            context$2$0.next = 41;
+                            break;
+                        }
+
+                        return context$2$0.abrupt('return');
+
+                    case 41:
+                        context$2$0.next = 43;
+                        return returnDetails ? this.entities[entity] : Math.floor(entity);
+
+                    case 43:
+                        context$2$0.next = 37;
+                        break;
+
+                    case 45:
                     case 'end':
                         return context$2$0.stop();
                 }
             }, getEntities, this);
-        })
-    }, {
-        key: 'getEntitiesWith',
-        value: regeneratorRuntime.mark(function getEntitiesWith(components) {
-            var returnDetails = arguments[1] === undefined ? false : arguments[1];
-            var entity;
-            return regeneratorRuntime.wrap(function getEntitiesWith$(context$2$0) {
-                while (1) switch (context$2$0.prev = context$2$0.next) {
-                    case 0:
-                        if (components) {
-                            context$2$0.next = 2;
-                            break;
-                        }
-
-                        return context$2$0.delegateYield(this.getEntities(returnDetails), 't0', 2);
-
-                    case 2:
-                        context$2$0.t1 = regeneratorRuntime.keys(this.entities);
-
-                    case 3:
-                        if ((context$2$0.t2 = context$2$0.t1()).done) {
-                            context$2$0.next = 12;
-                            break;
-                        }
-
-                        entity = context$2$0.t2.value;
-
-                        if (!(entity > this.currentMaxEntity)) {
-                            context$2$0.next = 7;
-                            break;
-                        }
-
-                        return context$2$0.abrupt('return');
-
-                    case 7:
-                        if (!(this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) === components)) {
-                            context$2$0.next = 10;
-                            break;
-                        }
-
-                        context$2$0.next = 10;
-                        return returnDetails ? this.entities[entity] : Math.floor(entity);
-
-                    case 10:
-                        context$2$0.next = 3;
-                        break;
-
-                    case 12:
-                    case 'end':
-                        return context$2$0.stop();
-                }
-            }, getEntitiesWith, this);
-        })
-    }, {
-        key: 'getEntitiesWithOnly',
-        value: regeneratorRuntime.mark(function getEntitiesWithOnly(components) {
-            var returnDetails = arguments[1] === undefined ? false : arguments[1];
-            var entity;
-            return regeneratorRuntime.wrap(function getEntitiesWithOnly$(context$2$0) {
-                while (1) switch (context$2$0.prev = context$2$0.next) {
-                    case 0:
-                        if (components) {
-                            context$2$0.next = 2;
-                            break;
-                        }
-
-                        return context$2$0.delegateYield(this.getEntities(returnDetails), 't0', 2);
-
-                    case 2:
-                        context$2$0.t1 = regeneratorRuntime.keys(this.entities);
-
-                    case 3:
-                        if ((context$2$0.t2 = context$2$0.t1()).done) {
-                            context$2$0.next = 12;
-                            break;
-                        }
-
-                        entity = context$2$0.t2.value;
-
-                        if (!(entity > this.currentMaxEntity)) {
-                            context$2$0.next = 7;
-                            break;
-                        }
-
-                        return context$2$0.abrupt('return');
-
-                    case 7:
-                        if (!(this.entities[entity].id !== NoneComponent && this.entities[entity].id === components)) {
-                            context$2$0.next = 10;
-                            break;
-                        }
-
-                        context$2$0.next = 10;
-                        return returnDetails ? this.entities[entity] : Math.floor(entity);
-
-                    case 10:
-                        context$2$0.next = 3;
-                        break;
-
-                    case 12:
-                    case 'end':
-                        return context$2$0.stop();
-                }
-            }, getEntitiesWithOnly, this);
-        })
-    }, {
-        key: 'getEntitiesWithout',
-        value: regeneratorRuntime.mark(function getEntitiesWithout(components) {
-            var returnDetails = arguments[1] === undefined ? false : arguments[1];
-            var entity;
-            return regeneratorRuntime.wrap(function getEntitiesWithout$(context$2$0) {
-                while (1) switch (context$2$0.prev = context$2$0.next) {
-                    case 0:
-                        if (components) {
-                            context$2$0.next = 2;
-                            break;
-                        }
-
-                        return context$2$0.delegateYield(this.getEntities(returnDetails), 't0', 2);
-
-                    case 2:
-                        context$2$0.t1 = regeneratorRuntime.keys(this.entities);
-
-                    case 3:
-                        if ((context$2$0.t2 = context$2$0.t1()).done) {
-                            context$2$0.next = 12;
-                            break;
-                        }
-
-                        entity = context$2$0.t2.value;
-
-                        if (!(entity > this.currentMaxEntity)) {
-                            context$2$0.next = 7;
-                            break;
-                        }
-
-                        return context$2$0.abrupt('return');
-
-                    case 7:
-                        if (!(this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) !== components)) {
-                            context$2$0.next = 10;
-                            break;
-                        }
-
-                        context$2$0.next = 10;
-                        return returnDetails ? this.entities[entity] : Math.floor(entity);
-
-                    case 10:
-                        context$2$0.next = 3;
-                        break;
-
-                    case 12:
-                    case 'end':
-                        return context$2$0.stop();
-                }
-            }, getEntitiesWithout, this);
         })
     }]);
 
@@ -532,7 +485,8 @@ var SystemManager = (function () {
         }
     }, {
         key: 'addSystem',
-        value: function addSystem(callback, components) {
+        value: function addSystem(callback) {
+            var components = arguments[1] === undefined ? NoneComponent : arguments[1];
             var type = arguments[2] === undefined ? SystemType.Logic : arguments[2];
             var selector = arguments[3] === undefined ? SelectorType.GetWith : arguments[3];
 
@@ -559,138 +513,124 @@ var SystemManager = (function () {
         }
     }, {
         key: 'removeSystem',
-        value: function removeSystem(system, type) {
+        value: function removeSystem(system) {
             if (!Number.isInteger(system)) {
                 return false;
             }
 
-            if (type === null || type === undefined) {
-                var _iteratorNormalCompletion4 = true;
-                var _didIteratorError4 = false;
-                var _iteratorError4 = undefined;
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
 
-                try {
-                    for (var _iterator4 = this.systems[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                        var _step4$value = _slicedToArray(_step4.value, 2);
+            try {
+                for (var _iterator4 = this.systems[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var _step4$value = _slicedToArray(_step4.value, 2);
 
-                        var typeSystem = _step4$value[1];
-                        var _iteratorNormalCompletion5 = true;
-                        var _didIteratorError5 = false;
-                        var _iteratorError5 = undefined;
+                    var typeSystem = _step4$value[1];
+                    var _iteratorNormalCompletion5 = true;
+                    var _didIteratorError5 = false;
+                    var _iteratorError5 = undefined;
 
-                        try {
-                            for (var _iterator5 = typeSystem[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                                var _step5$value = _slicedToArray(_step5.value, 1);
-
-                                var id = _step5$value[0];
-
-                                if (id === system) {
-                                    return typeSystem['delete'](system);
-                                }
-                            }
-                        } catch (err) {
-                            _didIteratorError5 = true;
-                            _iteratorError5 = err;
-                        } finally {
-                            try {
-                                if (!_iteratorNormalCompletion5 && _iterator5['return']) {
-                                    _iterator5['return']();
-                                }
-                            } finally {
-                                if (_didIteratorError5) {
-                                    throw _iteratorError5;
-                                }
-                            }
-                        }
-                    }
-                } catch (err) {
-                    _didIteratorError4 = true;
-                    _iteratorError4 = err;
-                } finally {
                     try {
-                        if (!_iteratorNormalCompletion4 && _iterator4['return']) {
-                            _iterator4['return']();
+                        for (var _iterator5 = typeSystem[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                            var _step5$value = _slicedToArray(_step5.value, 1);
+
+                            var id = _step5$value[0];
+
+                            if (id === system) {
+                                return typeSystem['delete'](system);
+                            }
                         }
+                    } catch (err) {
+                        _didIteratorError5 = true;
+                        _iteratorError5 = err;
                     } finally {
-                        if (_didIteratorError4) {
-                            throw _iteratorError4;
+                        try {
+                            if (!_iteratorNormalCompletion5 && _iterator5['return']) {
+                                _iterator5['return']();
+                            }
+                        } finally {
+                            if (_didIteratorError5) {
+                                throw _iteratorError5;
+                            }
                         }
                     }
                 }
-
-                return false;
-            } else {
-                var typeSystem = this.systems.get(type);
-
-                return typeSystem !== undefined ? typeSystem['delete'](system) : false;
+            } catch (err) {
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion4 && _iterator4['return']) {
+                        _iterator4['return']();
+                    }
+                } finally {
+                    if (_didIteratorError4) {
+                        throw _iteratorError4;
+                    }
+                }
             }
+
+            return false;
         }
     }, {
         key: 'getSystem',
         value: function getSystem(system) {
-            var type = arguments[1] === undefined ? SystemType.Logic : arguments[1];
-
             if (!Number.isInteger(system)) {
                 return;
             }
 
-            if (type === null || type === undefined) {
-                var _iteratorNormalCompletion6 = true;
-                var _didIteratorError6 = false;
-                var _iteratorError6 = undefined;
+            var _iteratorNormalCompletion6 = true;
+            var _didIteratorError6 = false;
+            var _iteratorError6 = undefined;
 
-                try {
-                    for (var _iterator6 = this.systems[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-                        var _step6$value = _slicedToArray(_step6.value, 2);
+            try {
+                for (var _iterator6 = this.systems[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                    var _step6$value = _slicedToArray(_step6.value, 2);
 
-                        var typeSystem = _step6$value[1];
-                        var _iteratorNormalCompletion7 = true;
-                        var _didIteratorError7 = false;
-                        var _iteratorError7 = undefined;
+                    var typeSystem = _step6$value[1];
+                    var _iteratorNormalCompletion7 = true;
+                    var _didIteratorError7 = false;
+                    var _iteratorError7 = undefined;
 
-                        try {
-                            for (var _iterator7 = typeSystem[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-                                var _step7$value = _slicedToArray(_step7.value, 1);
-
-                                var id = _step7$value[0];
-
-                                if (id === system) {
-                                    return typeSystem.get(system);
-                                }
-                            }
-                        } catch (err) {
-                            _didIteratorError7 = true;
-                            _iteratorError7 = err;
-                        } finally {
-                            try {
-                                if (!_iteratorNormalCompletion7 && _iterator7['return']) {
-                                    _iterator7['return']();
-                                }
-                            } finally {
-                                if (_didIteratorError7) {
-                                    throw _iteratorError7;
-                                }
-                            }
-                        }
-                    }
-                } catch (err) {
-                    _didIteratorError6 = true;
-                    _iteratorError6 = err;
-                } finally {
                     try {
-                        if (!_iteratorNormalCompletion6 && _iterator6['return']) {
-                            _iterator6['return']();
+                        for (var _iterator7 = typeSystem[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+                            var _step7$value = _slicedToArray(_step7.value, 1);
+
+                            var id = _step7$value[0];
+
+                            if (id === system) {
+                                return typeSystem.get(system);
+                            }
                         }
+                    } catch (err) {
+                        _didIteratorError7 = true;
+                        _iteratorError7 = err;
                     } finally {
-                        if (_didIteratorError6) {
-                            throw _iteratorError6;
+                        try {
+                            if (!_iteratorNormalCompletion7 && _iterator7['return']) {
+                                _iterator7['return']();
+                            }
+                        } finally {
+                            if (_didIteratorError7) {
+                                throw _iteratorError7;
+                            }
                         }
                     }
                 }
-            } else {
-                var typeSystem = this.systems.get(type);
-
-                return typeSystem !== undefined ? typeSystem.get(system) : undefined;
+            } catch (err) {
+                _didIteratorError6 = true;
+                _iteratorError6 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion6 && _iterator6['return']) {
+                        _iterator6['return']();
+                    }
+                } finally {
+                    if (_didIteratorError6) {
+                        throw _iteratorError6;
+                    }
+                }
             }
         }
     }]);
