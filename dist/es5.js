@@ -640,3 +640,138 @@ var SystemManager = (function () {
 
 exports.SystemManager = SystemManager;
 exports.SystemType = SystemType;
+
+var EntityFactory = (function () {
+    function EntityFactory() {
+        _classCallCheck(this, EntityFactory);
+
+        this.initializers = {};
+        this.configuration = new Map();
+    }
+
+    _createClass(EntityFactory, [{
+        key: 'registerInitializer',
+        value: function registerInitializer(component, initializer) {
+            if (!Number.isInteger(component) || typeof initializer !== 'function') {
+                return;
+            }
+
+            this.initializers[component] = initializer;
+        }
+    }, {
+        key: 'build',
+        value: function build() {
+            this.configuration = new Map();
+
+            return this;
+        }
+    }, {
+        key: 'withComponent',
+        value: function withComponent(component, initializer) {
+            if (!Number.isInteger(component)) {
+                return;
+            }
+
+            if (typeof initializer !== 'function') {
+                initializer = this.initializers[component] ? this.initializers[component] : initializer = function (component) {};
+            }
+
+            this.configuration.set(component, initializer);
+
+            return this;
+        }
+    }, {
+        key: 'createConfiguration',
+        value: function createConfiguration() {
+            return this.configuration;
+        }
+    }, {
+        key: 'create',
+        value: function create(world) {
+            var count = arguments[1] === undefined ? 1 : arguments[1];
+            var configuration = arguments[2] === undefined ? undefined : arguments[2];
+
+            if (!(world instanceof World)) {
+                return [];
+            }
+
+            configuration = configuration || this.configuration;
+
+            var components = NoneComponent;
+
+            var _iteratorNormalCompletion8 = true;
+            var _didIteratorError8 = false;
+            var _iteratorError8 = undefined;
+
+            try {
+                for (var _iterator8 = configuration[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+                    var component = _step8.value;
+
+                    components |= component;
+                }
+            } catch (err) {
+                _didIteratorError8 = true;
+                _iteratorError8 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion8 && _iterator8['return']) {
+                        _iterator8['return']();
+                    }
+                } finally {
+                    if (_didIteratorError8) {
+                        throw _iteratorError8;
+                    }
+                }
+            }
+
+            var entities = [];
+
+            for (var i = 0; i < count; ++i) {
+                var entity = world.newEntity(components, true);
+
+                var _iteratorNormalCompletion9 = true;
+                var _didIteratorError9 = false;
+                var _iteratorError9 = undefined;
+
+                try {
+                    for (var _iterator9 = Object.keys(entity)[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+                        var component = _step9.value;
+
+                        if (!Number.isInteger(component) || (entity.id & component) !== component) {
+                            continue;
+                        }
+
+                        // todo there might be a need to capture returned scalars and primites.. check old factory
+                        // todo or maybe entity should be this if not possible??
+                        configuration[component].initializer.call(entity[component]);
+                    }
+                } catch (err) {
+                    _didIteratorError9 = true;
+                    _iteratorError9 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion9 && _iterator9['return']) {
+                            _iterator9['return']();
+                        }
+                    } finally {
+                        if (_didIteratorError9) {
+                            throw _iteratorError9;
+                        }
+                    }
+                }
+
+                entities.push(entity);
+            }
+
+            return entities;
+        }
+    }]);
+
+    return EntityFactory;
+})();
+
+exports.EntityFactory = EntityFactory;
+
+// todo make a generic reset function if no initializer function is passed in
+// todo need to work for all types -> strings, numbers, objects, functions, classes etc.
+// todo needs to be documented

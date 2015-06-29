@@ -73,8 +73,7 @@ export default class SystemManager {
                 }
             }
         }
-    
-        
+
         return false;
     }
     
