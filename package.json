@@ -8,7 +8,7 @@
     "bundle": "node ./bundle",
     "clean": "./node_modules/.bin/rimraf ./dist/*",
     "jshint": "jshint ./src/core",
-    "test": "./node_modules/.bin/istanbul cover _mocha test/* -- --compilers js:babel/register -R dot",
+    "test": "./node_modules/.bin/istanbul cover _mocha test/*  -- --compilers js:babel/register -R dot",
     "prebuild": "npm run jshint && npm run clean && npm run bundle",
     "build": "npm run babel",
     "predeploy": "npm run build",

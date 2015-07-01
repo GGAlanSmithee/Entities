@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { EntityFactory } from '../../../src/core/Entity';
+import { EntityFactory } from '../../src/core/Entity';
 
 describe('EntityFactory', function() {
     describe('constructor()', () => {
