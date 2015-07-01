@@ -645,7 +645,7 @@ var EntityFactory = (function () {
     function EntityFactory() {
         _classCallCheck(this, EntityFactory);
 
-        this.initializers = {};
+        this.initializers = new Map();
         this.configuration = new Map();
     }
 
@@ -656,7 +656,7 @@ var EntityFactory = (function () {
                 return;
             }
 
-            this.initializers[component] = initializer;
+            this.initializers.set(component, initializer);
         }
     }, {
         key: 'build',
@@ -673,7 +673,7 @@ var EntityFactory = (function () {
             }
 
             if (typeof initializer !== 'function') {
-                initializer = this.initializers[component] ? this.initializers[component] : initializer = function (component) {};
+                initializer = this.initializers.get(component) ? this.initializers.get(component) : initializer = function (component) {};
             }
 
             this.configuration.set(component, initializer);

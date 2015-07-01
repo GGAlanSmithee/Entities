@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { EntityFactory } from '../../src/core/Entity';
+import { EntityFactory } from '../../../src/core/Entity';
 
 describe('EntityFactory', function() {
     describe('constructor()', () => {
@@ -17,6 +17,14 @@ describe('EntityFactory', function() {
         
         it('can be used to instantiate a new World', () => {
             expect(this.entityFactory).to.be.an.instanceof(EntityFactory);
+        });
+        
+        it('instantiates [configuration] as a Map', () => {
+            expect(this.entityFactory.configuration).to.be.an.instanceof(Map);
+        });
+        
+        it('instantiates [initializers] as a Map', () => {
+            expect(this.entityFactory.initializers).to.be.an.instanceof(Map);
         });
     });
 });

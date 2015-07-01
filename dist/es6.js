@@ -341,7 +341,7 @@ exports.SystemType = SystemType;
 
 class EntityFactory {
     constructor() {
-        this.initializers  = {};
+        this.initializers  = new Map();
         this.configuration = new Map();
     }
     
@@ -350,7 +350,7 @@ class EntityFactory {
             return;
         }
         
-        this.initializers[component] = initializer;
+        this.initializers.set(component, initializer);
     }
     
     build() {
@@ -365,8 +365,8 @@ class EntityFactory {
         }
         
         if (typeof initializer !== 'function') {
-            initializer = this.initializers[component] ?
-                this.initializers[component] :
+            initializer = this.initializers.get(component) ?
+                this.initializers.get(component) :
                 initializer = component => {
                     // todo make a generic reset function if no initializer function is passed in
                     // todo need to work for all types -> strings, numbers, objects, functions, classes etc.
