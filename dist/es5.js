@@ -704,7 +704,7 @@ var EntityFactory = (function () {
             var _iteratorError8 = undefined;
 
             try {
-                for (var _iterator8 = configuration[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+                for (var _iterator8 = configuration.keys()[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
                     var component = _step8.value;
 
                     components |= component;
@@ -729,19 +729,26 @@ var EntityFactory = (function () {
             for (var i = 0; i < count; ++i) {
                 var entity = world.newEntity(components, true);
 
+                if (!entity) {
+                    continue;
+                }
+
                 var _iteratorNormalCompletion9 = true;
                 var _didIteratorError9 = false;
                 var _iteratorError9 = undefined;
 
                 try {
-                    for (var _iterator9 = Object.keys(entity)[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
-                        var component = _step9.value;
+                    for (var _iterator9 = configuration[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+                        var _step9$value = _slicedToArray(_step9.value, 2);
 
-                        if ((entity.id & component) !== component || !configuration[component]) {
+                        var component = _step9$value[0];
+                        var initializer = _step9$value[1];
+
+                        if (!initializer) {
                             continue;
                         }
 
-                        var result = configuration[component].initializer.call(entity[component]);
+                        var result = initializer.call(entity[component]);
 
                         if (typeof entity[component] !== 'function' && typeof entity[component] !== 'object' && result !== undefined) {
                             entity[component] = result;

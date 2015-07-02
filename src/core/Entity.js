@@ -48,7 +48,7 @@ export class EntityFactory {
 
         let components = NoneComponent;
         
-        for (let component of configuration) {
+        for (let component of configuration.keys()) {
             components |= component;
         }
         
@@ -57,13 +57,17 @@ export class EntityFactory {
         for (let i = 0; i < count; ++i) {
             let entity = world.newEntity(components, true);
             
-            for (let component of Object.keys(entity)) {
-                if ((entity.id & component) !== component || !configuration[component]) {
+            if (!entity) {
+                continue;
+            }
+                
+            for (let [component, initializer] of configuration) {
+                if (!initializer) {
                     continue;
                 }
+
+                let result = initializer.call(entity[component]);
                 
-                let result = configuration[component].initializer.call(entity[component]);
-                    
                 if (typeof entity[component] !== 'function' && typeof entity[component] !== 'object' && result !== undefined) {
                     entity[component] = result;
                 }
