@@ -669,11 +669,11 @@ var EntityFactory = (function () {
         key: 'withComponent',
         value: function withComponent(component, initializer) {
             if (!Number.isInteger(component)) {
-                return;
+                return this;
             }
 
             if (typeof initializer !== 'function') {
-                initializer = this.initializers.get(component) ? this.initializers.get(component) : initializer = function (component) {};
+                initializer = this.initializers.get(component);
             }
 
             this.configuration.set(component, initializer);
@@ -737,13 +737,15 @@ var EntityFactory = (function () {
                     for (var _iterator9 = Object.keys(entity)[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
                         var component = _step9.value;
 
-                        if (!Number.isInteger(component) || (entity.id & component) !== component) {
+                        if ((entity.id & component) !== component) {
                             continue;
                         }
 
-                        // todo there might be a need to capture returned scalars and primites.. check old factory
-                        // todo or maybe entity should be this if not possible??
-                        configuration[component].initializer.call(entity[component]);
+                        var result = configuration[component].initializer.call(entity[component]);
+
+                        if (typeof entity[component] !== 'function' && typeof entity[component] !== 'object' && result !== undefined) {
+                            entity[component] = result;
+                        }
                     }
                 } catch (err) {
                     _didIteratorError9 = true;
@@ -771,7 +773,3 @@ var EntityFactory = (function () {
 })();
 
 exports.EntityFactory = EntityFactory;
-
-// todo make a generic reset function if no initializer function is passed in
-// todo need to work for all types -> strings, numbers, objects, functions, classes etc.
-// todo needs to be documented

@@ -27,13 +27,7 @@ export class EntityFactory {
         }
         
         if (typeof initializer !== 'function') {
-            initializer = this.initializers.get(component) ?
-                this.initializers.get(component) :
-                initializer = component => {
-                    // todo make a generic reset function if no initializer function is passed in
-                    // todo need to work for all types -> strings, numbers, objects, functions, classes etc.
-                    // todo needs to be documented
-                };
+            initializer = this.initializers.get(component);
         }
         
         this.configuration.set(component, initializer);
@@ -64,13 +58,15 @@ export class EntityFactory {
             let entity = world.newEntity(components, true);
             
             for (let component of Object.keys(entity)) {
-                if (!Number.isInteger(component) || (entity.id & component) !== component) {
+                if ((entity.id & component) !== component || !configuration[component]) {
                     continue;
                 }
                 
-                // todo there might be a need to capture returned scalars and primites.. check old factory 
-                // todo or maybe entity should be this if not possible??
-                configuration[component].initializer.call(entity[component]);
+                let result = configuration[component].initializer.call(entity[component]);
+                    
+                if (typeof entity[component] !== 'function' && typeof entity[component] !== 'object' && result !== undefined) {
+                    entity[component] = result;
+                }
             }
             
             entities.push(entity);
