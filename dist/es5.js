@@ -523,19 +523,15 @@ var SystemManager = (function () {
             var _iteratorError4 = undefined;
 
             try {
-                for (var _iterator4 = this.systems[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                    var _step4$value = _slicedToArray(_step4.value, 2);
-
-                    var typeSystem = _step4$value[1];
+                for (var _iterator4 = this.systems.values()[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var typeSystem = _step4.value;
                     var _iteratorNormalCompletion5 = true;
                     var _didIteratorError5 = false;
                     var _iteratorError5 = undefined;
 
                     try {
-                        for (var _iterator5 = typeSystem[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                            var _step5$value = _slicedToArray(_step5.value, 1);
-
-                            var id = _step5$value[0];
+                        for (var _iterator5 = typeSystem.keys()[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                            var id = _step5.value;
 
                             if (id === system) {
                                 return typeSystem['delete'](system);
@@ -585,19 +581,15 @@ var SystemManager = (function () {
             var _iteratorError6 = undefined;
 
             try {
-                for (var _iterator6 = this.systems[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-                    var _step6$value = _slicedToArray(_step6.value, 2);
-
-                    var typeSystem = _step6$value[1];
+                for (var _iterator6 = this.systems.values()[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                    var typeSystem = _step6.value;
                     var _iteratorNormalCompletion7 = true;
                     var _didIteratorError7 = false;
                     var _iteratorError7 = undefined;
 
                     try {
-                        for (var _iterator7 = typeSystem[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-                            var _step7$value = _slicedToArray(_step7.value, 1);
-
-                            var id = _step7$value[0];
+                        for (var _iterator7 = typeSystem.keys()[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+                            var id = _step7.value;
 
                             if (id === system) {
                                 return typeSystem.get(system);

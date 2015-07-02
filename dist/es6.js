@@ -310,8 +310,8 @@ class SystemManager {
             return false;
         }
 
-        for (let [,typeSystem] of this.systems) {
-            for (let [id] of typeSystem) {
+        for (let typeSystem of this.systems.values()) {
+            for (let id of typeSystem.keys()) {
                 if (id === system) {
                     return typeSystem.delete(system);
                 }
@@ -326,8 +326,8 @@ class SystemManager {
             return;
         }
         
-        for (let [,typeSystem] of this.systems) {
-            for (let [id] of typeSystem) {
+        for (let typeSystem of this.systems.values()) {
+            for (let id of typeSystem.keys()) {
                 if (id === system) {
                     return typeSystem.get(system);
                 }
