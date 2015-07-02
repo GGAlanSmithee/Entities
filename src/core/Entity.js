@@ -23,7 +23,7 @@ export class EntityFactory {
     
     withComponent(component, initializer) {
         if (!Number.isInteger(component)) {
-            return;
+            return this;
         }
         
         if (typeof initializer !== 'function') {

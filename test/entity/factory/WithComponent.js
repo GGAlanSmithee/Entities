@@ -87,5 +87,13 @@ describe('EntityFactory', function() {
             
             expect(this.entityFactory).property('configuration').property('size').to.equal(0);
         });
+        
+        it('returns this (the entityFactory instance)', () => {
+            expect(this.entityFactory.withComponent(1)).to.equal(this.entityFactory);
+        });
+        
+        it('returns this (the entityFactory instance) even if [component] is not registered (is invalid)', () => {
+            expect(this.entityFactory.withComponent()).to.equal(this.entityFactory);
+        });
     });
 });
