@@ -396,7 +396,7 @@ class EntityFactory {
             let entity = world.newEntity(components, true);
             
             for (let component of Object.keys(entity)) {
-                if ((entity.id & component) !== component) {
+                if ((entity.id & component) !== component || !configuration[component]) {
                     continue;
                 }
                 

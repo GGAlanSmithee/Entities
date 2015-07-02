@@ -737,7 +737,7 @@ var EntityFactory = (function () {
                     for (var _iterator9 = Object.keys(entity)[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
                         var component = _step9.value;
 
-                        if ((entity.id & component) !== component) {
+                        if ((entity.id & component) !== component || !configuration[component]) {
                             continue;
                         }
 
