@@ -1,6 +1,12 @@
 import World from './World';
 import { NoneComponent } from './Component';
 
+export default class EntityManager {
+    constructor() {
+        
+    }    
+}
+
 export class EntityFactory {
     constructor() {
         this.initializers  = new Map();

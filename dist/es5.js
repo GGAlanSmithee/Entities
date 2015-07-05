@@ -460,28 +460,18 @@ var SystemManager = (function () {
         this.systems.set(SystemType.Logic, new Map());
         this.systems.set(SystemType.Render, new Map());
         this.systems.set(SystemType.CleanUp, new Map());
-
-        this.maxRegisteredSystemId = -1;
     }
 
     _createClass(SystemManager, [{
         key: 'getNextSystemId',
         value: function getNextSystemId() {
-            if (!Number.isInteger(this.maxRegisteredSystemId)) {
-                this.maxRegisteredSystemId = -1;
-            }
-
-            var max = this.maxRegisteredSystemId;
+            var max = -1;
 
             this.systems.forEach(function (system) {
                 max = Math.max.apply(Math, [max].concat(_toConsumableArray(system.keys())));
             });
 
-            if (max > this.maxRegisteredSystemId) {
-                this.maxRegisteredSystemId = max;
-            }
-
-            return this.maxRegisteredSystemId + 1;
+            return max + 1;
         }
     }, {
         key: 'addSystem',
@@ -509,7 +499,7 @@ var SystemManager = (function () {
 
             this.systems.get(type).set(systemId, system);
 
-            return this.maxRegisteredSystemId = systemId;
+            return systemId;
         }
     }, {
         key: 'removeSystem',
@@ -632,6 +622,10 @@ var SystemManager = (function () {
 
 exports.SystemManager = SystemManager;
 exports.SystemType = SystemType;
+
+var EntityManager = function EntityManager() {
+    _classCallCheck(this, EntityManager);
+};
 
 var EntityFactory = (function () {
     function EntityFactory() {
