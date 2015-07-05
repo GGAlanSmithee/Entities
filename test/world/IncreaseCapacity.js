@@ -46,7 +46,7 @@ describe('World', function() {
             
             expect(this.world.entities).property('length').to.equal(200);
             
-            for (var i = 0; i < this.world.capacity; ++i) {
+            for (let i = 0; i < this.world.capacity; ++i) {
                 expect(this.world.entities[i]).to.be.an('object');
             }
             
@@ -54,7 +54,7 @@ describe('World', function() {
             
             expect(this.world.entities).property('length').to.equal(400);
             
-            for (var i = 0; i < this.world.capacity; ++i) {
+            for (let i = 0; i < this.world.capacity; ++i) {
                 expect(this.world.entities[i]).to.be.an('object');
             }
         });

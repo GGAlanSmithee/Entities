@@ -68,7 +68,7 @@ describe('SystemManager', function() {
         
         it('registeres a system with the correct correct [components] and [callback]', () => {
             
-            var spy = sinon.spy();
+            let spy = sinon.spy();
             
             let systemId = this.systemManager.addSystem(spy, 1 | 2, SystemType.Init, SelectorType.Get);
             

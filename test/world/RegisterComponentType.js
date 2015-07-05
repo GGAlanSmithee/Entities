@@ -26,11 +26,11 @@ describe('World', function() {
         });
         
         it('returns the components id (number) when [returnDetails] = false or omitted', () => {
-            var component = {
+            let component = {
                 x : 20
             };
             
-            var registeredComponent = this.world.registerComponentType(component, ComponentType.Static, false);
+            let registeredComponent = this.world.registerComponentType(component, ComponentType.Static, false);
             expect(registeredComponent).to.be.a('number');
             expect(registeredComponent).to.equal(1);
             
@@ -44,7 +44,7 @@ describe('World', function() {
                 x : 20
             };
             
-            var registeredComponent = this.world.registerComponentType(component, ComponentType.Static, true);
+            let registeredComponent = this.world.registerComponentType(component, ComponentType.Static, true);
             expect(registeredComponent).to.be.an('object');
         });
         
@@ -53,7 +53,7 @@ describe('World', function() {
                 x : 20
             };
             
-            var registeredComponent = this.world.components.get(this.world.registerComponentType(component));
+            let registeredComponent = this.world.components.get(this.world.registerComponentType(component));
             
             expect(registeredComponent).to.be.an('object');
             expect(registeredComponent).property('type').to.equal(ComponentType.Static);
@@ -65,11 +65,11 @@ describe('World', function() {
         });
         
         it('increments component ids as bits [1, 2, 4, 8, 16, ...] when components are registered', () => {
-            var component = {
+            let component = {
                 x : 20
             };
             
-            var componentId = this.world.registerComponentType(component, ComponentType.Static, false);
+            let componentId = this.world.registerComponentType(component, ComponentType.Static, false);
             expect(componentId).to.equal(1);
             
             componentId = this.world.registerComponentType(component, ComponentType.Static, false);
@@ -84,7 +84,7 @@ describe('World', function() {
             componentId = this.world.registerComponentType(component, ComponentType.Static, false);
             expect(componentId).to.equal(16);
             
-            var components = this.world.components;
+            let components = this.world.components;
             
             expect(components).to.be.a('map');
             expect(components.has(0)).to.be.true;
@@ -106,17 +106,17 @@ describe('World', function() {
             expect(components.has(16)).to.be.true;
             expect(components.has(17)).to.be.false;
             
-            for (var i in components) {
+            for (let i in components) {
                 expect(i % 2).to.equal(0);
             }
         });
         
         it('succesfully registers a static component', () => {
-            var component = {
+            let component = {
                 x : 20
             };
             
-            var registeredComponent = this.world.components.get(this.world.registerComponentType(component));
+            let registeredComponent = this.world.components.get(this.world.registerComponentType(component));
             
             expect(registeredComponent).to.have.property('object');
             expect(registeredComponent).to.have.property('type');
@@ -126,11 +126,11 @@ describe('World', function() {
         });
         
         it('succesfully registers a dynamic component', () => {
-            var component = {
+            let component = {
                 x : 20
             };
             
-            var registeredComponent = this.world.components.get(this.world.registerComponentType(component, ComponentType.Dynamic));
+            let registeredComponent = this.world.components.get(this.world.registerComponentType(component, ComponentType.Dynamic));
             
             expect(registeredComponent).to.have.property('object');
             expect(registeredComponent).to.have.property('type');
@@ -140,11 +140,11 @@ describe('World', function() {
         });
         
         it('succesfully registers a semidynamic component', () => {
-            var component = {
+            let component = {
                 x : 20
             };
             
-            var registeredComponent = this.world.components.get(this.world.registerComponentType(component, ComponentType.SemiDynamic));
+            let registeredComponent = this.world.components.get(this.world.registerComponentType(component, ComponentType.SemiDynamic));
             
             expect(registeredComponent).to.have.property('object');
             expect(registeredComponent).to.have.property('type');
@@ -169,25 +169,25 @@ describe('World', function() {
         });
         
         it('does not add a component to all existing entities when registering a semi dynamic component', () => {
-            var component = {
+            let component = {
                 x : 20
             };
             
-            var componentId = this.world.registerComponentType(component, ComponentType.SemiDynamic, false);
+            let componentId = this.world.registerComponentType(component, ComponentType.SemiDynamic, false);
             
-            for (var i = 0; i < this.world.entities.length; ++i) {
+            for (let i = 0; i < this.world.entities.length; ++i) {
                 expect(this.world.entities[i]).to.not.have.property([componentId]);
             }
         });
         
         it('does not add a component to all existing entities when registering a dynamic component', () => {
-            var component = {
+            let component = {
                 x : 20
             };
             
-            var componentId = this.world.registerComponentType(component, ComponentType.Dynamic, false);
+            let componentId = this.world.registerComponentType(component, ComponentType.Dynamic, false);
             
-            for (var i = 0; i < this.world.entities.length; ++i) {
+            for (let i = 0; i < this.world.entities.length; ++i) {
                 expect(this.world.entities[i]).to.not.have.property([componentId]);
             }
         });

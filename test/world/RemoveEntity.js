@@ -70,7 +70,7 @@ describe('World', function() {
         
         it('exits early when [entity] is more than [maxEntity]', () => {
             
-            var oldLength = this.world.entities.length;
+            let oldLength = this.world.entities.length;
             
             this.world.removeEntity(this.world.currentMaxEntity + 1);
             
