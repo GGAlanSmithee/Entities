@@ -4,24 +4,24 @@ export default class EventHandler {
     constructor() {
         this.events = new Map();
     }
-    
+
     emptyPromise() {
         return new Promise(function(resolve, reject) {
             resolve();
         });
     }
 
-    promise(event, context, args, timeout) {
+    promise(callback, context, args, timeout) {
         if (timeout) {
             return new Promise(function(resolve, reject) {
                 setTimeout(function(){
-                    resolve(event.apply(context, ...args));
+                    resolve(callback.apply(context, ...args));
                 }, timeout);
             });
         }
         
         return new Promise(function(resolve, reject) {
-            resolve(event.apply(context, ...args));
+            resolve(callback.apply(context, ...args));
         });
     }
     
@@ -74,8 +74,8 @@ export default class EventHandler {
         
         let promises = [];
         
-        for (let event of self.events.get(event).values()) {
-            promises.push(self.promise(event, context, args));
+        for (let callback of self.events.get(event).values()) {
+            promises.push(self.promise(callback, context, args));
         }
         
         return Promise.all(promises);
@@ -104,8 +104,8 @@ export default class EventHandler {
         
         let promises = [];
         
-        for (let event of self.events.get(event).values()) {
-            promises.push(self.promise(event, context, args, timeout));
+        for (let callback of self.events.get(event).values()) {
+            promises.push(self.promise(callback, context, args, timeout));
         }
         
         return Promise.all(promises);

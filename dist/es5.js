@@ -8,6 +8,9 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+var EventHandler = require('.core/Event');
+EventHandler = 'default' in EventHandler ? EventHandler['default'] : EventHandler;
+
 var NoneComponent = 0;
 
 var ComponentType = {
@@ -15,9 +18,6 @@ var ComponentType = {
     SemiDynamic: 1,
     Static: 2
 };
-
-exports.NoneComponent = NoneComponent;
-exports.ComponentType = ComponentType;
 
 var SelectorType = {
     Get: 0,
@@ -440,9 +440,6 @@ var World = (function () {
     return World;
 })();
 
-exports.World = World;
-exports.SelectorType = SelectorType;
-
 var SystemType = {
     Init: 0,
     Logic: 1,
@@ -620,9 +617,6 @@ var SystemManager = (function () {
     return SystemManager;
 })();
 
-exports.SystemManager = SystemManager;
-exports.SystemType = SystemType;
-
 var EntityManager = function EntityManager() {
     _classCallCheck(this, EntityManager);
 };
@@ -765,4 +759,14 @@ var EntityFactory = (function () {
     return EntityFactory;
 })();
 
-exports.EntityFactory = EntityFactory;
+var Entities = { NoneComponent: NoneComponent,
+    ComponentType: ComponentType,
+    World: World,
+    SelectorType: SelectorType,
+    SystemManager: SystemManager,
+    SystemType: SystemType,
+    EventHandler: EventHandler,
+    EntityManager: EntityManager,
+    EntityFactory: EntityFactory };
+
+exports['default'] = Entities;

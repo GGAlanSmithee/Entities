@@ -1,5 +1,8 @@
 'use strict';
 
+var EventHandler = require('.core/Event');
+EventHandler = ('default' in EventHandler ? EventHandler['default'] : EventHandler);
+
 const NoneComponent = 0;
 
 const ComponentType = {
@@ -7,9 +10,6 @@ const ComponentType = {
     SemiDynamic : 1,
     Static      : 2
 };
-
-exports.NoneComponent = NoneComponent;
-exports.ComponentType = ComponentType;
 
 const SelectorType = {
     Get         : 0,
@@ -242,9 +242,6 @@ class World {
     }
 }
 
-exports.World = World;
-exports.SelectorType = SelectorType;
-
 const SystemType = {
     Init    : 0,
     Logic   : 1,
@@ -325,9 +322,6 @@ class SystemManager {
         }
     }
 }
-
-exports.SystemManager = SystemManager;
-exports.SystemType = SystemType;
 
 class EntityManager {
     constructor() {
@@ -414,5 +408,14 @@ class EntityFactory {
     }
 }
 
-exports.EntityFactory = EntityFactory;
+var Entities = { NoneComponent,
+                 ComponentType,
+                 World,
+                 SelectorType,
+                 SystemManager,
+                 SystemType,
+                 EventHandler,
+                 EntityManager,
+                 EntityFactory };
 
+exports['default'] = Entities;
