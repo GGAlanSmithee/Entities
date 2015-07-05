@@ -52,9 +52,5 @@ describe('SystemManager', function() {
             expect(initSystems).to.be.an.instanceof(Map);
             expect(initSystems).property('size').to.equal(0);
         });
-        
-        it('sets [maxRegisteredSystemId] = -1', () => {
-            expect(this.systemManager.maxRegisteredSystemId).to.equal(-1);
-        });
     });
 });

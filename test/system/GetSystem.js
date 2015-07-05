@@ -16,8 +16,6 @@ describe('SystemManager', function() {
             helpers.registerSystem(this.systemManager, 2, 2 | 4,  () => { return 2 | 4 },  SystemType.Logic,   SelectorType.GetWith);
             helpers.registerSystem(this.systemManager, 3, 4 | 8,  () => { return 4 | 8 },  SystemType.Render,  SelectorType.GetWithOnly);
             helpers.registerSystem(this.systemManager, 4, 8 | 16, () => { return 8 | 16 }, SystemType.CleanUp, SelectorType.GetWithout);
-            
-            this.systemManager.maxRegisteredSystemId = 4;
         });
         
         afterEach(() => {

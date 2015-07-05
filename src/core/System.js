@@ -16,26 +16,16 @@ export default class SystemManager {
         this.systems.set(SystemType.Logic,   new Map());
         this.systems.set(SystemType.Render,  new Map());
         this.systems.set(SystemType.CleanUp, new Map());
-        
-        this.maxRegisteredSystemId = -1;
     }
     
     getNextSystemId() {
-        if (!Number.isInteger(this.maxRegisteredSystemId)) {
-            this.maxRegisteredSystemId = -1;
-        }
-        
-        let max = this.maxRegisteredSystemId;
+        let max = -1;
         
         this.systems.forEach(system => {
             max = Math.max(max, ...system.keys());
         });
         
-        if (max > this.maxRegisteredSystemId) {
-            this.maxRegisteredSystemId = max;
-        }
-        
-        return this.maxRegisteredSystemId + 1;
+        return max + 1;
     }
     
     addSystem(callback, components = NoneComponent, type = SystemType.Logic, selector = SelectorType.GetWith) {
@@ -58,7 +48,7 @@ export default class SystemManager {
     	
     	this.systems.get(type).set(systemId, system);
 
-    	return (this.maxRegisteredSystemId = systemId);
+    	return systemId;
     }
     
     removeSystem(system) {

@@ -15,8 +15,6 @@ describe('SystemManager', function() {
             helpers.registerSystem(this.systemManager, 2);
             helpers.registerSystem(this.systemManager, 3);
             helpers.registerSystem(this.systemManager, 4);
-            
-            this.systemManager.maxRegisteredSystemId = 4;
         });
         
         afterEach(() => {
@@ -28,7 +26,6 @@ describe('SystemManager', function() {
         });
         
         it('removes a system', () => {
-            expect(this.systemManager.maxRegisteredSystemId).to.equal(4);
             expect(this.systemManager.systems.get(SystemType.Init).has(1)).to.be.true;
             expect(this.systemManager.systems.get(SystemType.Init).has(2)).to.be.true;
             expect(this.systemManager.systems.get(SystemType.Init).has(3)).to.be.true;
@@ -36,7 +33,6 @@ describe('SystemManager', function() {
             
             this.systemManager.removeSystem(1);
             
-            expect(this.systemManager.maxRegisteredSystemId).to.equal(4);
             expect(this.systemManager.systems.get(SystemType.Init).has(1)).to.be.false;
             expect(this.systemManager.systems.get(SystemType.Init).has(2)).to.be.true;
             expect(this.systemManager.systems.get(SystemType.Init).has(3)).to.be.true;
@@ -44,7 +40,6 @@ describe('SystemManager', function() {
 
             this.systemManager.removeSystem(2);
             
-            expect(this.systemManager.maxRegisteredSystemId).to.equal(4);
             expect(this.systemManager.systems.get(SystemType.Init).has(1)).to.be.false;
             expect(this.systemManager.systems.get(SystemType.Init).has(2)).to.be.false;
             expect(this.systemManager.systems.get(SystemType.Init).has(3)).to.be.true;
@@ -52,7 +47,6 @@ describe('SystemManager', function() {
             
             this.systemManager.removeSystem(3);
             
-            expect(this.systemManager.maxRegisteredSystemId).to.equal(4);
             expect(this.systemManager.systems.get(SystemType.Init).has(1)).to.be.false;
             expect(this.systemManager.systems.get(SystemType.Init).has(2)).to.be.false;
             expect(this.systemManager.systems.get(SystemType.Init).has(3)).to.be.false;
@@ -60,7 +54,6 @@ describe('SystemManager', function() {
             
             this.systemManager.removeSystem(4);
             
-            expect(this.systemManager.maxRegisteredSystemId).to.equal(4);
             expect(this.systemManager.systems.get(SystemType.Init).has(1)).to.be.false;
             expect(this.systemManager.systems.get(SystemType.Init).has(2)).to.be.false;
             expect(this.systemManager.systems.get(SystemType.Init).has(3)).to.be.false;

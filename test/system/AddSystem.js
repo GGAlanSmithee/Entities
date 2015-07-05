@@ -52,22 +52,6 @@ describe('SystemManager', function() {
             expect(system).to.equal(3);
         });
         
-        it('increases [maxRegisteredSystemId] as systems are added', () => {
-            expect(this.systemManager).property('maxRegisteredSystemId').to.equal(-1);
-            
-            this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Init, SelectorType.GetWith);
-            expect(this.systemManager).property('maxRegisteredSystemId').to.equal(0);
-            
-            this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Logic, SelectorType.GetWith);
-            expect(this.systemManager).property('maxRegisteredSystemId').to.equal(1);
-            
-            this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Render, SelectorType.GetWith);
-            expect(this.systemManager).property('maxRegisteredSystemId').to.equal(2);
-            
-            this.systemManager.addSystem(() => { }, 1 | 2, SystemType.CleanUp, SelectorType.GetWith);
-            expect(this.systemManager).property('maxRegisteredSystemId').to.equal(3);
-        });
-        
         it('adds a system with the correct [type] and [selector]', () => {
             let initSystem    = this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Init, SelectorType.Get);
             let logicSystem   = this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Logic, SelectorType.GetWith);
