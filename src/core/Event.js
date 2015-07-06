@@ -41,7 +41,7 @@ export default class EventHandler {
         }
         
         if (!this.events.has(event)) {
-            this.events.add(event, new Map());
+            this.events.set(event, new Map());
         }
         
         let eventId = this.getNextEventId();
