@@ -51,10 +51,20 @@ export default class EventHandler {
         return eventId;
     }
     
-    stopListening(event, eventId) {
-        if (this.events.has(event) && this.events.get(event).has(eventId)) {
-            this.events.get(event).delete(eventId);
+    stopListen(eventId) {
+        if (!Number.isInteger(eventId)) {
+            return false;
         }
+
+        for (let events of this.events.values()) {
+            for (let id of events.keys()) {
+                if (id === eventId) {
+                    return events.delete(eventId);
+                }
+            }
+        }
+
+        return false;
     }
     
     trigger() {
