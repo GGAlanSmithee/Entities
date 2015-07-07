@@ -1,6 +1,5 @@
-import { expect }        from 'chai';
-import   World           from '../../src/core/World';
-import   sinon           from 'sinon';
+import { expect } from 'chai';
+import World from '../../src/core/World';
 import { ComponentType } from '../../src/core/Component';
 
 describe('World', function() {
@@ -15,14 +14,6 @@ describe('World', function() {
         
         it('is a function', () => {
             expect(this.world.registerComponent).to.be.a('function');
-        });
-        
-        it('calls [getNextComponentId] to get the first available component id', () => {
-            let spy = sinon.spy(this.world, 'getNextComponentId');
-            
-            this.world.registerComponent({ });
-            
-            expect(spy.calledOnce).to.be.true;
         });
         
         it('returns the components id (number) when [returnDetails] = false or omitted', () => {

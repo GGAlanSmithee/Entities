@@ -32,16 +32,6 @@ export default class World {
             }
         }
     }
-    
-    getNextComponentId() {
-        if (this.components === null || this.components === undefined) {
-            this.components = new Map();
-        }
-        
-        let max = Math.max(...this.components.keys());
-        
-        return max === undefined || max === null || max === -Infinity ? 0 : max === 0 ? 1 : max * 2;
-    }
 
     newComponent(object) {
         if (object === null || object === undefined) {
@@ -69,7 +59,9 @@ export default class World {
             throw TypeError('object cannot be null.');
         }
         
-        let id = this.getNextComponentId(this.components);
+        let max = Math.max(...this.components.keys());
+        
+        let id = max === undefined || max === null || max === -Infinity ? 0 : max === 0 ? 1 : max * 2;
         
         this.components.set(id, { type, object });
 
