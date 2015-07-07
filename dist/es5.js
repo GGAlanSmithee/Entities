@@ -8,8 +8,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var EventHandler = require('.core/Event');
-EventHandler = 'default' in EventHandler ? EventHandler['default'] : EventHandler;
+var _core_Event = require('.core/Event');
+_core_Event = 'default' in _core_Event ? _core_Event['default'] : _core_Event;
 
 var NoneComponent = 0;
 
@@ -82,17 +82,6 @@ var World = (function () {
             }
         }
     }, {
-        key: 'getNextComponentId',
-        value: function getNextComponentId() {
-            if (this.components === null || this.components === undefined) {
-                this.components = new Map();
-            }
-
-            var max = Math.max.apply(Math, _toConsumableArray(this.components.keys()));
-
-            return max === undefined || max === null || max === -Infinity ? 0 : max === 0 ? 1 : max * 2;
-        }
-    }, {
         key: 'newComponent',
         value: function newComponent(object) {
             if (object === null || object === undefined) {
@@ -119,8 +108,8 @@ var World = (function () {
             return object;
         }
     }, {
-        key: 'registerComponentType',
-        value: function registerComponentType(object) {
+        key: 'registerComponent',
+        value: function registerComponent(object) {
             var _this = this;
 
             var type = arguments[1] === undefined ? ComponentType.Static : arguments[1];
@@ -130,7 +119,9 @@ var World = (function () {
                 throw TypeError('object cannot be null.');
             }
 
-            var id = this.getNextComponentId(this.components);
+            var max = Math.max.apply(Math, _toConsumableArray(this.components.keys()));
+
+            var id = max === undefined || max === null || max === -Infinity ? 0 : max === 0 ? 1 : max * 2;
 
             this.components.set(id, { type: type, object: object });
 
@@ -460,17 +451,6 @@ var SystemManager = (function () {
     }
 
     _createClass(SystemManager, [{
-        key: 'getNextSystemId',
-        value: function getNextSystemId() {
-            var max = -1;
-
-            this.systems.forEach(function (system) {
-                max = Math.max.apply(Math, [max].concat(_toConsumableArray(system.keys())));
-            });
-
-            return max + 1;
-        }
-    }, {
         key: 'addSystem',
         value: function addSystem(callback) {
             var components = arguments[1] === undefined ? NoneComponent : arguments[1];
@@ -492,7 +472,13 @@ var SystemManager = (function () {
                 callback: callback
             };
 
-            var systemId = this.getNextSystemId();
+            var maxId = -1;
+
+            this.systems.forEach(function (system) {
+                maxId = Math.max.apply(Math, [maxId].concat(_toConsumableArray(system.keys())));
+            });
+
+            var systemId = maxId + 1;
 
             this.systems.get(type).set(systemId, system);
 
@@ -617,8 +603,222 @@ var SystemManager = (function () {
     return SystemManager;
 })();
 
+var EventHandler = (function () {
+    function EventHandler() {
+        _classCallCheck(this, EventHandler);
+
+        this.events = new Map();
+    }
+
+    _createClass(EventHandler, [{
+        key: 'emptyPromise',
+        value: function emptyPromise() {
+            return new Promise(function (resolve, reject) {
+                resolve();
+            });
+        }
+    }, {
+        key: 'promise',
+        value: function promise(callback, context, args, timeout) {
+            if (timeout) {
+                return new Promise(function (resolve, reject) {
+                    setTimeout(function () {
+                        resolve(typeof context === 'object' ? callback.call.apply(callback, [context].concat(_toConsumableArray(args))) : callback.apply.apply(callback, [context].concat(_toConsumableArray(args))));
+                    }, timeout);
+                });
+            }
+
+            return new Promise(function (resolve, reject) {
+                resolve(typeof context === 'object' ? callback.call.apply(callback, [context].concat(_toConsumableArray(args))) : callback.apply.apply(callback, [context].concat(_toConsumableArray(args))));
+            });
+        }
+    }, {
+        key: 'getNextEventId',
+        value: function getNextEventId() {
+            var max = -1;
+
+            this.events.forEach(function (event) {
+                max = Math.max.apply(Math, [max].concat(_toConsumableArray(event.keys())));
+            });
+
+            return max + 1;
+        }
+    }, {
+        key: 'listen',
+        value: function listen(event, callback) {
+            if (typeof event !== 'string' || typeof callback !== 'function') {
+                return;
+            }
+
+            if (!this.events.has(event)) {
+                this.events.set(event, new Map());
+            }
+
+            var eventId = this.getNextEventId();
+
+            this.events.get(event).set(eventId, callback);
+
+            return eventId;
+        }
+    }, {
+        key: 'stopListen',
+        value: function stopListen(eventId) {
+            if (!Number.isInteger(eventId)) {
+                return false;
+            }
+
+            var _iteratorNormalCompletion8 = true;
+            var _didIteratorError8 = false;
+            var _iteratorError8 = undefined;
+
+            try {
+                for (var _iterator8 = this.events.values()[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+                    var events = _step8.value;
+                    var _iteratorNormalCompletion9 = true;
+                    var _didIteratorError9 = false;
+                    var _iteratorError9 = undefined;
+
+                    try {
+                        for (var _iterator9 = events.keys()[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+                            var id = _step9.value;
+
+                            if (id === eventId) {
+                                return events['delete'](eventId);
+                            }
+                        }
+                    } catch (err) {
+                        _didIteratorError9 = true;
+                        _iteratorError9 = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion9 && _iterator9['return']) {
+                                _iterator9['return']();
+                            }
+                        } finally {
+                            if (_didIteratorError9) {
+                                throw _iteratorError9;
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                _didIteratorError8 = true;
+                _iteratorError8 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion8 && _iterator8['return']) {
+                        _iterator8['return']();
+                    }
+                } finally {
+                    if (_didIteratorError8) {
+                        throw _iteratorError8;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }, {
+        key: 'trigger',
+        value: function trigger() {
+            var args = arguments;
+            var event = Array.prototype.splice.call(args, 0, 1)[0];
+
+            var self = this instanceof EntityManager ? this.eventHandler : this;
+            var context = this;
+
+            if (typeof event !== 'string' || !self.events.has(event)) {
+                return self.emptyPromise();
+            }
+
+            var promises = [];
+
+            var _iteratorNormalCompletion10 = true;
+            var _didIteratorError10 = false;
+            var _iteratorError10 = undefined;
+
+            try {
+                for (var _iterator10 = self.events.get(event).values()[Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
+                    var callback = _step10.value;
+
+                    promises.push(self.promise(callback, context, args));
+                }
+            } catch (err) {
+                _didIteratorError10 = true;
+                _iteratorError10 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion10 && _iterator10['return']) {
+                        _iterator10['return']();
+                    }
+                } finally {
+                    if (_didIteratorError10) {
+                        throw _iteratorError10;
+                    }
+                }
+            }
+
+            return Promise.all(promises);
+        }
+    }, {
+        key: 'triggerDelayed',
+        value: function triggerDelayed() {
+            var args = arguments;
+
+            var event = Array.prototype.splice.call(args, 0, 1)[0];
+            var timeout = Array.prototype.splice.call(args, 0, 1)[0];
+
+            var self = this instanceof EntityManager ? this.eventHandler : this;
+            var context = this;
+
+            if (typeof event !== 'string' || !Number.isInteger(timeout) || !self.events.has(event)) {
+                return self.emptyPromise();
+            }
+
+            var promises = [];
+
+            var _iteratorNormalCompletion11 = true;
+            var _didIteratorError11 = false;
+            var _iteratorError11 = undefined;
+
+            try {
+                for (var _iterator11 = self.events.get(event).values()[Symbol.iterator](), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
+                    var callback = _step11.value;
+
+                    promises.push(self.promise(callback, context, args, timeout));
+                }
+            } catch (err) {
+                _didIteratorError11 = true;
+                _iteratorError11 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion11 && _iterator11['return']) {
+                        _iterator11['return']();
+                    }
+                } finally {
+                    if (_didIteratorError11) {
+                        throw _iteratorError11;
+                    }
+                }
+            }
+
+            return Promise.all(promises);
+        }
+    }]);
+
+    return EventHandler;
+})();
+
 var EntityManager = function EntityManager() {
+    var entityFactory = arguments[0] === undefined ? new EntityFactory() : arguments[0];
+    var systemManager = arguments[1] === undefined ? new SystemManager() : arguments[1];
+    var eventHandler = arguments[2] === undefined ? new EventHandler() : arguments[2];
+
     _classCallCheck(this, EntityManager);
+
+    this.entityFactory = entityFactory;
+    this.systemManager = systemManager;
+    this.eventHandler = eventHandler;
 };
 
 var EntityFactory = (function () {
@@ -679,27 +879,27 @@ var EntityFactory = (function () {
 
             var components = NoneComponent;
 
-            var _iteratorNormalCompletion8 = true;
-            var _didIteratorError8 = false;
-            var _iteratorError8 = undefined;
+            var _iteratorNormalCompletion12 = true;
+            var _didIteratorError12 = false;
+            var _iteratorError12 = undefined;
 
             try {
-                for (var _iterator8 = configuration.keys()[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
-                    var component = _step8.value;
+                for (var _iterator12 = configuration.keys()[Symbol.iterator](), _step12; !(_iteratorNormalCompletion12 = (_step12 = _iterator12.next()).done); _iteratorNormalCompletion12 = true) {
+                    var component = _step12.value;
 
                     components |= component;
                 }
             } catch (err) {
-                _didIteratorError8 = true;
-                _iteratorError8 = err;
+                _didIteratorError12 = true;
+                _iteratorError12 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion8 && _iterator8['return']) {
-                        _iterator8['return']();
+                    if (!_iteratorNormalCompletion12 && _iterator12['return']) {
+                        _iterator12['return']();
                     }
                 } finally {
-                    if (_didIteratorError8) {
-                        throw _iteratorError8;
+                    if (_didIteratorError12) {
+                        throw _iteratorError12;
                     }
                 }
             }
@@ -713,16 +913,16 @@ var EntityFactory = (function () {
                     continue;
                 }
 
-                var _iteratorNormalCompletion9 = true;
-                var _didIteratorError9 = false;
-                var _iteratorError9 = undefined;
+                var _iteratorNormalCompletion13 = true;
+                var _didIteratorError13 = false;
+                var _iteratorError13 = undefined;
 
                 try {
-                    for (var _iterator9 = configuration[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
-                        var _step9$value = _slicedToArray(_step9.value, 2);
+                    for (var _iterator13 = configuration[Symbol.iterator](), _step13; !(_iteratorNormalCompletion13 = (_step13 = _iterator13.next()).done); _iteratorNormalCompletion13 = true) {
+                        var _step13$value = _slicedToArray(_step13.value, 2);
 
-                        var component = _step9$value[0];
-                        var initializer = _step9$value[1];
+                        var component = _step13$value[0];
+                        var initializer = _step13$value[1];
 
                         if (!initializer) {
                             continue;
@@ -735,16 +935,16 @@ var EntityFactory = (function () {
                         }
                     }
                 } catch (err) {
-                    _didIteratorError9 = true;
-                    _iteratorError9 = err;
+                    _didIteratorError13 = true;
+                    _iteratorError13 = err;
                 } finally {
                     try {
-                        if (!_iteratorNormalCompletion9 && _iterator9['return']) {
-                            _iterator9['return']();
+                        if (!_iteratorNormalCompletion13 && _iterator13['return']) {
+                            _iterator13['return']();
                         }
                     } finally {
-                        if (_didIteratorError9) {
-                            throw _iteratorError9;
+                        if (_didIteratorError13) {
+                            throw _iteratorError13;
                         }
                     }
                 }

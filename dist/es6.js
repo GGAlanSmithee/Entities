@@ -1,7 +1,7 @@
 'use strict';
 
-var EventHandler = require('.core/Event');
-EventHandler = ('default' in EventHandler ? EventHandler['default'] : EventHandler);
+var _core_Event = require('.core/Event');
+_core_Event = ('default' in _core_Event ? _core_Event['default'] : _core_Event);
 
 const NoneComponent = 0;
 
@@ -43,16 +43,6 @@ class World {
             }
         }
     }
-    
-    getNextComponentId() {
-        if (this.components === null || this.components === undefined) {
-            this.components = new Map();
-        }
-        
-        let max = Math.max(...this.components.keys());
-        
-        return max === undefined || max === null || max === -Infinity ? 0 : max === 0 ? 1 : max * 2;
-    }
 
     newComponent(object) {
         if (object === null || object === undefined) {
@@ -75,12 +65,14 @@ class World {
         return object;
     }
     
-    registerComponentType(object, type = ComponentType.Static, returnDetails = false) {
+    registerComponent(object, type = ComponentType.Static, returnDetails = false) {
         if (object === null || object === undefined) {
             throw TypeError('object cannot be null.');
         }
         
-        let id = this.getNextComponentId(this.components);
+        let max = Math.max(...this.components.keys());
+        
+        let id = max === undefined || max === null || max === -Infinity ? 0 : max === 0 ? 1 : max * 2;
         
         this.components.set(id, { type, object });
 
@@ -259,16 +251,6 @@ class SystemManager {
         this.systems.set(SystemType.CleanUp, new Map());
     }
     
-    getNextSystemId() {
-        let max = -1;
-        
-        this.systems.forEach(system => {
-            max = Math.max(max, ...system.keys());
-        });
-        
-        return max + 1;
-    }
-    
     addSystem(callback, components = NoneComponent, type = SystemType.Logic, selector = SelectorType.GetWith) {
     	if (typeof callback !== 'function') {
     		throw TypeError('callback must be a function.');
@@ -285,7 +267,13 @@ class SystemManager {
     		callback
     	};
     
-    	let systemId = this.getNextSystemId();
+        let maxId = -1;
+        
+        this.systems.forEach(system => {
+            maxId = Math.max(maxId, ...system.keys());
+        });
+        
+        let systemId = maxId + 1;
     	
     	this.systems.get(type).set(systemId, system);
 
@@ -323,10 +311,122 @@ class SystemManager {
     }
 }
 
-class EntityManager {
+class EventHandler {
     constructor() {
+        this.events = new Map();
+    }
+    
+    emptyPromise() {
+        return new Promise(function(resolve, reject) {
+            resolve();
+        });
+    }
+    
+    promise(callback, context, args, timeout) {
+        if (timeout) {
+            return new Promise(function(resolve, reject) {
+                setTimeout(function(){
+                    resolve(typeof context ===  'object' ? callback.call(context, ...args) : callback.apply(context, ...args));
+                }, timeout);
+            });
+        }
         
-    }    
+        return new Promise(function(resolve, reject) {
+            resolve(typeof context === 'object' ? callback.call(context, ...args) : callback.apply(context, ...args));
+        });
+    }
+    
+    getNextEventId() {
+        let max = -1;
+        
+        this.events.forEach(event => {
+            max = Math.max(max, ...event.keys());
+        });
+        
+        return max + 1;
+    }
+    
+    listen(event, callback) {
+        if (typeof event !== 'string' || typeof callback !== 'function') {
+            return;
+        }
+        
+        if (!this.events.has(event)) {
+            this.events.set(event, new Map());
+        }
+        
+        let eventId = this.getNextEventId();
+        
+        this.events.get(event).set(eventId, callback);
+        
+        return eventId;
+    }
+    
+    stopListen(eventId) {
+        if (!Number.isInteger(eventId)) {
+            return false;
+        }
+
+        for (let events of this.events.values()) {
+            for (let id of events.keys()) {
+                if (id === eventId) {
+                    return events.delete(eventId);
+                }
+            }
+        }
+
+        return false;
+    }
+    
+    trigger() {
+        let args  = arguments;
+        let event = Array.prototype.splice.call(args, 0, 1)[0];
+        
+        let self    = this instanceof EntityManager ? this.eventHandler : this;
+        let context = this;
+        
+        if (typeof event !== 'string' || !self.events.has(event)) {
+            return self.emptyPromise();
+        }
+        
+        let promises = [];
+        
+        for (let callback of self.events.get(event).values()) {
+            promises.push(self.promise(callback, context, args));
+        }
+        
+        return Promise.all(promises);
+    }
+    
+    triggerDelayed() {
+        let args    = arguments;
+        
+        let event   = Array.prototype.splice.call(args, 0, 1)[0];
+        let timeout = Array.prototype.splice.call(args, 0, 1)[0];
+        
+        let self    = this instanceof EntityManager ? this.eventHandler : this;
+        let context = this;
+        
+        if (typeof event !== 'string' || !Number.isInteger(timeout) || !self.events.has(event)) {
+            return self.emptyPromise();
+        }
+        
+        let promises = [];
+        
+        for (let callback of self.events.get(event).values()) {
+            promises.push(self.promise(callback, context, args, timeout));
+        }
+        
+        return Promise.all(promises);
+    }
+}
+
+class EntityManager {
+    constructor(entityFactory = new EntityFactory(), systemManager = new SystemManager(), eventHandler = new EventHandler()) {
+        this.entityFactory = entityFactory;
+        this.systemManager = systemManager;
+        this.eventHandler  = eventHandler;
+    }
 }
 
 class EntityFactory {

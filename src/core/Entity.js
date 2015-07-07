@@ -1,10 +1,14 @@
 import World from './World';
-import { NoneComponent } from './Component';
+import { NoneComponent, ComponentType } from './Component';
+import SystemManager from './System';
+import EventHandler from './Event';
 
 export default class EntityManager {
-    constructor() {
-        
-    }    
+    constructor(entityFactory = new EntityFactory(), systemManager = new SystemManager(), eventHandler = new EventHandler()) {
+        this.entityFactory = entityFactory;
+        this.systemManager = systemManager;
+        this.eventHandler  = eventHandler;
+    }
 }
 
 export class EntityFactory {
