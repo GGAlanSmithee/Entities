@@ -18,16 +18,6 @@ export default class SystemManager {
         this.systems.set(SystemType.CleanUp, new Map());
     }
     
-    getNextSystemId() {
-        let max = -1;
-        
-        this.systems.forEach(system => {
-            max = Math.max(max, ...system.keys());
-        });
-        
-        return max + 1;
-    }
-    
     addSystem(callback, components = NoneComponent, type = SystemType.Logic, selector = SelectorType.GetWith) {
     	if (typeof callback !== 'function') {
     		throw TypeError('callback must be a function.');
@@ -44,7 +34,13 @@ export default class SystemManager {
     		callback
     	};
     
-    	let systemId = this.getNextSystemId();
+        let maxId = -1;
+        
+        this.systems.forEach(system => {
+            maxId = Math.max(maxId, ...system.keys());
+        });
+        
+        let systemId = maxId + 1;
     	
     	this.systems.get(type).set(systemId, system);
 
