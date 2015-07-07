@@ -8,8 +8,8 @@ describe('EntityFactory', function() {
             this.entityFactory = new EntityFactory();
             this.world = new World();
             
-            this.componentOne = this.world.registerComponentType({ x : 10 });
-            this.componentTwo = this.world.registerComponentType('From component');
+            this.componentOne = this.world.registerComponent({ x : 10 });
+            this.componentTwo = this.world.registerComponent('From component');
             
             this.entityFactory.registerInitializer(this.componentOne, function() { this.x = 20; });
             this.entityFactory.registerInitializer(this.componentTwo, function() { return 'From initializer'; });

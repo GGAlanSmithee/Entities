@@ -33,6 +33,22 @@ describe('EventHandler', function() {
             expect(this.eventHandler.stopListen(2)).to.be.true;
             expect(this.eventHandler.events.get('testAgain').get(2)).to.be.undefined;
             expect(this.eventHandler.stopListen(2)).to.be.false;
+            
+            this.eventHandler.events.set('test', new Map());
+            this.eventHandler.events.set('testAgain', new Map());
+            
+            this.eventHandler.events.get('test').set(1, () => { });
+            this.eventHandler.events.get('testAgain').set(2, () => { });
+            
+            expect(this.eventHandler.events.get('testAgain').get(2)).to.not.be.undefined;
+            expect(this.eventHandler.stopListen(2)).to.be.true;
+            expect(this.eventHandler.events.get('testAgain').get(2)).to.be.undefined;
+            expect(this.eventHandler.stopListen(2)).to.be.false;
+            
+            expect(this.eventHandler.events.get('test').get(1)).to.not.be.undefined;
+            expect(this.eventHandler.stopListen(1)).to.be.true;
+            expect(this.eventHandler.events.get('test').get(1)).to.be.undefined;
+            expect(this.eventHandler.stopListen(1)).to.be.false;
         });
         
         it('returns without removing a callback when [eventId] is not an integer', () => {

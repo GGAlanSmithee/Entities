@@ -8,7 +8,7 @@ describe('World', function() {
             this.world = new World();
             
             // todo mock this
-            this.component = this.world.registerComponentType({ x : 10, y : 20 }, ComponentType.Static, false);
+            this.component = this.world.registerComponent({ x : 10, y : 20 }, ComponentType.Static, false);
             
             this.entity = 0;
         });
@@ -36,7 +36,7 @@ describe('World', function() {
 
         it('adds and instantiates a dynamic component to the [entity]', () => {
             // todo mock this
-            let dynamicComponent = this.world.registerComponentType('Dynamic', ComponentType.Dynamic, false);
+            let dynamicComponent = this.world.registerComponent('Dynamic', ComponentType.Dynamic, false);
             
             expect(this.world.entities[this.entity].id & dynamicComponent).to.not.equal(dynamicComponent);
             expect(this.world.entities[this.entity]).to.not.have.property(dynamicComponent);
@@ -50,7 +50,7 @@ describe('World', function() {
         
         it('adds a semi dynamic component to the [entity] and instantiate it', () => {
             // todo mock this
-            let semiDynamicComponent = this.world.registerComponentType('Semi dynamic', ComponentType.SemiDynamic, false);
+            let semiDynamicComponent = this.world.registerComponent('Semi dynamic', ComponentType.SemiDynamic, false);
             
             expect(this.world.entities[this.entity].id & semiDynamicComponent).to.not.equal(semiDynamicComponent);
             expect(this.world.entities[this.entity]).to.not.have.property(semiDynamicComponent);
@@ -64,7 +64,7 @@ describe('World', function() {
         
         it('does not instatiate a dynamic component twice if already instantiated when added (error situation)', () => {
             // todo mock this
-            let dynamicComponent = this.world.registerComponentType('Dynamic', ComponentType.Dynamic, false);
+            let dynamicComponent = this.world.registerComponent('Dynamic', ComponentType.Dynamic, false);
             
             this.world.addComponent(this.entity, dynamicComponent);
             
@@ -81,7 +81,7 @@ describe('World', function() {
         
         it('does not instatiate a semi dynamic component twice if already instantiated when added', () => {
             // todo mock this
-            let semiDynamicComponent = this.world.registerComponentType('Semi dynamic', ComponentType.SemiDynamic, false);
+            let semiDynamicComponent = this.world.registerComponent('Semi dynamic', ComponentType.SemiDynamic, false);
             
             this.world.addComponent(this.entity, semiDynamicComponent);
             

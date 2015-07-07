@@ -64,7 +64,7 @@ export default class World {
         return object;
     }
     
-    registerComponentType(object, type = ComponentType.Static, returnDetails = false) {
+    registerComponent(object, type = ComponentType.Static, returnDetails = false) {
         if (object === null || object === undefined) {
             throw TypeError('object cannot be null.');
         }

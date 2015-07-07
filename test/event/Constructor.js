@@ -15,7 +15,7 @@ describe('EventHandler', function() {
             expect(EventHandler).to.be.a('function');
         });
         
-        it('can be used to instantiate a new World', () => {
+        it('can be used to instantiate a new EventHandler', () => {
             expect(this.eventHandler).to.be.an.instanceof(EventHandler);
         });
         

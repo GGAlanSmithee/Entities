@@ -15,7 +15,7 @@ describe('EntityFactory', function() {
             expect(EntityFactory).to.be.a('function');
         });
         
-        it('can be used to instantiate a new World', () => {
+        it('can be used to instantiate a new EntityFactory', () => {
             expect(this.entityFactory).to.be.an.instanceof(EntityFactory);
         });
         

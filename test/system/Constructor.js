@@ -15,7 +15,7 @@ describe('SystemManager', function() {
             expect(SystemManager).to.be.a('function');
         });
         
-        it('can be used to instantiate a new World', () => {
+        it('can be used to instantiate a new SystemManager', () => {
             expect(this.systemManager).to.be.an.instanceof(SystemManager);
         });
         
