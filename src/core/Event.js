@@ -4,24 +4,24 @@ export default class EventHandler {
     constructor() {
         this.events = new Map();
     }
-
+    
     emptyPromise() {
         return new Promise(function(resolve, reject) {
             resolve();
         });
     }
-
+    
     promise(callback, context, args, timeout) {
         if (timeout) {
             return new Promise(function(resolve, reject) {
                 setTimeout(function(){
-                    resolve(callback.apply(context, ...args));
+                    resolve(typeof context ===  'object' ? callback.call(context, ...args) : callback.apply(context, ...args));
                 }, timeout);
             });
         }
         
         return new Promise(function(resolve, reject) {
-            resolve(callback.apply(context, ...args));
+            resolve(typeof context === 'object' ? callback.call(context, ...args) : callback.apply(context, ...args));
         });
     }
     
@@ -69,17 +69,13 @@ export default class EventHandler {
     
     trigger() {
         let args  = arguments;
-        let event = args.splice(0, 1)[0];
-        
-        if (typeof event !== 'string') {
-            return this.emptyPromise();
-        }
+        let event = Array.prototype.splice.call(args, 0, 1)[0];
         
         let self    = this instanceof EntityManager ? this.eventHandler : this;
         let context = this;
         
-        if (!self.events.has(event)) {
-            return this.emptyPromise();
+        if (typeof event !== 'string' || !self.events.has(event)) {
+            return self.emptyPromise();
         }
         
         let promises = [];
@@ -93,23 +89,17 @@ export default class EventHandler {
     
     triggerDelayed() {
         let args  = arguments;
-        let event = args.splice(0, 1)[0];
         
-        if (typeof event !== 'string') {
-            return this.emptyPromise();
-        }
+        let event = Array.prototype.splice.call(args, 0, 1)[0];
+        let timeout = Array.prototype.splice.call(args, 0, 1)[0];
         
-        let timeout = args.splice(0, 1)[0];
-        
-        if (!Number.isInteger(timeout)) {
-            return this.emptyPromise();
-        }
+        console.log(event, timeout);
         
         let self    = this instanceof EntityManager ? this.eventHandler : this;
         let context = this;
         
-        if (!self.events.has(event)) {
-            return this.emptyPromise();
+        if (typeof event !== 'string' || !Number.isInteger(timeout) || !self.events.has(event)) {
+            return self.emptyPromise();
         }
         
         let promises = [];
