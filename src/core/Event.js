@@ -88,9 +88,9 @@ export default class EventHandler {
     }
     
     triggerDelayed() {
-        let args  = arguments;
+        let args    = arguments;
         
-        let event = Array.prototype.splice.call(args, 0, 1)[0];
+        let event   = Array.prototype.splice.call(args, 0, 1)[0];
         let timeout = Array.prototype.splice.call(args, 0, 1)[0];
         
         let self    = this instanceof EntityManager ? this.eventHandler : this;

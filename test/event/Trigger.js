@@ -97,5 +97,13 @@ describe('EventHandler', function() {
                 expect(spy.calledWith(paramOne, paramTwo, paramThree)).to.be.false;
             });
         });
+        
+        it('returns an empty promise when no arguments are passed in', () => {
+            let spy = sinon.spy();
+            
+            return this.eventHandler.trigger().then(() => {
+                expect(spy.called).to.be.false;
+            });
+        });
     });
 });
