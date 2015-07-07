@@ -93,8 +93,6 @@ export default class EventHandler {
         let event = Array.prototype.splice.call(args, 0, 1)[0];
         let timeout = Array.prototype.splice.call(args, 0, 1)[0];
         
-        console.log(event, timeout);
-        
         let self    = this instanceof EntityManager ? this.eventHandler : this;
         let context = this;
         
