@@ -1,4 +1,4 @@
-import { SelectorType } from './World';
+import { SelectorType } from './Entity';
 import { NoneComponent } from  './Component';
 
 export const SystemType = {

@@ -1,13 +1,12 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { EntityFactory } from '../../../src/core/Entity';
-import World from '../../../src/core/World';
+import EntityManager, { EntityFactory } from '../../../src/core/Entity';
 
 describe('EntityFactory', function() {
-    describe('create(world, count = 1, configuration = undefined)', () => {
+    describe('create(entityManager, count = 1, configuration = undefined)', () => {
         beforeEach(() => {
             this.entityFactory = new EntityFactory();
-            this.world = new World()
+            this.entityManager = new EntityManager()
             
             this.componentOne = 1;
             this.componentTwo = 2;
@@ -26,13 +25,13 @@ describe('EntityFactory', function() {
             
             this.components = this.componentOne | this.componentTwo | this.componentThree | this.componentFour;
             
-            this.newEntityStub = sinon.stub(this.world, 'newEntity');
+            this.addEntityStub = sinon.stub(this.entityManager, 'addEntity');
             
             function funcComponent() {
                 this.x = 1.0;
             }
             
-            this.newEntityStub.withArgs(this.components, true).returns({
+            this.addEntityStub.withArgs(this.components, true).returns({
                 id   : this.components,
                 '1'  : new funcComponent(),
                 '2'  : { y : 2.0 },
@@ -42,7 +41,7 @@ describe('EntityFactory', function() {
         });
         
         afterEach(() => {
-            delete this.world;
+            delete this.entityManager;
             delete this.entityFactory;
         });
         
@@ -51,9 +50,9 @@ describe('EntityFactory', function() {
         });
         
         it('creates an entity according to the current [configuration]', () => {
-            let entity = this.entityFactory.create(this.world)[0];
+            let entity = this.entityFactory.create(this.entityManager)[0];
 
-            expect(this.newEntityStub.calledOnce).to.be.true;
+            expect(this.addEntityStub.calledOnce).to.be.true;
             
             expect(entity).to.have.property('id');
             
@@ -76,9 +75,9 @@ describe('EntityFactory', function() {
             this.entityFactory.configuration.set(this.componentThree, undefined);
             this.entityFactory.configuration.set(this.componentFour, undefined);
             
-            let entity = this.entityFactory.create(this.world)[0];
+            let entity = this.entityFactory.create(this.entityManager)[0];
 
-            expect(this.newEntityStub.calledOnce).to.be.true;
+            expect(this.addEntityStub.calledOnce).to.be.true;
             
             expect(entity).to.have.property('id');
             
@@ -100,17 +99,17 @@ describe('EntityFactory', function() {
             
             this.entityFactory.configuration = new Map();
             
-            let entities = this.entityFactory.create(this.world);
+            let entities = this.entityFactory.create(this.entityManager);
             
             expect(entities).property('length').to.equal(0);
             
-            entities = this.entityFactory.create(this.world, 1, configuration);
+            entities = this.entityFactory.create(this.entityManager, 1, configuration);
 
             expect(entities).property('length').to.equal(1);
 
             let entity = entities[0];
             
-            expect(this.newEntityStub.calledTwice).to.be.true;
+            expect(this.addEntityStub.calledTwice).to.be.true;
             
             expect(entity).to.have.property('id');
             
@@ -129,7 +128,7 @@ describe('EntityFactory', function() {
         
         it('creates [count] number of entities', () => {
             let count = Math.floor(Math.random() * 100);
-            expect(this.entityFactory.create(this.world, count)).property('length').to.equal(count);
+            expect(this.entityFactory.create(this.entityManager, count)).property('length').to.equal(count);
         });
         
         it('creates [count] number of entities from [configuration]', () => {
@@ -138,10 +137,10 @@ describe('EntityFactory', function() {
             this.entityFactory.configuration = new Map();
             
             let count = Math.floor(Math.random() * 100);
-            expect(this.entityFactory.create(this.world, count, configuration)).property('length').to.equal(count);
+            expect(this.entityFactory.create(this.entityManager, count, configuration)).property('length').to.equal(count);
         });
         
-        it('returns an empty array if [world] is not an instance of World', () => {
+        it('returns an empty array if [entityManager] is not an instance of EntityManager', () => {
             let entities = this.entityFactory.create();
             expect(entities).to.be.an.instanceof(Array);
             expect(entities).property('length').to.equal(0);
@@ -166,7 +165,7 @@ describe('EntityFactory', function() {
             expect(entities).to.be.an.instanceof(Array);
             expect(entities).property('length').to.equal(0);
             
-            entities = this.entityFactory.create('not a World instance.');
+            entities = this.entityFactory.create('not a EntityManager instance.');
             expect(entities).to.be.an.instanceof(Array);
             expect(entities).property('length').to.equal(0);
         });

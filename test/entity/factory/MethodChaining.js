@@ -1,15 +1,14 @@
 import { expect } from 'chai';
-import { EntityFactory } from '../../../src/core/Entity';
-import World from '../../../src/core/World';
+import EntityManager, { EntityFactory } from '../../../src/core/Entity';
 
 describe('EntityFactory', function() {
     describe('method chaining', () => {
         beforeEach(() => {
             this.entityFactory = new EntityFactory();
-            this.world = new World();
+            this.entityManager = new EntityManager();
             
-            this.componentOne = this.world.registerComponent({ x : 10 });
-            this.componentTwo = this.world.registerComponent('From component');
+            this.componentOne = this.entityManager.registerComponent({ x : 10 });
+            this.componentTwo = this.entityManager.registerComponent('From component');
             
             this.entityFactory.registerInitializer(this.componentOne, function() { this.x = 20; });
             this.entityFactory.registerInitializer(this.componentTwo, function() { return 'From initializer'; });
@@ -17,14 +16,14 @@ describe('EntityFactory', function() {
         
         afterEach(() => {
             delete this.entityFactory;
-            delete this.world;
+            delete this.entityManager;
         });
         
         it('allows for an entity to be created by chained method calls', () => {
             let entities = this.entityFactory.build()
                                              .withComponent(this.componentOne)
                                              .withComponent(this.componentTwo)
-                                             .create(this.world);
+                                             .create(this.entityManager);
                                            
             expect(entities).to.be.an.instanceof(Array);
             expect(entities).property('length').to.equal(1);
@@ -44,7 +43,7 @@ describe('EntityFactory', function() {
             let entities = this.entityFactory.build()
                                              .withComponent(this.componentOne, function() { this.x = 200; })
                                              .withComponent(this.componentTwo, () => { return 'From overridden initializer'; })
-                                             .create(this.world);
+                                             .create(this.entityManager);
                                            
             expect(entities).to.be.an.instanceof(Array);
             expect(entities).property('length').to.equal(1);
@@ -68,7 +67,7 @@ describe('EntityFactory', function() {
                                            
             this.entityFactory.configuration = new Map();
             
-            let entities = this.entityFactory.create(this.world, 1, configuration);
+            let entities = this.entityFactory.create(this.entityManager, 1, configuration);
             
             expect(entities).to.be.an.instanceof(Array);
             expect(entities).property('length').to.equal(1);

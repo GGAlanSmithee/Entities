@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import   sinon from 'sinon';
 import   SystemManager, { SystemType } from '../../src/core/System';
-import { SelectorType } from '../../src/core/World';
+import { SelectorType } from '../../src/core/Entity';
 
 describe('SystemManager', function() {
     describe('addSystem(callback, components, type, selector)', () => {

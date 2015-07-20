@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import   SystemManager, { SystemType } from '../../src/core/System';
-import { SelectorType } from '../../src/core/World';
+import { SelectorType } from '../../src/core/Entity';
 import * as helpers from '../helpers';
 
 describe('SystemManager', function() {

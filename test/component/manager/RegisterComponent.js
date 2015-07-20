@@ -1,19 +1,18 @@
-import { expect } from 'chai';
-import World from '../../src/core/World';
-import { ComponentType } from '../../src/core/Component';
+import { expect }                          from 'chai';
+import ComponentManager, { ComponentType } from '../../../src/core/Component';
 
-describe('World', function() {
-    describe('registerComponent(component, type = ComponentType.Static, returnDetails = false)', () => {
+describe('ComponentManager', function() {
+    describe('registerComponent(object, initializer, type = ComponentType.Static, returnDetails = false)', () => {
         beforeEach(() => {
-            this.world = new World();
+            this.componentManager = new ComponentManager();
         });
         
         afterEach(() => {
-            delete this.world;
+            delete this.componentManager;
         });
         
         it('is a function', () => {
-            expect(this.world.registerComponent).to.be.a('function');
+            expect(this.componentManager.registerComponent).to.be.a('function');
         });
         
         it('returns the components id (number) when [returnDetails] = false or omitted', () => {
@@ -21,11 +20,11 @@ describe('World', function() {
                 x : 20
             };
             
-            let registeredComponent = this.world.registerComponent(component, ComponentType.Static, false);
+            let registeredComponent = this.componentManager.registerComponent(component, () => { }, ComponentType.Static, false);
             expect(registeredComponent).to.be.a('number');
             expect(registeredComponent).to.equal(1);
             
-            registeredComponent = this.world.registerComponent(component);
+            registeredComponent = this.componentManager.registerComponent(component);
             expect(registeredComponent).to.be.a('number');
             expect(registeredComponent).to.equal(2);
         });
@@ -35,7 +34,8 @@ describe('World', function() {
                 x : 20
             };
             
-            let registeredComponent = this.world.registerComponent(component, ComponentType.Static, true);
+            let registeredComponent = this.componentManager.registerComponent(component, () => { }, ComponentType.Static, true);
+            
             expect(registeredComponent).to.be.an('object');
         });
         
@@ -44,15 +44,15 @@ describe('World', function() {
                 x : 20
             };
             
-            let registeredComponent = this.world.components.get(this.world.registerComponent(component));
+            let registeredComponent = this.componentManager.components.get(this.componentManager.registerComponent(component));
             
             expect(registeredComponent).to.be.an('object');
             expect(registeredComponent).property('type').to.equal(ComponentType.Static);
         });
         
         it('gives an error (exception) when [object] = null or omitted', () => {
-            expect(() => this.world.registerComponent()).to.throw(TypeError, 'object cannot be null.');
-            expect(() => this.world.registerComponent(null)).to.throw(TypeError, 'object cannot be null.');
+            expect(() => this.componentManager.registerComponent()).to.throw(TypeError, 'object cannot be null.');
+            expect(() => this.componentManager.registerComponent(null)).to.throw(TypeError, 'object cannot be null.');
         });
         
         it('increments component ids as bits [1, 2, 4, 8, 16, ...] when components are registered', () => {
@@ -60,22 +60,22 @@ describe('World', function() {
                 x : 20
             };
             
-            let componentId = this.world.registerComponent(component, ComponentType.Static, false);
+            let componentId = this.componentManager.registerComponent(component, () => { }, ComponentType.Static, false);
             expect(componentId).to.equal(1);
             
-            componentId = this.world.registerComponent(component, ComponentType.Static, false);
+            componentId = this.componentManager.registerComponent(component, () => { }, ComponentType.Static, false);
             expect(componentId).to.equal(2);
             
-            componentId = this.world.registerComponent(component, ComponentType.Static, false);
+            componentId = this.componentManager.registerComponent(component, () => { }, ComponentType.Static, false);
             expect(componentId).to.equal(4);
             
-            componentId = this.world.registerComponent(component, ComponentType.Static, false);
+            componentId = this.componentManager.registerComponent(component, () => { }, ComponentType.Static, false);
             expect(componentId).to.equal(8);
             
-            componentId = this.world.registerComponent(component, ComponentType.Static, false);
+            componentId = this.componentManager.registerComponent(component, () => { }, ComponentType.Static, false);
             expect(componentId).to.equal(16);
             
-            let components = this.world.components;
+            let components = this.componentManager.components;
             
             expect(components).to.be.a('map');
             expect(components.has(0)).to.be.true;
@@ -107,7 +107,7 @@ describe('World', function() {
                 x : 20
             };
             
-            let registeredComponent = this.world.components.get(this.world.registerComponent(component));
+            let registeredComponent = this.componentManager.components.get(this.componentManager.registerComponent(component, () => { }));
             
             expect(registeredComponent).to.have.property('object');
             expect(registeredComponent).to.have.property('type');
@@ -121,7 +121,7 @@ describe('World', function() {
                 x : 20
             };
             
-            let registeredComponent = this.world.components.get(this.world.registerComponent(component, ComponentType.Dynamic));
+            let registeredComponent = this.componentManager.components.get(this.componentManager.registerComponent(component, () => { }, ComponentType.Dynamic));
             
             expect(registeredComponent).to.have.property('object');
             expect(registeredComponent).to.have.property('type');
@@ -135,7 +135,7 @@ describe('World', function() {
                 x : 20
             };
             
-            let registeredComponent = this.world.components.get(this.world.registerComponent(component, ComponentType.SemiDynamic));
+            let registeredComponent = this.componentManager.components.get(this.componentManager.registerComponent(component, () => { }, ComponentType.SemiDynamic));
             
             expect(registeredComponent).to.have.property('object');
             expect(registeredComponent).to.have.property('type');
@@ -144,18 +144,36 @@ describe('World', function() {
             expect(registeredComponent).property('type').to.equal(ComponentType.SemiDynamic);
         });
         
+        it('registers a component when [components] are empty', () => {
+            this.componentManager.components = new Map();
+            
+            let component = {
+                x : 20
+            };
+            
+            let registeredComponent = this.componentManager.components.get(this.componentManager.registerComponent(component, () => { }));
+            
+            expect(registeredComponent).to.have.property('object');
+            expect(registeredComponent).to.have.property('type');
+            
+            expect(registeredComponent).property('object').to.equal(component);
+            expect(registeredComponent).property('type').to.equal(ComponentType.Static);
+        });
+        
+        // todo move the below tests to test entityManager.registerComponent method
+        /*
         it('adds a component to all existing entities when registering a static component', () => {
             let component = {
                 x : 20
             };
             
-            let componentId = this.world.registerComponent(component, ComponentType.Static, false);
+            let componentId = this.componentManager.registerComponent(component, () => { }, ComponentType.Static, false);
 
-            for (let i = 0; i < this.world.entities.length; ++i) {
-                expect(this.world.entities[i]).to.have.property([componentId]);
-                expect(this.world.entities[i]).property([componentId]).to.be.an('object');
-                expect(this.world.entities[i]).property([componentId]).to.have.property('x');
-                expect(this.world.entities[i]).property([componentId]).property('x').to.equal(20);
+            for (let i = 0; i < this.entityManager.entities.length; ++i) {
+                expect(this.entityManager.entities[i]).to.have.property([componentId]);
+                expect(this.entityManager.entities[i]).property([componentId]).to.be.an('object');
+                expect(this.entityManager.entities[i]).property([componentId]).to.have.property('x');
+                expect(this.entityManager.entities[i]).property([componentId]).property('x').to.equal(20);
             }
         });
         
@@ -164,10 +182,10 @@ describe('World', function() {
                 x : 20
             };
             
-            let componentId = this.world.registerComponent(component, ComponentType.SemiDynamic, false);
+            let componentId = this.componentManager.registerComponent(component, () => { }, ComponentType.SemiDynamic, false);
             
-            for (let i = 0; i < this.world.entities.length; ++i) {
-                expect(this.world.entities[i]).to.not.have.property([componentId]);
+            for (let i = 0; i < this.entityManager.entities.length; ++i) {
+                expect(this.entityManager.entities[i]).to.not.have.property([componentId]);
             }
         });
         
@@ -176,11 +194,11 @@ describe('World', function() {
                 x : 20
             };
             
-            let componentId = this.world.registerComponent(component, ComponentType.Dynamic, false);
+            let componentId = this.componentManager.registerComponent(component, () => { }, ComponentType.Dynamic, false);
             
-            for (let i = 0; i < this.world.entities.length; ++i) {
-                expect(this.world.entities[i]).to.not.have.property([componentId]);
+            for (let i = 0; i < this.entityManager.entities.length; ++i) {
+                expect(this.entityManager.entities[i]).to.not.have.property([componentId]);
             }
-        });
+        });*/
     });
 });
