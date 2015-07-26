@@ -1,5 +1,4 @@
 import { SelectorType } from './Entity';
-import { NoneComponent } from  './Component';
 
 export const SystemType = {
     Init    : 0,
@@ -18,14 +17,9 @@ export default class SystemManager {
         this.systems.set(SystemType.CleanUp, new Map());
     }
     
-    addSystem(callback, components = NoneComponent, type = SystemType.Logic, selector = SelectorType.GetWith) {
+    addSystem(callback, components = 0, type = SystemType.Logic, selector = SelectorType.GetWith) {
     	if (typeof callback !== 'function') {
     		throw TypeError('callback must be a function.');
-    	}
-    	
-    	if (!Number.isInteger(components) || components === NoneComponent) {
-    		components = NoneComponent;
-    		selector = SelectorType.Get;
     	}
     	
     	let system = {
@@ -34,28 +28,24 @@ export default class SystemManager {
     		callback
     	};
     
-        let maxId = -1;
+        let systemId = -1;
         
-        this.systems.forEach(system => {
-            maxId = Math.max(maxId, ...system.keys());
+        this.systems.forEach(sys => {
+            systemId = Math.max(systemId, ...sys.keys());
         });
         
-        let systemId = maxId + 1;
+        ++systemId;
     	
     	this.systems.get(type).set(systemId, system);
 
     	return systemId;
     }
     
-    removeSystem(system) {
-        if (!Number.isInteger(system)) {
-            return false;
-        }
-
+    removeSystem(systemId) {
         for (let typeSystem of this.systems.values()) {
             for (let id of typeSystem.keys()) {
-                if (id === system) {
-                    return typeSystem.delete(system);
+                if (id === systemId) {
+                    return typeSystem.delete(systemId);
                 }
             }
         }
@@ -63,15 +53,11 @@ export default class SystemManager {
         return false;
     }
     
-    getSystem(system) {
-        if (!Number.isInteger(system)) {
-            return;
-        }
-        
+    getSystem(systemId) {
         for (let typeSystem of this.systems.values()) {
             for (let id of typeSystem.keys()) {
-                if (id === system) {
-                    return typeSystem.get(system);
+                if (id === systemId) {
+                    return typeSystem.get(systemId);
                 }
             }
         }

@@ -25,16 +25,6 @@ export default class EventHandler {
         });
     }
     
-    getNextEventId() {
-        let max = -1;
-        
-        this.events.forEach(event => {
-            max = Math.max(max, ...event.keys());
-        });
-        
-        return max + 1;
-    }
-    
     listen(event, callback) {
         if (typeof event !== 'string' || typeof callback !== 'function') {
             return;
@@ -44,7 +34,13 @@ export default class EventHandler {
             this.events.set(event, new Map());
         }
         
-        let eventId = this.getNextEventId();
+        let eventId = -1;
+        
+        this.events.forEach(event => {
+            eventId = Math.max(eventId, ...event.keys());
+        });
+        
+        ++eventId;
         
         this.events.get(event).set(eventId, callback);
         
@@ -52,10 +48,6 @@ export default class EventHandler {
     }
     
     stopListen(eventId) {
-        if (!Number.isInteger(eventId)) {
-            return false;
-        }
-
         for (let events of this.events.values()) {
             for (let id of events.keys()) {
                 if (id === eventId) {

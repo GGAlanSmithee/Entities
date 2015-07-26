@@ -1,16 +1,14 @@
-import { expect }        from 'chai';
-import EntityManager     from '../../../src/core/Entity';
-import { ComponentType } from '../../../src/core/Component';
-import * as helpers      from '../../helpers';
+import { expect }    from 'chai';
+import EntityManager from '../../../src/core/Entity';
+import * as helpers  from '../../Helpers';
 
 describe('EntityManager', function() {
     describe('increaseCapacity()', () => {
         beforeEach(() => {
             this.entityManager = new EntityManager();
             
-            this.staticComponent      = helpers.registerComponent(this.entityManager.componentManager, this.entityManager, ComponentType.Static, { x : 10, y : 20 }, 1);
-            this.semiDynamicComponent = helpers.registerComponent(this.entityManager.componentManager, this.entityManager, ComponentType.SemiDynamic, { x : 10, y : 20 }, 2);
-            this.dynamicComponent     = helpers.registerComponent(this.entityManager.componentManager, this.entityManager, ComponentType.Dynamic, { x : 10, y : 20 }, 4);
+            this.component  = { x : 10, y : 20 };
+            this.componentId = helpers.registerComponent(this.entityManager.componentManager, this.entityManager, this.component, 1);
             
             this.entityId = 0;
         });
@@ -47,7 +45,7 @@ describe('EntityManager', function() {
             expect(this.entityManager.entities).property('length').to.equal(2000);
             
             for (let i = 0; i < this.entityManager.capacity; ++i) {
-                expect(this.entityManager.entities[i]).to.be.an('object');
+                expect(this.entityManager.entities[i]).to.equal(0);
             }
             
             this.entityManager.increaseCapacity();
@@ -55,81 +53,36 @@ describe('EntityManager', function() {
             expect(this.entityManager.entities).property('length').to.equal(4000);
             
             for (let i = 0; i < this.entityManager.capacity; ++i) {
-                expect(this.entityManager.entities[i]).to.be.an('object');
+                expect(this.entityManager.entities[i]).to.equal(0);
             }
         });
         
-        it('adds static components to entities as capacity is increased', () => {
-            expect(this.entityManager.entities).property('length').to.equal(1000);
+        it('adds components to the entityManager as capacity is increased', () => {
+            expect(this.entityManager[this.componentId]).property('length').to.equal(1000);
             
-            for (let entity of this.entityManager.entities) {
-                expect(entity).property('id').to.equal(0);
-                expect(entity).to.have.property(this.staticComponent);
+            for (let component of this.entityManager[this.componentId]) {
+                expect(component).to.equal(this.component);
             }
             
             this.entityManager.increaseCapacity();
             
-            expect(this.entityManager.entities).property('length').to.equal(2000);
+            expect(this.entityManager[this.componentId]).property('length').to.equal(2000);
             
-            for (let entity of this.entityManager.entities) {
-                expect(entity).property('id').to.equal(0);
-                expect(entity).to.have.property(this.staticComponent);
+            for (let component of this.entityManager[this.componentId]) {
+                expect(component).to.be.an('object');
+                expect(component).property('x').to.equal(this.component.x);
+                expect(component).property('y').to.equal(this.component.y);
             }
             
             this.entityManager.increaseCapacity();
             
-            expect(this.entityManager.entities).property('length').to.equal(4000);
+            expect(this.entityManager[this.componentId]).property('length').to.equal(4000);
             
-            for (let entity of this.entityManager.entities) {
-                expect(entity).property('id').to.equal(0);
-                expect(entity).to.have.property(this.staticComponent);
+            for (let component of this.entityManager[this.componentId]) {
+                expect(component).to.be.an('object');
+                expect(component).property('x').to.equal(this.component.x);
+                expect(component).property('y').to.equal(this.component.y);
             }
-        });
-        
-        it('does not add semiDynamic and dynamic components to entities as capacity is increased', () => {
-            expect(this.entityManager.entities).property('length').to.equal(1000);
-            
-            for (let entity of this.entityManager.entities) {
-                expect(entity).property('id').to.equal(0);
-                expect(entity).to.not.have.property(this.semiDynamicComponent);
-                expect(entity).to.not.have.property(this.dynamicComponent);
-            }
-            
-            this.entityManager.increaseCapacity();
-            
-            expect(this.entityManager.entities).property('length').to.equal(2000);
-            
-            for (let entity of this.entityManager.entities) {
-                expect(entity).property('id').to.equal(0);
-                expect(entity).to.not.have.property(this.semiDynamicComponent);
-                expect(entity).to.not.have.property(this.dynamicComponent);
-            }
-            
-            this.entityManager.increaseCapacity();
-            
-            expect(this.entityManager.entities).property('length').to.equal(4000);
-            
-            for (let entity of this.entityManager.entities) {
-                expect(entity).property('id').to.equal(0);
-                expect(entity).to.not.have.property(this.semiDynamicComponent);
-                expect(entity).to.not.have.property(this.dynamicComponent);
-            }
-        });
-        
-        it('increses capacity even if there are no [components]', () => {
-            this.entityManager.componentManager.components = [];
-            
-            expect(this.entityManager.entities).property('length').to.equal(1000);
-            
-            this.entityManager.increaseCapacity();
-            
-            expect(this.entityManager.entities).property('length').to.equal(2000);
-            
-            this.entityManager.componentManager.components = new Map();
-            
-            this.entityManager.increaseCapacity();
-            
-            expect(this.entityManager.entities).property('length').to.equal(4000);
         });
     });
 });

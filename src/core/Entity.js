@@ -1,6 +1,6 @@
-import ComponentManager, { NoneComponent, ComponentType } from './Component';
-import SystemManager                                      from './System';
-import EventHandler                                       from './Event';
+import ComponentManager from './Component';
+import SystemManager    from './System';
+import EventHandler     from './Event';
 
 export const SelectorType = {
     Get         : 0,
@@ -10,177 +10,172 @@ export const SelectorType = {
 };
 
 export default class EntityManager {
-    constructor(capacity = 1000, entityFactory = new EntityFactory(), systemManager = new SystemManager(), componentManager = new ComponentManager(), eventHandler = new EventHandler()) {
-        this.entityFactory    = entityFactory;
-        this.systemManager    = systemManager;
-        this.componentManager = componentManager;
-        this.eventHandler     = eventHandler;
-        this.capacity         = Number.isInteger(capacity) ? capacity : 1000;
-    
+    constructor(capacity = 1000) {
+        this.capacity         = capacity;
         this.currentMaxEntity = -1;
         
-        this.entities = Array.from({length: this.capacity}, v => v = { id : 0 });
+        this.entityFactory    = new EntityFactory();
+        this.systemManager    = new SystemManager();
+        this.componentManager = new ComponentManager();
+        this.eventHandler     = new EventHandler();
+        
+        this.entities = Array.from({ length: this.capacity }, v => v = 0);
     }
     
-    registerComponent(object, initializer, type = ComponentType.Static) {
-        let component = this.componentManager.registerComponent(object, type);
-
-        if (type === ComponentType.Static) {
-            this.entities.forEach(entity => entity[component] = this.componentManager.newComponent(object));
+    registerComponent(component, initializer) {
+        let componentId = this.componentManager.registerComponent(component);
+        
+        this[componentId] = [];
+        
+        for (let i = 0; i < this.capacity; ++i) {
+            this[componentId].push(this.componentManager.newComponent(componentId));
         }
         
         if (typeof initializer === 'function') {
-            this.entityFactory.registerInitializer(component, initializer);
+            this.entityFactory.registerInitializer(componentId, initializer);
         }
         
-        return component;
+        return componentId;
+    }
+    
+    addComponent(entityId, componentId) {
+        this.entities[entityId] |= componentId;
+    }
+    
+    removeComponent(entityId, componentId) {
+        this.entities[entityId] &= ~componentId;
     }
     
     increaseCapacity() {
+        let oldCapacity = this.capacity;
+        
         this.capacity *= 2;
         
-        for (let i = this.capacity / 2; i < this.capacity; ++i) {
-            this.entities[i] = { id : 0 };
-
-            for (let [key, component] of this.componentManager.getComponents()) {
-                if (component.type === ComponentType.Static) {
-                    this.entities[i][key] = this.componentManager.newComponent(component.object);
-                }
+        for (let i = oldCapacity; i < this.capacity; ++i) {
+            this.entities[i] = 0;
+        }
+        
+        for (let componentId of this.componentManager.getComponents().keys()) {
+            for (let i = oldCapacity; i < this.capacity; ++i) {
+                this[componentId].push(this.componentManager.newComponent(componentId));
             }
         }
     }
     
-    addEntity(components, returnDetails = false) {
+    newEntity(components) {
         if (typeof components !== 'number' || components <= 0) {
-            return returnDetails ? null : this.capacity;
+            return this.capacity;
         }
         
-        let entityId = this.getFirstUnusedEntity();
+        let entityId = 0;
+        
+        for (; entityId < this.capacity; ++entityId) {
+            if (this.entities[entityId] === 0) {
+                break;
+            }
+        }
         
         if (entityId >= this.capacity) {
-            return returnDetails ? null : this.capacity;
+            // todo: auto increase capacity?
+            return this.capacity;
         }
         
         if (entityId > this.currentMaxEntity) {
             this.currentMaxEntity = entityId;
         }
         
-        let entity = this.entities[entityId];
+        this.entities[entityId] = components;
         
-        let componentKeys = this.componentManager.getComponents().keys();
-        
-        for (let component of componentKeys) {
-            if (component !== NoneComponent && (components & component) === component) {
-                this.componentManager.addComponentToEntity(entity, component);
-            } else {
-                this.componentManager.removeComponentFromEntity(entity, component);
-            }
-        }
-        
-        return returnDetails ? entity : entityId;
+        return entityId;
     }
     
-    deleteEntity(entity) {
-        if (!Number.isInteger(entity)) {
+    deleteEntity(entityId) {
+        this.entities[entityId] = 0;
+        
+        if (entityId < this.currentMaxEntity) {
             return;
         }
         
-        let componentKeys = this.componentManager.getComponents().keys();
-        
-        for (let key of componentKeys) {
-            if (key !== NoneComponent) {
-                this.componentManager.removeComponentFromEntity(this.entities[entity], key);
-            }
-        }
-        
-        if (entity <= this.currentMaxEntity) {
-            return;
-        }
-        
-        for (let i = entity; i >= 0; --i) {
-            if (this.entities[i].id !== NoneComponent) {
+        for (let i = entityId; i >= 0; --i) {
+            if (this.entities[i] !== 0) {
                 this.currentMaxEntity = i;
                 
-                break;
+                return;
             }
         }
     }
     
-    getFirstUnusedEntity(returnDetails = false) {
-        for (let entity in this.entities) {
-            if (this.entities[entity].id === NoneComponent) {
-                return returnDetails ? this.entities[entity] : Math.floor(entity);
-            }
-        }
-        
-        return returnDetails ? null : this.capacity;
-    }
-    
-    *getEntities(type = SelectorType.Get, components = NoneComponent, returnDetails = false) {
+    *getEntities(type = SelectorType.Get, components = 0) {
         switch (type) {
             case SelectorType.GetWith: {
-                for (let entity in this.entities) {
-                    if (entity > this.currentMaxEntity) {
+                for (let entityId in this.entities) {
+                    if (entityId > this.currentMaxEntity) {
                         return;
                     }
                     
-                    if (this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) === components) {
-                        yield returnDetails ? this.entities[entity] : Math.floor(entity);
+                    if (this.entities[entityId] !== 0 && (this.entities[entityId] & components) === components) {
+                        yield Math.floor(entityId);
                     }
                 }
                 
                 break;
             }
             case SelectorType.GetWithOnly: {
-                for (let entity in this.entities) {
-                    if (entity > this.currentMaxEntity) {
+                for (let entityId in this.entities) {
+                    if (entityId > this.currentMaxEntity) {
                         return;
                     }
                     
-                    if (this.entities[entity].id !== NoneComponent && this.entities[entity].id === components) {
-                        yield returnDetails ? this.entities[entity] : Math.floor(entity);
+                    if (this.entities[entityId] !== 0 && this.entities[entityId] === components) {
+                        yield Math.floor(entityId);
                     }
                 }
                 
                 break;
             }
             case SelectorType.GetWithout: {
-                for (let entity in this.entities) {
-                    if (entity > this.currentMaxEntity) {
+                for (let entityId in this.entities) {
+                    if (entityId > this.currentMaxEntity) {
                         return;
                     }
                     
-                    if (this.entities[entity].id !== NoneComponent && (this.entities[entity].id & components) !== components) {
-                        yield returnDetails ? this.entities[entity] : Math.floor(entity);
+                    if (this.entities[entityId] !== 0 && (this.entities[entityId] & components) !== components) {
+                        yield Math.floor(entityId);
                     }
                 }
                 
                 break;
             }
             default: {
-                for (let entity in this.entities) {
-                    if (entity > this.currentMaxEntity) {
+                for (let entityId in this.entities) {
+                    if (entityId > this.currentMaxEntity) {
                         return;
                     }
                     
-                    yield returnDetails ? this.entities[entity] : Math.floor(entity);
+                    yield Math.floor(entityId);
                 }
             }
         }
     }
     
-    withComponent : function(component, initializer) {
-        this.factory.withComponent(component, initializer);
+    build() {
+        this.entityFactory.build();
         
         return this;
-    },
+    }
     
-    createConfiguration : function() {
-        return this.factory.createConfiguration();
-    },
+    withComponent(componentId, initializer) {
+        this.entityFactory.withComponent(componentId, initializer);
+        
+        return this;
+    }
     
-    create : function(count, configuration) {
-        return this.factory.create(this.world, count, configuration);
+    createConfiguration() {
+        return this.entityFactory.createConfiguration();
+    }
+    
+    create(count, configuration) {
+        return this.entityFactory.create(this, count, configuration);
     }
 }
 
@@ -190,12 +185,12 @@ export class EntityFactory {
         this.configuration = new Map();
     }
     
-    registerInitializer(component, initializer) {
-     if (!Number.isInteger(component) || typeof initializer !== 'function') {
+    registerInitializer(componentId, initializer) {
+        if (!Number.isInteger(componentId) || typeof initializer !== 'function') {
             return;
         }
         
-        this.initializers.set(component, initializer);
+        this.initializers.set(componentId, initializer);
     }
     
     build() {
@@ -204,16 +199,16 @@ export class EntityFactory {
         return this;
     }
     
-    withComponent(component, initializer) {
-        if (!Number.isInteger(component)) {
+    withComponent(componentId, initializer) {
+        if (!Number.isInteger(componentId)) {
             return this;
         }
         
         if (typeof initializer !== 'function') {
-            initializer = this.initializers.get(component);
+            initializer = this.initializers.get(componentId) || function() { };
         }
         
-        this.configuration.set(component, initializer);
+        this.configuration.set(componentId, initializer);
         
         return this;
     }
@@ -229,7 +224,7 @@ export class EntityFactory {
     
         configuration = configuration || this.configuration;
 
-        let components = NoneComponent;
+        let components = 0;
         
         for (let component of configuration.keys()) {
             components |= component;
@@ -238,25 +233,25 @@ export class EntityFactory {
         let entities = [];
         
         for (let i = 0; i < count; ++i) {
-            let entity = entityManager.addEntity(components, true);
+            let entityId = entityManager.newEntity(components);
             
-            if (!entity) {
+            if (entityId >= entityManager.capacity) {
                 continue;
             }
-                
-            for (let [component, initializer] of configuration) {
-                if (!initializer) {
+            
+            for (let [componentId, initializer] of configuration) {
+                if (typeof initializer !== 'function') {
                     continue;
                 }
-
-                let result = initializer.call(entity[component]);
                 
-                if (typeof entity[component] !== 'function' && typeof entity[component] !== 'object' && result !== undefined) {
-                    entity[component] = result;
+                let result = initializer.call(entityManager[componentId][entityId]);
+                
+                if (typeof entityManager[componentId][entityId] !== 'function' && typeof entityManager[componentId][entityId] !== 'object' && result !== undefined) {
+                    entityManager[componentId][entityId] = result;
                 }
             }
             
-            entities.push(entity);
+            entities.push(entityId);
         }
         
         return entities;

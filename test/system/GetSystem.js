@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import   SystemManager, { SystemType } from '../../src/core/System';
 import { SelectorType } from '../../src/core/Entity';
-import * as helpers from '../helpers';
+import * as helpers from '../Helpers';
 
 describe('SystemManager', function() {
     describe('getSystem(system, type)', () => {

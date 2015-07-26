@@ -1,94 +1,43 @@
-export const NoneComponent = 0;
-
-export const ComponentType = {
-    Dynamic     : 0,
-    SemiDynamic : 1,
-    Static      : 2
-};
-
 export default class ComponentManager {
     constructor() {
         this.components = new Map();
-        this.components.set(NoneComponent, { type : null, object : null });
     }
     
-    newComponent(object) {
-        if (object === null || object === undefined) {
+    newComponent(componentId) {
+        let component = this.components.get(componentId);
+        
+        if (component === null || component === undefined) {
             return null;
         }
         
-        switch (typeof object) {
-            case 'function': return new object();
+        switch (typeof component) {
+            case 'function': return new component();
             case 'object'  : {
-                return ((object) => {
+                return ((component) => {
                     let ret = {};
                     
-                    Object.keys(object).forEach(key => ret[key] = object[key]);
+                    Object.keys(component).forEach(key => ret[key] = component[key]);
                     
                     return ret;
-                })(object);
+                })(component);
             }
         }
         
-        return object;
+        return component;
     }
     
-    registerComponent(object, initializer, type = ComponentType.Static, returnDetails = false) {
-        if (object === null || object === undefined) {
-            throw TypeError('object cannot be null.');
+    registerComponent(component) {
+        if (component === null || component === undefined) {
+            throw TypeError('component cannot be null.');
         }
         
         let max = Math.max(...this.components.keys());
         
-        let id = max === undefined || max === null || max === -Infinity ? 0 : max === 0 ? 1 : max * 2;
-        
-        let component = { type, object };
-        
+        let id = max === undefined || max === null || max === -Infinity ? 1 : max === 0 ? 1 : max * 2;
+
         this.components.set(id, component);
 
-        return returnDetails ? component : id;
-    }
-    
-    addComponentToEntity(entity, componentId) {
-        if (typeof entity !== 'object' || entity === null) {
-            return;
-        }
-        
-        let component = this.components.get(componentId);
-        
-        if (!component) {
-            return;
-        }
-
-        if ((entity.id & componentId) !== componentId) {
-            entity.id |= componentId;
-        }
-        
-        if (component.type === ComponentType.Static || (entity[componentId] !== null && entity[componentId] !== undefined)) {
-            return;
-        }
-
-        entity[componentId] = this.newComponent(component.object);
-    }
-    
-    removeComponentFromEntity(entity, componentId) {
-        if (typeof entity !== 'object' || entity === null) {
-            return;
-        }
-        
-        let component = this.components.get(componentId);
-        
-        if (!component) {
-            return;
-        }
-        
-        if ((entity.id & componentId) === componentId) {
-            entity.id &= ~componentId;
-            
-            if (component.type === ComponentType.Dynamic && entity[componentId] !== null && entity[componentId] !== undefined) {
-                delete entity[componentId];
-            }
-        }
+        return id;
     }
     
     getComponents() {

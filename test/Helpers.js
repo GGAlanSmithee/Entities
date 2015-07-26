@@ -2,21 +2,20 @@ import { ComponentType } from '../src/core/Component';
 import { SelectorType }  from '../src/core/Entity';
 import { SystemType }    from '../src/core/System';
 
-export function registerComponent(componentManager, entityManager, type, object, id) {
-    if (type === ComponentType.Static) {
-        for (let entity of entityManager.entities) {
-            entity[id] = { type, object };
-        }
+export function registerComponent(componentManager, entityManager, component, componentId) {
+    entityManager[componentId] = [];
+    
+    for (let i = 0; i < entityManager.capacity; ++i) {
+        entityManager[componentId].push(component);
     }
     
-    componentManager.components.set(id, { type, object });
+    componentManager.components.set(componentId, component);
     
-    return id;
+    return componentId;
 }
 
 export function addComponentToEntity(entityManager, componentManager, entityId, componentId) {
-    entityManager.entities[entityId].id |= componentId;
-    entityManager.entities[entityId][componentId] = componentManager.components.get(componentId).object;
+    entityManager.entities[entityId] |= componentId;
 }
 
 export function registerSystem(systemManager, systemId, components, callback, type, selector) {

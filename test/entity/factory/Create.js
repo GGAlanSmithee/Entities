@@ -25,19 +25,17 @@ describe('EntityFactory', function() {
             
             this.components = this.componentOne | this.componentTwo | this.componentThree | this.componentFour;
             
-            this.addEntityStub = sinon.stub(this.entityManager, 'addEntity');
+            this.entityManager[this.componentOne]   = [];
+            this.entityManager[this.componentTwo]   = [];
+            this.entityManager[this.componentThree] = [];
+            this.entityManager[this.componentFour]  = [];
             
-            function funcComponent() {
-                this.x = 1.0;
+            for (let i = 0; i < this.entityManager.capacity; ++i) {
+                this.entityManager[this.componentOne].push(new (function() { this.x = 1.0; })());
+                this.entityManager[this.componentTwo].push({ y : 2.0 });
+                this.entityManager[this.componentThree].push(1);
+                this.entityManager[this.componentFour].push('Name');
             }
-            
-            this.addEntityStub.withArgs(this.components, true).returns({
-                id   : this.components,
-                '1'  : new funcComponent(),
-                '2'  : { y : 2.0 },
-                '8'  : 1,
-                '32' : "Name"
-            });
         });
         
         afterEach(() => {
@@ -50,23 +48,13 @@ describe('EntityFactory', function() {
         });
         
         it('creates an entity according to the current [configuration]', () => {
-            let entity = this.entityFactory.create(this.entityManager)[0];
+            let entityId = this.entityFactory.create(this.entityManager)[0];
 
-            expect(this.addEntityStub.calledOnce).to.be.true;
-            
-            expect(entity).to.have.property('id');
-            
-            expect(entity).to.have.property(this.componentOne);
-            expect(entity).property(this.componentOne).property('x').to.equal(4.0);
-            
-            expect(entity).to.have.property(this.componentTwo);
-            expect(entity).property(this.componentTwo).property('y').to.equal(5.0);
-            
-            expect(entity).to.have.property(this.componentThree);
-            expect(entity).property(this.componentThree).to.equal(this.componentThreeInitializer());
-            
-            expect(entity).to.have.property(this.componentFour);
-            expect(entity).property(this.componentFour).to.equal(this.componentFourInitializer());
+            expect(this.entityManager.entities[entityId]).to.equal(this.components);
+            expect(this.entityManager[this.componentOne][entityId]).property('x').to.equal(4.0);
+            expect(this.entityManager[this.componentTwo][entityId]).property('y').to.equal(5.0);
+            expect(this.entityManager[this.componentThree][entityId]).to.equal(this.componentThreeInitializer());
+            expect(this.entityManager[this.componentFour][entityId]).to.equal(this.componentFourInitializer());
         });
         
         it('does not change a components value if there is no initializer for that component', () => {
@@ -75,23 +63,13 @@ describe('EntityFactory', function() {
             this.entityFactory.configuration.set(this.componentThree, undefined);
             this.entityFactory.configuration.set(this.componentFour, undefined);
             
-            let entity = this.entityFactory.create(this.entityManager)[0];
+            let entityId = this.entityFactory.create(this.entityManager)[0];
 
-            expect(this.addEntityStub.calledOnce).to.be.true;
-            
-            expect(entity).to.have.property('id');
-            
-            expect(entity).to.have.property(this.componentOne);
-            expect(entity).property(this.componentOne).property('x').to.equal(1.0);
-            
-            expect(entity).to.have.property(this.componentTwo);
-            expect(entity).property(this.componentTwo).property('y').to.equal(2.0);
-            
-            expect(entity).to.have.property(this.componentThree);
-            expect(entity).property(this.componentThree).to.equal(1);
-            
-            expect(entity).to.have.property(this.componentFour);
-            expect(entity).property(this.componentFour).to.equal("Name");
+            expect(this.entityManager.entities[entityId]).to.equal(this.components);
+            expect(this.entityManager[this.componentOne][entityId]).property('x').to.equal(1.0);
+            expect(this.entityManager[this.componentTwo][entityId]).property('y').to.equal(2.0);
+            expect(this.entityManager[this.componentThree][entityId]).to.equal(1);
+            expect(this.entityManager[this.componentFour][entityId]).to.equal("Name");
         });
         
         it('creates an entity from a [configuration]', () => {
@@ -107,23 +85,13 @@ describe('EntityFactory', function() {
 
             expect(entities).property('length').to.equal(1);
 
-            let entity = entities[0];
-            
-            expect(this.addEntityStub.calledTwice).to.be.true;
-            
-            expect(entity).to.have.property('id');
-            
-            expect(entity).to.have.property(this.componentOne);
-            expect(entity).property(this.componentOne).property('x').to.equal(4.0);
-            
-            expect(entity).to.have.property(this.componentTwo);
-            expect(entity).property(this.componentTwo).property('y').to.equal(5.0);
-            
-            expect(entity).to.have.property(this.componentThree);
-            expect(entity).property(this.componentThree).to.equal(this.componentThreeInitializer());
-            
-            expect(entity).to.have.property(this.componentFour);
-            expect(entity).property(this.componentFour).to.equal(this.componentFourInitializer());
+            let entityId = entities[0];
+
+            expect(this.entityManager.entities[entityId]).to.equal(this.components);
+            expect(this.entityManager[this.componentOne][entityId]).property('x').to.equal(4.0);
+            expect(this.entityManager[this.componentTwo][entityId]).property('y').to.equal(5.0);
+            expect(this.entityManager[this.componentThree][entityId]).to.equal(this.componentThreeInitializer());
+            expect(this.entityManager[this.componentFour][entityId]).to.equal(this.componentFourInitializer());
         });
         
         it('creates [count] number of entities', () => {

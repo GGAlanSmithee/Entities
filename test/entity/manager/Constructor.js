@@ -1,5 +1,4 @@
 import { expect }                       from 'chai';
-import { NoneComponent }                from '../../../src/core/Component';
 import EntityManager, { EntityFactory } from '../../../src/core/Entity';
 import EventHandler                     from '../../../src/core/Event';
 import SystemManager                    from '../../../src/core/System';
@@ -67,23 +66,12 @@ describe('EntityManager', function() {
             expect(this.entityManager).property('entities').property('length').to.equal(this.capacity);
             
             for (let i = 0; i < this.entityManager.capacity; ++i) {
-                expect(this.entityManager.entities[i]).property('id').to.equal(0);
+                expect(this.entityManager.entities[i]).to.equal(0);
             }
         });
         
         it('sets [currentMaxEntity] to -1', () => {
             expect(this.entityManager.currentMaxEntity).to.equal(-1);
-        });
-        
-        it('sets [capacity] to 1000 (default) on bad input', () => {
-            this.entityManager = new EntityManager('bad input');
-            
-            expect(this.entityManager.capacity).to.equal(1000);
-            expect(this.entityManager).property('entities').property('length').to.equal(this.entityManager.capacity);
-            
-            for (let i = 0; i < this.entityManager.capacity; ++i) {
-                expect(this.entityManager.entities[i]).property('id').to.equal(0);
-            }
         });
     });
 });

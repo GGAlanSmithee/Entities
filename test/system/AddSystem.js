@@ -96,27 +96,20 @@ describe('SystemManager', function() {
             expect(this.systemManager.systems.get(SystemType.Logic).get(system)).property('selector').to.equal(SelectorType.GetWith);
         });
         
-        it('sets [components] to [NoneComponent] and [selector] to SelectorType.Get if components is omitted, not an integer or 0', () => {
+        it('sets [components] to 0 and [selector] to SelectorType.GetWith if components is omitted or 0', () => {
             let systemId = this.systemManager.addSystem(() => { });
             
             let system = this.systemManager.systems.get(SystemType.Logic).get(systemId);
             
             expect(system).property('components').to.equal(0);
-            expect(system).property('selector').to.equal(SelectorType.Get);
-            
-            systemId = this.systemManager.addSystem(() => { }, 1.2);
-            
-            system = this.systemManager.systems.get(SystemType.Logic).get(systemId);
-            
-            expect(system).property('components').to.equal(0);
-            expect(system).property('selector').to.equal(SelectorType.Get);
+            expect(system).property('selector').to.equal(SelectorType.GetWith);
             
             systemId = this.systemManager.addSystem(() => { }, 0);
             
             system = this.systemManager.systems.get(SystemType.Logic).get(systemId);
             
             expect(system).property('components').to.equal(0);
-            expect(system).property('selector').to.equal(SelectorType.Get);
+            expect(system).property('selector').to.equal(SelectorType.GetWith);
         });
         
         it('throws error if [callback] is not a function', () => {

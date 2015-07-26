@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { EntityFactory } from '../../../src/core/Entity';
 
 describe('EntityFactory', function() {
-    describe('withComponent(component, initializer)', () => {
+    describe('withComponent(componentId, initializer)', () => {
         beforeEach(() => {
             this.entityFactory = new EntityFactory();
         });
@@ -72,12 +72,12 @@ describe('EntityFactory', function() {
             this.entityFactory.configuration = new Map();
         });
         
-        it('adds the [component] with undefind as [initializer] if [initializer] is omitted and there is not initializer registered for the [component]', () => {
+        it('adds the [component] with an empty function as [initializer] if [initializer] is omitted', () => {
             expect(this.entityFactory.configuration.has(1)).to.be.false;
             this.entityFactory.withComponent(1);
             
             expect(this.entityFactory.configuration.has(1)).to.be.true;
-            expect(this.entityFactory.configuration.get(1)).to.be.undefined;
+            expect(this.entityFactory.configuration.get(1)).to.be.a('function');
         });
         
         it('does not add [component] to configuration if [component] is not a number', () => {

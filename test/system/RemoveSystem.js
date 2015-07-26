@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import SystemManager, { SystemType } from '../../src/core/System';
-import * as helpers from '../helpers';
+import * as helpers from '../Helpers';
 
 describe('SystemManager', function() {
     describe('removeSystem(type, system)', () => {

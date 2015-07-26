@@ -1,17 +1,16 @@
 import { expect }        from 'chai';
 import   sinon           from 'sinon';
 import   EntityManager   from '../../../src/core/Entity';
-import { ComponentType } from '../../../src/core/Component';
-import   * as helpers    from '../../helpers';
+import   * as helpers    from '../../Helpers';
 
 describe('EntityManager', function() {
     describe('deleteEntity(entity)', () => {
         beforeEach(() => {
             this.entityManager = new EntityManager();
             
-            this.posComponent  = helpers.registerComponent(this.entityManager.componentManager, this.entityManager, ComponentType.Static, { x : 10, y : 20 }, 1);
-            this.nameComponent = helpers.registerComponent(this.entityManager.componentManager, this.entityManager, ComponentType.SemiDynamic, { name : 'Testing' }, 2);
-            this.velComponent  = helpers.registerComponent(this.entityManager.componentManager, this.entityManager, ComponentType.Dynamic, 5.5, 4);
+            this.posComponent  = helpers.registerComponent(this.entityManager.componentManager, this.entityManager, { x : 10, y : 20 }, 1);
+            this.nameComponent = helpers.registerComponent(this.entityManager.componentManager, this.entityManager, { name : 'Testing' }, 2);
+            this.velComponent  = helpers.registerComponent(this.entityManager.componentManager, this.entityManager, 5.5, 4);
             
             this.entity = 0;
             
@@ -30,42 +29,22 @@ describe('EntityManager', function() {
             expect(this.entityManager.deleteEntity).to.be.a('function');
         });
         
-        it('removes an entity by setting its id to 0', () => {
+        it('removes an entity by setting it to 0', () => {
             this.entityManager.currentMaxEntity = 0;
             
-            expect(this.entityManager.entities[this.entity]).property('id').to.equal(this.components);
+            expect(this.entityManager.entities[this.entity]).to.equal(this.components);
             
             this.entityManager.deleteEntity(this.entity);
             
-            expect(this.entityManager.entities[this.entity]).property('id').to.equal(0);
-        });
-        
-        it('removes an entity by setting its id to 0', () => {
-            this.entityManager.currentMaxEntity = 1;
-            
-            expect(this.entityManager.entities[this.entity]).property('id').to.equal(this.components);
-            
-            this.entityManager.deleteEntity(this.entity);
-            
-            expect(this.entityManager.entities[this.entity]).property('id').to.equal(0);
+            expect(this.entityManager.entities[this.entity]).to.equal(0);
         });
         
         it('removes an entity by setting its id to 0 even when [currentMaxEntity] > [entity]', () => {
-            expect(this.entityManager.entities[this.entity]).property('id').to.equal(this.components);
+            expect(this.entityManager.entities[this.entity]).to.equal(this.components);
             
             this.entityManager.deleteEntity(this.entity);
             
-            expect(this.entityManager.entities[this.entity]).property('id').to.equal(0);
-        });
-        
-        it('invokes ComponentManager.removeComponentFromEntity for every component the removed entity has', () => {
-            sinon.spy(this.entityManager.componentManager, "removeComponentFromEntity");
-            
-            this.entityManager.deleteEntity(this.entity);
-            
-            expect(this.entityManager.componentManager.removeComponentFromEntity.callCount).to.equal(3);
-            
-            this.entityManager.componentManager.removeComponentFromEntity.restore();
+            expect(this.entityManager.entities[this.entity]).to.equal(0);
         });
         
         it('exits early when [entity] is more than [maxEntity]', () => {
@@ -74,6 +53,42 @@ describe('EntityManager', function() {
             this.entityManager.deleteEntity(this.entityManager.currentMaxEntity + 1);
             
             expect(this.entityManager.entities).property('length').to.equal(oldLength);
+        });
+        
+        it('sets [currentMaxEntity] to the next entity that has components if the deleted entity was the prior highest entity', () => {
+            this.entityManager.currentMaxEntity = 50;
+            
+            this.entityManager.entities[4] = 4;
+            this.entityManager.entities[5] = 8;
+            this.entityManager.entities[13] = 2;
+            
+            this.entityManager.entities[50] = 2;
+            
+            expect(this.entityManager.currentMaxEntity).to.equal(50);
+            
+            this.entityManager.deleteEntity(50);
+            expect(this.entityManager.currentMaxEntity).to.equal(13);
+            
+            this.entityManager.deleteEntity(25);
+            expect(this.entityManager.currentMaxEntity).to.equal(13);
+            
+            this.entityManager.deleteEntity(13);
+            expect(this.entityManager.currentMaxEntity).to.equal(5);
+            
+            this.entityManager.deleteEntity(2);
+            expect(this.entityManager.currentMaxEntity).to.equal(5);
+            
+            this.entityManager.deleteEntity(5);
+            expect(this.entityManager.currentMaxEntity).to.equal(4);
+            
+            this.entityManager.deleteEntity(1);
+            expect(this.entityManager.currentMaxEntity).to.equal(4);
+            
+            this.entityManager.deleteEntity(4);
+            expect(this.entityManager.currentMaxEntity).to.equal(0);
+            
+            this.entityManager.deleteEntity(0);
+            expect(this.entityManager.currentMaxEntity).to.equal(0);
         });
     });
 });

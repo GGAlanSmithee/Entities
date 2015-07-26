@@ -6,9 +6,6 @@ describe('EventHandler', function() {
     describe('listen(event, callback)', () => {
         beforeEach(() => {
             this.eventHandler = new EventHandler();
-            let eventId = -1;
-            
-            sinon.stub(this.eventHandler, 'getNextEventId', () => { return ++eventId; });
         });
         
         afterEach(() => {

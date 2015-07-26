@@ -6,5 +6,5 @@ esperanto.bundle({
   entry: 'Entities' // the '.js' is optional
 }).then( function ( bundle ) {
   var cjs = bundle.toCjs({ strict: true });
-  fs.writeFile( 'dist/es6.js', cjs.code );
+  fs.writeFile('dist/es6.js', cjs.code);
 });
