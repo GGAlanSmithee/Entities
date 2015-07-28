@@ -157,7 +157,19 @@ export default class EntityManager {
             }
         }
     }
+
+    onLogic(delta) {
+        for (let system of this.systemManager.logicSystems.values()) {
+            system.callback.call(this, this.getEntities(system.selector, system.components), delta);
+        }
+    }
     
+    onRender(delta) {
+        for (let system of this.systemManager.renderSystems.values()) {
+            system.callback.call(this, this.getEntities(system.selector, system.components), delta);
+        }
+    }
+
     build() {
         this.entityFactory.build();
         

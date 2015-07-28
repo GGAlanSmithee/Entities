@@ -18,26 +18,20 @@ export function addComponentToEntity(entityManager, componentManager, entityId, 
     entityManager.entities[entityId] |= componentId;
 }
 
-export function registerSystem(systemManager, systemId, components, callback, type, selector) {
-    if (components === undefined || components === null) {
-        components = 1 | 2 | 4;
-    }
-    
-    if (callback === undefined || callback === null) {
-        callback = () => { };
-    }
-    
-    if (type === null || type === undefined) {
-        type = SystemType.Init;
-    }
-    
-    if (selector === null || selector === undefined) {
-        selector = SelectorType.GetWith;
-    }
-    
-    systemManager.systems.get(type).set(systemId, {
+export function registerSystem(systemManager,
+                               systemId,
+                               type       = SystemType.Logic,
+                               components = 1 | 2 |4,
+                               callback   = function() {}, 
+                               selector   = SelectorType.GetWith) {
+    let system = {
         callback,
         selector,
         components
-    });
+    };
+    
+    switch (type) {
+        case SystemType.Logic:  systemManager.logicSystems.set(systemId, system);  break;
+        case SystemType.Render: systemManager.renderSystems.set(systemId, system); break;
+    }
 }

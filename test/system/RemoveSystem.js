@@ -15,6 +15,8 @@ describe('SystemManager', function() {
             helpers.registerSystem(this.systemManager, 2);
             helpers.registerSystem(this.systemManager, 3);
             helpers.registerSystem(this.systemManager, 4);
+            
+            helpers.registerSystem(this.systemManager, 5, SystemType.Render);
         });
         
         afterEach(() => {
@@ -26,38 +28,38 @@ describe('SystemManager', function() {
         });
         
         it('removes a system', () => {
-            expect(this.systemManager.systems.get(SystemType.Init).has(1)).to.be.true;
-            expect(this.systemManager.systems.get(SystemType.Init).has(2)).to.be.true;
-            expect(this.systemManager.systems.get(SystemType.Init).has(3)).to.be.true;
-            expect(this.systemManager.systems.get(SystemType.Init).has(4)).to.be.true;
+            expect(this.systemManager.logicSystems.has(1)).to.be.true;
+            expect(this.systemManager.logicSystems.has(2)).to.be.true;
+            expect(this.systemManager.logicSystems.has(3)).to.be.true;
+            expect(this.systemManager.logicSystems.has(4)).to.be.true;
             
             this.systemManager.removeSystem(1);
             
-            expect(this.systemManager.systems.get(SystemType.Init).has(1)).to.be.false;
-            expect(this.systemManager.systems.get(SystemType.Init).has(2)).to.be.true;
-            expect(this.systemManager.systems.get(SystemType.Init).has(3)).to.be.true;
-            expect(this.systemManager.systems.get(SystemType.Init).has(4)).to.be.true;
+            expect(this.systemManager.logicSystems.has(1)).to.be.false;
+            expect(this.systemManager.logicSystems.has(2)).to.be.true;
+            expect(this.systemManager.logicSystems.has(3)).to.be.true;
+            expect(this.systemManager.logicSystems.has(4)).to.be.true;
 
             this.systemManager.removeSystem(2);
             
-            expect(this.systemManager.systems.get(SystemType.Init).has(1)).to.be.false;
-            expect(this.systemManager.systems.get(SystemType.Init).has(2)).to.be.false;
-            expect(this.systemManager.systems.get(SystemType.Init).has(3)).to.be.true;
-            expect(this.systemManager.systems.get(SystemType.Init).has(4)).to.be.true;
+            expect(this.systemManager.logicSystems.has(1)).to.be.false;
+            expect(this.systemManager.logicSystems.has(2)).to.be.false;
+            expect(this.systemManager.logicSystems.has(3)).to.be.true;
+            expect(this.systemManager.logicSystems.has(4)).to.be.true;
             
             this.systemManager.removeSystem(3);
             
-            expect(this.systemManager.systems.get(SystemType.Init).has(1)).to.be.false;
-            expect(this.systemManager.systems.get(SystemType.Init).has(2)).to.be.false;
-            expect(this.systemManager.systems.get(SystemType.Init).has(3)).to.be.false;
-            expect(this.systemManager.systems.get(SystemType.Init).has(4)).to.be.true;
+            expect(this.systemManager.logicSystems.has(1)).to.be.false;
+            expect(this.systemManager.logicSystems.has(2)).to.be.false;
+            expect(this.systemManager.logicSystems.has(3)).to.be.false;
+            expect(this.systemManager.logicSystems.has(4)).to.be.true;
             
             this.systemManager.removeSystem(4);
             
-            expect(this.systemManager.systems.get(SystemType.Init).has(1)).to.be.false;
-            expect(this.systemManager.systems.get(SystemType.Init).has(2)).to.be.false;
-            expect(this.systemManager.systems.get(SystemType.Init).has(3)).to.be.false;
-            expect(this.systemManager.systems.get(SystemType.Init).has(4)).to.be.false;
+            expect(this.systemManager.logicSystems.has(1)).to.be.false;
+            expect(this.systemManager.logicSystems.has(2)).to.be.false;
+            expect(this.systemManager.logicSystems.has(3)).to.be.false;
+            expect(this.systemManager.logicSystems.has(4)).to.be.false;
         });
         
         it('returns true when a system is removed', () => {
@@ -75,6 +77,10 @@ describe('SystemManager', function() {
             expect(this.systemManager.removeSystem(1.2)).to.be.false;
             expect(this.systemManager.removeSystem({})).to.be.false;
             expect(this.systemManager.removeSystem([])).to.be.false;
+        });
+        
+        it('removes a system of type [SystemType.Render]', () => {
+            expect(this.systemManager.removeSystem(5)).to.be.true;
         });
     });
 });
