@@ -343,33 +343,6 @@ var EntityManager = (function () {
     }
 
     _createClass(EntityManager, [{
-        key: 'registerComponent',
-        value: function registerComponent(component, initializer) {
-            var componentId = this.componentManager.registerComponent(component);
-
-            this[componentId] = [];
-
-            for (var i = 0; i < this.capacity; ++i) {
-                this[componentId].push(this.componentManager.newComponent(componentId));
-            }
-
-            if (typeof initializer === 'function') {
-                this.entityFactory.registerInitializer(componentId, initializer);
-            }
-
-            return componentId;
-        }
-    }, {
-        key: 'addComponent',
-        value: function addComponent(entityId, componentId) {
-            this.entities[entityId] |= componentId;
-        }
-    }, {
-        key: 'removeComponent',
-        value: function removeComponent(entityId, componentId) {
-            this.entities[entityId] &= ~componentId;
-        }
-    }, {
         key: 'increaseCapacity',
         value: function increaseCapacity() {
             var oldCapacity = this.capacity;
@@ -600,6 +573,53 @@ var EntityManager = (function () {
             }, getEntities, this);
         })
     }, {
+        key: 'registerComponent',
+
+        // Component Manager proxies
+
+        value: function registerComponent(component, initializer) {
+            var componentId = this.componentManager.registerComponent(component);
+
+            this[componentId] = [];
+
+            for (var i = 0; i < this.capacity; ++i) {
+                this[componentId].push(this.componentManager.newComponent(componentId));
+            }
+
+            if (typeof initializer === 'function') {
+                this.entityFactory.registerInitializer(componentId, initializer);
+            }
+
+            return componentId;
+        }
+    }, {
+        key: 'addComponent',
+        value: function addComponent(entityId, componentId) {
+            this.entities[entityId] |= componentId;
+        }
+    }, {
+        key: 'removeComponent',
+        value: function removeComponent(entityId, componentId) {
+            this.entities[entityId] &= ~componentId;
+        }
+    }, {
+        key: 'addSystem',
+
+        // System Manager proxies
+
+        value: function addSystem(callback) {
+            var components = arguments[1] === undefined ? 0 : arguments[1];
+            var type = arguments[2] === undefined ? SystemType.Logic : arguments[2];
+            var selector = arguments[3] === undefined ? SelectorType.GetWith : arguments[3];
+
+            this.systemManager.addSystem(callback, components, type, selector);
+        }
+    }, {
+        key: 'removeSystem',
+        value: function removeSystem(systemId) {
+            this.systemManager.removeSystem(systemId);
+        }
+    }, {
         key: 'onLogic',
         value: function onLogic(delta) {
             var _iteratorNormalCompletion6 = true;
@@ -657,6 +677,9 @@ var EntityManager = (function () {
         }
     }, {
         key: 'build',
+
+        // Entity Factory proxies
+
         value: function build() {
             this.entityFactory.build();
 

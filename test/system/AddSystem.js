@@ -29,11 +29,11 @@ describe('SystemManager', function() {
         });
         
         it('returns the added sytems id', () => {
-            let system = this.systemManager.addSystem(() => { }, 1 | 2);
+            let system = this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Render);
             
             expect(system).to.equal(1);
             
-            system = this.systemManager.addSystem(() => { }, 1 | 2, SystemType.Logic);
+            system = this.systemManager.addSystem(() => { }, 1 | 2);
             
             expect(system).to.equal(2);
             

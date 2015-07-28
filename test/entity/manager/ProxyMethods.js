@@ -1,7 +1,8 @@
-import { expect }      from 'chai';
-import   EntityManager from '../../../src/core/Entity';
-import   sinon         from 'sinon';
-import * as helpers    from '../../Helpers'
+import { expect }                      from 'chai';
+import sinon                           from 'sinon';
+import EntityManager, { SelectorType } from '../../../src/core/Entity';
+import { SystemType }                  from '../../../src/core/System';
+import * as helpers                    from '../../Helpers'
 
 describe('EntityManager', function() {
     describe('proxy methods', () => {
@@ -84,7 +85,7 @@ describe('EntityManager', function() {
             });
         });
         
-        describe('create()', () => {
+        describe('create(count, configuration)', () => {
             beforeEach(() => {
                 helpers.registerComponent(this.entityManager.componentManager, this.entityManager, { x : 10, y : 20 }, 1);
                 helpers.registerComponent(this.entityManager.componentManager, this.entityManager, { name : 'Testing' }, 2);
@@ -135,6 +136,60 @@ describe('EntityManager', function() {
                 expect(entities).property('length').to.equal(2);
                 expect(this.entityManager.entities[entities[0]]).to.equal(component);
                 expect(this.entityManager.entities[entities[1]]).to.equal(component);
+            });
+        });
+         
+        describe('addSystem(callback, components = 0, type = SystemType.Logic, selector = SelectorType.GetWith)', () => {
+            beforeEach(() => {
+            });
+            
+            it('is a function', () => {
+                expect(this.entityManager.addSystem).to.be.a('function');
+            });
+            
+            it('invokes [systemManager.addSystem] with the correct parameters', () => {
+                let callback   = function() { this.x = 10.0; };
+                let type       = SystemType.Render;
+                let components = 1 | 2 | 4;
+                let selector   = SelectorType.GetWithout;
+                
+                let spy = sinon.spy(this.entityManager.systemManager, 'addSystem');
+                
+                let systemId = this.entityManager.addSystem(callback, components, type, selector);
+
+                expect(spy.calledOnce).to.be.true;
+                expect(spy.calledWith(callback, components, type, selector)).to.be.true;
+                expect(systemId).to.equal(1);
+                
+                systemId = this.entityManager.addSystem(callback);
+                
+                expect(spy.calledTwice).to.be.true;
+                expect(spy.calledWith(callback, 0, SystemType.Logic, SelectorType.GetWith)).to.be.true;
+                expect(systemId).to.equal(2);
+                
+                systemId = this.entityManager.addSystem(callback);
+                
+                expect(systemId).to.equal(3);
+            });
+        });
+        
+        describe('removeSystem(systemId)', () => {
+            beforeEach(() => {
+            });
+            
+            it('is a function', () => {
+                expect(this.entityManager.removeSystem).to.be.a('function');
+            });
+            
+            it('invokes [systemManager.removeSystem] with the correct parameters', () => {
+                let systemId = 1;
+                
+                let spy = sinon.spy(this.entityManager.systemManager, 'removeSystem');
+                
+                this.entityManager.removeSystem(systemId);
+                
+                expect(spy.calledOnce).to.be.true;
+                expect(spy.calledWith(systemId)).to.be.true;
             });
         });
     });

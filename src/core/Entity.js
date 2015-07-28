@@ -1,6 +1,6 @@
-import ComponentManager from './Component';
-import SystemManager    from './System';
-import EventHandler     from './Event';
+import ComponentManager              from './Component';
+import SystemManager, { SystemType } from './System';
+import EventHandler                  from './Event';
 
 export const SelectorType = {
     Get         : 0,
@@ -20,30 +20,6 @@ export default class EntityManager {
         this.eventHandler     = new EventHandler();
         
         this.entities = Array.from({ length: this.capacity }, v => v = 0);
-    }
-    
-    registerComponent(component, initializer) {
-        let componentId = this.componentManager.registerComponent(component);
-        
-        this[componentId] = [];
-        
-        for (let i = 0; i < this.capacity; ++i) {
-            this[componentId].push(this.componentManager.newComponent(componentId));
-        }
-        
-        if (typeof initializer === 'function') {
-            this.entityFactory.registerInitializer(componentId, initializer);
-        }
-        
-        return componentId;
-    }
-    
-    addComponent(entityId, componentId) {
-        this.entities[entityId] |= componentId;
-    }
-    
-    removeComponent(entityId, componentId) {
-        this.entities[entityId] &= ~componentId;
     }
     
     increaseCapacity() {
@@ -158,6 +134,42 @@ export default class EntityManager {
         }
     }
 
+    // Component Manager proxies
+    
+    registerComponent(component, initializer) {
+        let componentId = this.componentManager.registerComponent(component);
+        
+        this[componentId] = [];
+        
+        for (let i = 0; i < this.capacity; ++i) {
+            this[componentId].push(this.componentManager.newComponent(componentId));
+        }
+        
+        if (typeof initializer === 'function') {
+            this.entityFactory.registerInitializer(componentId, initializer);
+        }
+        
+        return componentId;
+    }
+    
+    addComponent(entityId, componentId) {
+        this.entities[entityId] |= componentId;
+    }
+    
+    removeComponent(entityId, componentId) {
+        this.entities[entityId] &= ~componentId;
+    }
+    
+    // System Manager proxies
+    
+    addSystem(callback, components = 0, type = SystemType.Logic, selector = SelectorType.GetWith) {
+        return this.systemManager.addSystem(callback, components, type, selector);
+    }
+    
+    removeSystem(systemId) {
+        return this.systemManager.removeSystem(systemId);
+    }
+    
     onLogic(delta) {
         for (let system of this.systemManager.logicSystems.values()) {
             system.callback.call(this, this.getEntities(system.selector, system.components), delta);
@@ -170,6 +182,8 @@ export default class EntityManager {
         }
     }
 
+    // Entity Factory proxies
+    
     build() {
         this.entityFactory.build();
         
