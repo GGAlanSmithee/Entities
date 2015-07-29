@@ -140,9 +140,6 @@ describe('EntityManager', function() {
         });
          
         describe('addSystem(callback, components = 0, type = SystemType.Logic, selector = SelectorType.GetWith)', () => {
-            beforeEach(() => {
-            });
-            
             it('is a function', () => {
                 expect(this.entityManager.addSystem).to.be.a('function');
             });
@@ -174,9 +171,6 @@ describe('EntityManager', function() {
         });
         
         describe('removeSystem(systemId)', () => {
-            beforeEach(() => {
-            });
-            
             it('is a function', () => {
                 expect(this.entityManager.removeSystem).to.be.a('function');
             });
@@ -190,6 +184,126 @@ describe('EntityManager', function() {
                 
                 expect(spy.calledOnce).to.be.true;
                 expect(spy.calledWith(systemId)).to.be.true;
+            });
+        });
+        
+        describe('listen(event, callback)', () => {
+            it('is a function', () => {
+                expect(this.entityManager.listen).to.be.a('function');
+            });
+            
+            it('invokes [eventHandler.listen] with the correct parameters', () => {
+                let event    = 'onEvent';
+                let callback = function() { this.hi = 'hi'; };
+                
+                let spy = sinon.spy(this.entityManager.eventHandler, 'listen');
+                
+                this.entityManager.listen(event, callback);
+                
+                expect(spy.calledOnce).to.be.true;
+                expect(spy.calledWith(event, callback)).to.be.true;
+            });
+            
+            it('returns the id of the added event', () => {
+                let event    = 'onEvent';
+                let callback = function() { this.hi = 'hi'; };
+                
+                expect(this.entityManager.listen(event, callback)).to.equal(0);
+                expect(this.entityManager.listen(event, callback)).to.equal(1);
+            });
+        });
+        
+        describe('stopListen(eventId)', () => {
+            it('is a function', () => {
+                expect(this.entityManager.stopListen).to.be.a('function');
+            });
+            
+            it('invokes [eventHandler.stopListen] with the correct parameters', () => {
+                let eventId = 1;
+                
+                let spy = sinon.spy(this.entityManager.eventHandler, 'stopListen');
+                
+                this.entityManager.stopListen(eventId);
+                
+                expect(spy.calledOnce).to.be.true;
+                expect(spy.calledWith(eventId)).to.be.true;
+            });
+            
+            it('returns true when there was an event to stop listen to, and false when not', () => {
+                let event    = 'onEvent';
+                let callback = function() { this.hi = 'hi'; };
+                
+                let eventId = this.entityManager.listen(event, callback);
+                
+                expect(this.entityManager.stopListen(eventId)).to.be.true;
+                expect(this.entityManager.stopListen(eventId)).to.be.false;
+            });
+        });
+        
+        describe('trigger()', () => {
+            it('is a function', () => {
+                expect(this.entityManager.trigger).to.be.a('function');
+            });
+            
+            it('invokes [eventHandler.trigger] with the correct parameters and the [entityManager] as the context (this)', () => {
+                let event    = 'onEvent';
+                let callback = function() { this.hi = 'hi'; };
+                
+                this.entityManager.listen(event, callback);
+                
+                let spy = sinon.spy(this.entityManager.eventHandler, 'trigger');
+                
+                let paramOne = 'one';
+                let paramTwo = { name : 'test', age : 99 };
+                
+                this.entityManager.trigger(event, paramOne, paramTwo);
+                
+                expect(spy.calledOnce).to.be.true;
+                expect(spy.calledOn(this.entityManager)).to.be.true;
+                expect(spy.calledWith(event, paramOne, paramTwo)).to.be.true;
+            });
+            
+            it('returns a promise', () => {
+                let event    = 'onEvent';
+                let callback = function() { this.hi = 'hi'; };
+                
+                this.entityManager.listen(event, callback);
+                
+                return expect(this.entityManager.trigger(event)).to.be.an.instanceof(Promise);
+            });
+        });
+        
+        describe('triggerDelayed()', () => {
+            it('is a function', () => {
+                expect(this.entityManager.triggerDelayed).to.be.a('function');
+            });
+            
+            it('invokes [eventHandler.triggerDelayed] with the correct parameters and the [entityManager] as the context (this)', () => {
+                let event    = 'onEvent';
+                let callback = function() { this.hi = 'hi'; };
+                
+                this.entityManager.listen(event, callback);
+                
+                let spy = sinon.spy(this.entityManager.eventHandler, 'triggerDelayed');
+                
+                let timeout  = 10;
+                let paramOne = 'one';
+                let paramTwo = { name : 'test', age : 99 };
+                
+                this.entityManager.triggerDelayed(event, timeout, paramOne, paramTwo);
+                
+                expect(spy.calledOnce).to.be.true;
+                expect(spy.calledOn(this.entityManager)).to.be.true;
+                expect(spy.calledWith(event, timeout, paramOne, paramTwo)).to.be.true;
+            });
+            
+            it('returns a promise', () => {
+                let event    = 'onEvent';
+                let callback = function() { this.hi = 'hi'; };
+                
+                this.entityManager.listen(event, callback);
+                
+                return expect(this.entityManager.triggerDelayed(event, 10)).to.be.an.instanceof(Promise);
             });
         });
     });

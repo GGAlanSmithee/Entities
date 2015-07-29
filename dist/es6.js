@@ -389,19 +389,19 @@ class EntityManager {
     // Event Handler
     
     listen(event, callback) {
-        this.eventHandler.listen(event, callback);
+        return this.eventHandler.listen(event, callback);
     }
     
     stopListen(eventId) {
-        this.eventHandler.stopListen(eventId);
+        return this.eventHandler.stopListen(eventId);
     }
     
     trigger() {
-        this.eventHandler.trigger.call(this, ...arguments);
+        return this.eventHandler.trigger.call(this, ...arguments);
     }
     
     triggerDelayed() {
-        this.eventHandler.triggerDelayed.call(this, ...arguments);
+        return this.eventHandler.triggerDelayed.call(this, ...arguments);
     }
 }
 

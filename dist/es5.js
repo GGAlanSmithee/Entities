@@ -717,26 +717,26 @@ var EntityManager = (function () {
         // Event Handler
 
         value: function listen(event, callback) {
-            this.eventHandler.listen(event, callback);
+            return this.eventHandler.listen(event, callback);
         }
     }, {
         key: 'stopListen',
         value: function stopListen(eventId) {
-            this.eventHandler.stopListen(eventId);
+            return this.eventHandler.stopListen(eventId);
         }
     }, {
         key: 'trigger',
         value: function trigger() {
             var _eventHandler$trigger;
 
-            (_eventHandler$trigger = this.eventHandler.trigger).call.apply(_eventHandler$trigger, [this].concat(_slice.call(arguments)));
+            return (_eventHandler$trigger = this.eventHandler.trigger).call.apply(_eventHandler$trigger, [this].concat(_slice.call(arguments)));
         }
     }, {
         key: 'triggerDelayed',
         value: function triggerDelayed() {
             var _eventHandler$triggerDelayed;
 
-            (_eventHandler$triggerDelayed = this.eventHandler.triggerDelayed).call.apply(_eventHandler$triggerDelayed, [this].concat(_slice.call(arguments)));
+            return (_eventHandler$triggerDelayed = this.eventHandler.triggerDelayed).call.apply(_eventHandler$triggerDelayed, [this].concat(_slice.call(arguments)));
         }
     }]);
 
