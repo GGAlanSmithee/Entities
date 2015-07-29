@@ -134,7 +134,7 @@ export default class EntityManager {
         }
     }
 
-    // Component Manager proxies
+    // Component Manager
     
     registerComponent(component, initializer) {
         let componentId = this.componentManager.registerComponent(component);
@@ -160,7 +160,7 @@ export default class EntityManager {
         this.entities[entityId] &= ~componentId;
     }
     
-    // System Manager proxies
+    // System Manager
     
     addSystem(callback, components = 0, type = SystemType.Logic, selector = SelectorType.GetWith) {
         return this.systemManager.addSystem(callback, components, type, selector);
@@ -182,7 +182,7 @@ export default class EntityManager {
         }
     }
 
-    // Entity Factory proxies
+    // Entity Factory
     
     build() {
         this.entityFactory.build();
@@ -202,6 +202,24 @@ export default class EntityManager {
     
     create(count, configuration) {
         return this.entityFactory.create(this, count, configuration);
+    }
+    
+    // Event Handler
+    
+    listen(event, callback) {
+        this.eventHandler.listen(event, callback);
+    }
+    
+    stopListen(eventId) {
+        this.eventHandler.stopListen(eventId);
+    }
+    
+    trigger() {
+        this.eventHandler.trigger.call(this, ...arguments);
+    }
+    
+    triggerDelayed() {
+        this.eventHandler.triggerDelayed.call(this, ...arguments);
     }
 }
 

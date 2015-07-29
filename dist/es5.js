@@ -1,5 +1,7 @@
 'use strict';
 
+var _slice = Array.prototype.slice;
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _slicedToArray(arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }
@@ -228,11 +230,15 @@ var EventHandler = (function () {
     }, {
         key: 'trigger',
         value: function trigger() {
-            var args = arguments;
-            var event = Array.prototype.splice.call(args, 0, 1)[0];
-
             var self = this instanceof EntityManager ? this.eventHandler : this;
-            var context = this;
+
+            var args = Array.from(arguments);
+
+            var _args$splice = args.splice(0, 1);
+
+            var _args$splice2 = _slicedToArray(_args$splice, 1);
+
+            var event = _args$splice2[0];
 
             if (typeof event !== 'string' || !self.events.has(event)) {
                 return self.emptyPromise();
@@ -248,7 +254,7 @@ var EventHandler = (function () {
                 for (var _iterator3 = self.events.get(event).values()[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
                     var callback = _step3.value;
 
-                    promises.push(self.promise(callback, context, args));
+                    promises.push(self.promise(callback, this, args, 1));
                 }
             } catch (err) {
                 _didIteratorError3 = true;
@@ -270,13 +276,16 @@ var EventHandler = (function () {
     }, {
         key: 'triggerDelayed',
         value: function triggerDelayed() {
-            var args = arguments;
-
-            var event = Array.prototype.splice.call(args, 0, 1)[0];
-            var timeout = Array.prototype.splice.call(args, 0, 1)[0];
-
             var self = this instanceof EntityManager ? this.eventHandler : this;
-            var context = this;
+
+            var args = Array.from(arguments);
+
+            var _args$splice3 = args.splice(0, 2);
+
+            var _args$splice32 = _slicedToArray(_args$splice3, 2);
+
+            var event = _args$splice32[0];
+            var timeout = _args$splice32[1];
 
             if (typeof event !== 'string' || !Number.isInteger(timeout) || !self.events.has(event)) {
                 return self.emptyPromise();
@@ -292,7 +301,7 @@ var EventHandler = (function () {
                 for (var _iterator4 = self.events.get(event).values()[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
                     var callback = _step4.value;
 
-                    promises.push(self.promise(callback, context, args, timeout));
+                    promises.push(self.promise(callback, this, args, timeout));
                 }
             } catch (err) {
                 _didIteratorError4 = true;
@@ -575,7 +584,7 @@ var EntityManager = (function () {
     }, {
         key: 'registerComponent',
 
-        // Component Manager proxies
+        // Component Manager
 
         value: function registerComponent(component, initializer) {
             var componentId = this.componentManager.registerComponent(component);
@@ -605,19 +614,19 @@ var EntityManager = (function () {
     }, {
         key: 'addSystem',
 
-        // System Manager proxies
+        // System Manager
 
         value: function addSystem(callback) {
             var components = arguments[1] === undefined ? 0 : arguments[1];
             var type = arguments[2] === undefined ? SystemType.Logic : arguments[2];
             var selector = arguments[3] === undefined ? SelectorType.GetWith : arguments[3];
 
-            this.systemManager.addSystem(callback, components, type, selector);
+            return this.systemManager.addSystem(callback, components, type, selector);
         }
     }, {
         key: 'removeSystem',
         value: function removeSystem(systemId) {
-            this.systemManager.removeSystem(systemId);
+            return this.systemManager.removeSystem(systemId);
         }
     }, {
         key: 'onLogic',
@@ -678,7 +687,7 @@ var EntityManager = (function () {
     }, {
         key: 'build',
 
-        // Entity Factory proxies
+        // Entity Factory
 
         value: function build() {
             this.entityFactory.build();
@@ -701,6 +710,33 @@ var EntityManager = (function () {
         key: 'create',
         value: function create(count, configuration) {
             return this.entityFactory.create(this, count, configuration);
+        }
+    }, {
+        key: 'listen',
+
+        // Event Handler
+
+        value: function listen(event, callback) {
+            this.eventHandler.listen(event, callback);
+        }
+    }, {
+        key: 'stopListen',
+        value: function stopListen(eventId) {
+            this.eventHandler.stopListen(eventId);
+        }
+    }, {
+        key: 'trigger',
+        value: function trigger() {
+            var _eventHandler$trigger;
+
+            (_eventHandler$trigger = this.eventHandler.trigger).call.apply(_eventHandler$trigger, [this].concat(_slice.call(arguments)));
+        }
+    }, {
+        key: 'triggerDelayed',
+        value: function triggerDelayed() {
+            var _eventHandler$triggerDelayed;
+
+            (_eventHandler$triggerDelayed = this.eventHandler.triggerDelayed).call.apply(_eventHandler$triggerDelayed, [this].concat(_slice.call(arguments)));
         }
     }]);
 

@@ -60,11 +60,11 @@ export default class EventHandler {
     }
     
     trigger() {
-        let args  = arguments;
-        let event = Array.prototype.splice.call(args, 0, 1)[0];
+        let self = this instanceof EntityManager ? this.eventHandler : this;
         
-        let self    = this instanceof EntityManager ? this.eventHandler : this;
-        let context = this;
+        let args = Array.from(arguments);
+        
+        let [ event ] = args.splice(0, 1);
         
         if (typeof event !== 'string' || !self.events.has(event)) {
             return self.emptyPromise();
@@ -73,20 +73,18 @@ export default class EventHandler {
         let promises = [];
         
         for (let callback of self.events.get(event).values()) {
-            promises.push(self.promise(callback, context, args));
+            promises.push(self.promise(callback, this, args, 1));
         }
         
         return Promise.all(promises);
     }
     
     triggerDelayed() {
-        let args    = arguments;
+        let self = this instanceof EntityManager ? this.eventHandler : this;
         
-        let event   = Array.prototype.splice.call(args, 0, 1)[0];
-        let timeout = Array.prototype.splice.call(args, 0, 1)[0];
+        let args = Array.from(arguments);
         
-        let self    = this instanceof EntityManager ? this.eventHandler : this;
-        let context = this;
+        let [ event, timeout ] = args.splice(0, 2);
         
         if (typeof event !== 'string' || !Number.isInteger(timeout) || !self.events.has(event)) {
             return self.emptyPromise();
@@ -95,7 +93,7 @@ export default class EventHandler {
         let promises = [];
         
         for (let callback of self.events.get(event).values()) {
-            promises.push(self.promise(callback, context, args, timeout));
+            promises.push(self.promise(callback, this, args, timeout));
         }
         
         return Promise.all(promises);
