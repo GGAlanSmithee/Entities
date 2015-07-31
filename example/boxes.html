@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Entities example - Boxes</title>
+    </head>
+    
+    <body>
+        <canvas id='canvas'></canvas>
+        
+        <script language="javascript" type="text/javascript" src="../dist/browser-polyfill.min.js"></script>
+        <script language="javascript" type="text/javascript" src="../dist/entities.js"></script>
+        
+        <script>
+            var canvas = document.getElementById('canvas');
+            canvas.width = 500;
+            canvas.height = 500;
+            var context = canvas.getContext('2d');
+            
+            var entityManager = new Entities.EntityManager();
+            
+            var transform = entityManager.registerComponent({
+                x : 10.0,
+                y : 10.0,
+                w : 15,
+                h : 15
+            }, function() {
+                this.x = Math.random() * 20;
+                this.y = Math.random() * canvas.height;
+                this.w = 15,
+                this.h = 15
+            });
+            
+            var velocity   = entityManager.registerComponent(0.05, function() { return Math.random() * 0.1; });
+            var clickable  = entityManager.registerComponent({ isClicked : false }, function() { this.isClicked = false; });
+            var appearance = entityManager.registerComponent({ color : 'red' });
+            
+            entityManager.registerSystem(function(entities) {
+                for (var entity of entities) {
+                    var tra = this[transform][entity];
+                    var app = this[appearance][entity];
+                    
+                    context.beginPath();
+                    context.rect(tra.x, tra.y, tra.w, tra.h);
+                    context.fillStyle = app.color;
+                    context.fill();
+                }
+            }, transform | appearance, Entities.SystemType.Render);
+            
+            entityManager.registerSystem(function(entities, delta) {
+                for (var entity of entities) {
+                    var tra = this[transform][entity];
+                    var vel = this[velocity][entity];
+            
+                    tra.x += vel * delta;
+                }
+            }, transform | appearance);
+            
+            entityManager.listen('collision', function(entity) {
+                var app = this[appearance][entity];
+                
+                if (app) {
+                    app.color = 'blue';
+                }
+            });
+            
+            entityManager.listen('click', function(x, y) {
+                for (var entity of this.getEntities(clickable, transform)) {
+                    var tra = this[transform][entity];
+                    
+                    if (x >= tra.x && x <= tra.x + tra.w &&
+                        y >= tra.y && y <= tra.y + tra.h) {
+                        this.trigger('collision', entity);
+                    }
+                }
+            });
+            
+            canvas.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                var rect = canvas.getBoundingClientRect();
+                
+                entityManager.trigger('click', e.clientX - rect.left, e.clientY - rect.top);
+            });
+            
+            entityManager.build()
+                         .withComponent(transform)
+                         .withComponent(velocity)
+                         .withComponent(clickable)
+                         .withComponent(appearance)
+                         .create(15);
+            
+            var delta    = 0;
+            var lastTime = new Date();
+            var time     = new Date();
+            
+            function loop() {
+                setTimeout(function () {
+                    time     = new Date();
+                    delta    = time.getTime() - lastTime.getTime();
+                    lastTime = time;
+                    
+                    entityManager.onLogic(delta);
+                    
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    entityManager.onRender(delta);
+                    
+                    loop();
+                }, 16);
+            }
+            
+            loop();
+        </script>
+    </body>
+</html>
