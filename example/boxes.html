@@ -19,19 +19,25 @@
             var entityManager = new Entities.EntityManager();
             
             var transform = entityManager.registerComponent({
-                x : 10.0,
-                y : 10.0,
-                w : 15,
-                h : 15
+                x : 0,
+                y : 0,
+                w : 0,
+                h : 0
             }, function() {
                 this.x = Math.random() * 20;
-                this.y = Math.random() * canvas.height;
-                this.w = 15,
-                this.h = 15
+                this.w = 15 + Math.random() * 5,
+                this.h = 15 + Math.random() * 5;
+                this.y = Math.random() * canvas.height - this.h;
             });
             
-            var velocity   = entityManager.registerComponent(0.05, function() { return Math.random() * 0.1; });
-            var clickable  = entityManager.registerComponent({ isClicked : false }, function() { this.isClicked = false; });
+            var velocity   = entityManager.registerComponent(0.05, function() { return Math.random() * 0.1 + 0.05; });
+            var clickable  = entityManager.registerComponent({
+                isClicked : false,
+                hitboxRatio : 1.5
+            }, function() {
+                this.isClicked = false;
+            });
+            
             var appearance = entityManager.registerComponent({ color : 'red' });
             
             entityManager.registerSystem(function(entities) {
@@ -52,23 +58,25 @@
                     var vel = this[velocity][entity];
             
                     tra.x += vel * delta;
+                    
+                    if (tra.x > canvas.width) {
+                        this.trigger('lose');
+                    }
                 }
-            }, transform | appearance);
-            
-            entityManager.listen('collision', function(entity) {
-                var app = this[appearance][entity];
-                
-                if (app) {
-                    app.color = 'blue';
-                }
-            });
+            }, transform | velocity);
             
             entityManager.listen('click', function(x, y) {
                 for (var entity of this.getEntities(clickable, transform)) {
                     var tra = this[transform][entity];
+                    var cli = this[clickable][entity];
                     
-                    if (x >= tra.x && x <= tra.x + tra.w &&
-                        y >= tra.y && y <= tra.y + tra.h) {
+                    var boxW = tra.w * cli.hitboxRatio;
+                    var boxH = tra.h * cli.hitboxRatio;
+                    var boxX = tra.x - (boxW - tra.w) / 2;
+                    var boxY = tra.y - (boxH - tra.h) / 2;
+                    
+                    if (x >= boxX && x <= boxX + boxW &&
+                        y >= boxY && y <= boxY + boxH) {
                         this.trigger('collision', entity);
                     }
                 }
@@ -83,12 +91,31 @@
                 entityManager.trigger('click', e.clientX - rect.left, e.clientY - rect.top);
             });
             
-            entityManager.build()
-                         .withComponent(transform)
-                         .withComponent(velocity)
-                         .withComponent(clickable)
-                         .withComponent(appearance)
-                         .create(15);
+            var conifguration = entityManager.build()
+                                             .withComponent(transform)
+                                             .withComponent(velocity)
+                                             .withComponent(clickable)
+                                             .withComponent(appearance)
+                                             .createConfiguration();
+            
+            var numbSpawnedObjects = 0;
+            
+            entityManager.listen('collision', function(entity) {
+                entityManager.deleteEntity(entity);
+                numbSpawnedObjects--;
+            });
+            
+            entityManager.listen('lose', function(entity) {
+                alert('lose');
+            });
+            
+            // spawn
+            setInterval(function() {
+                if (numbSpawnedObjects < 15) {
+                    entityManager.create(1, conifguration);
+                    numbSpawnedObjects++;
+                }
+            }, 500);
             
             var delta    = 0;
             var lastTime = new Date();
