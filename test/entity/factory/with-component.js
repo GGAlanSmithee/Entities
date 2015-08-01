@@ -72,12 +72,12 @@ describe('EntityFactory', function() {
             this.entityFactory.configuration = new Map();
         });
         
-        it('adds the [component] with an empty function as [initializer] if [initializer] is omitted', () => {
+        it('adds the [component] without a function [initializer] if [initializer] is omitted', () => {
             expect(this.entityFactory.configuration.has(1)).to.be.false;
             this.entityFactory.withComponent(1);
             
             expect(this.entityFactory.configuration.has(1)).to.be.true;
-            expect(this.entityFactory.configuration.get(1)).to.be.a('function');
+            expect(this.entityFactory.configuration.get(1)).to.be.undefined;
         });
         
         it('does not add [component] to configuration if [component] is not a number', () => {

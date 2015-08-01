@@ -47,7 +47,7 @@ describe('EntityFactory', function() {
         });
         
         it('creates an entity according to the current [configuration]', () => {
-            let entityId = this.entityFactory.create(this.entityManager)[0];
+            let entityId = this.entityFactory.create(this.entityManager);
 
             expect(this.entityManager.entities[entityId]).to.equal(this.components);
             expect(this.entityManager[this.componentOne][entityId]).property('x').to.equal(4.0);
@@ -62,7 +62,7 @@ describe('EntityFactory', function() {
             this.entityFactory.configuration.set(this.componentThree, undefined);
             this.entityFactory.configuration.set(this.componentFour, undefined);
             
-            let entityId = this.entityFactory.create(this.entityManager)[0];
+            let entityId = this.entityFactory.create(this.entityManager);
 
             expect(this.entityManager.entities[entityId]).to.equal(this.components);
             expect(this.entityManager[this.componentOne][entityId]).property('x').to.equal(1.0);
@@ -78,19 +78,18 @@ describe('EntityFactory', function() {
             
             let entities = this.entityFactory.create(this.entityManager);
             
+            expect(entities).to.be.an.instanceof(Array);
             expect(entities).property('length').to.equal(0);
             
-            entities = this.entityFactory.create(this.entityManager, 1, configuration);
+            let entity = this.entityFactory.create(this.entityManager, 1, configuration);
 
-            expect(entities).property('length').to.equal(1);
+            expect(entity).to.be.a('number');
 
-            let entityId = entities[0];
-
-            expect(this.entityManager.entities[entityId]).to.equal(this.components);
-            expect(this.entityManager[this.componentOne][entityId]).property('x').to.equal(4.0);
-            expect(this.entityManager[this.componentTwo][entityId]).property('y').to.equal(5.0);
-            expect(this.entityManager[this.componentThree][entityId]).to.equal(this.componentThreeInitializer());
-            expect(this.entityManager[this.componentFour][entityId]).to.equal(this.componentFourInitializer());
+            expect(this.entityManager.entities[entity]).to.equal(this.components);
+            expect(this.entityManager[this.componentOne][entity]).property('x').to.equal(4.0);
+            expect(this.entityManager[this.componentTwo][entity]).property('y').to.equal(5.0);
+            expect(this.entityManager[this.componentThree][entity]).to.equal(this.componentThreeInitializer());
+            expect(this.entityManager[this.componentFour][entity]).to.equal(this.componentFourInitializer());
         });
         
         it('creates [count] number of entities', () => {

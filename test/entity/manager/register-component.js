@@ -4,17 +4,13 @@ import EntityManager from '../../../src/core/entity';
 
 
 describe('EntityManager', function() {
-    describe('registerComponent(component, initializer)', () => {
+    describe('registerComponent(component)', () => {
         beforeEach(() => {
             this.entityManager = new EntityManager();
             
-            this.posComponent  = function() { this.x = 10, this.y = 20 };
+            this.posComponent  = function() { this.x = 10; this.y = 20; };
             this.infoComponent = { name : 'Tester', age : 99 };
             this.velComponent  = 5.5;
-            
-            this.posInitializer  = function() { this.x = 20; this.y = 40; };
-            this.infoInitializer = function() { this.name = 'Luffy'; this.age = 4; };
-            this.velInitializer  = function() { return 2.5; };
         });
         
         afterEach(() => {
@@ -36,14 +32,14 @@ describe('EntityManager', function() {
             expect(this.entityManager[id]).to.be.an.instanceof(Array);
         });
         
-        it('registers a [component] with an [initializer]', () => {
-            let id = this.entityManager.registerComponent(this.posComponent, this.posInitializer);
+        it('registers a [component]', () => {
+            let id = this.entityManager.registerComponent(this.posComponent);
             expect(this.entityManager[id]).to.be.an.instanceof(Array);
             
-            id = this.entityManager.registerComponent(this.infoComponent, this.infoInitializer);
+            id = this.entityManager.registerComponent(this.infoComponent);
             expect(this.entityManager[id]).to.be.an.instanceof(Array);
             
-            id = this.entityManager.registerComponent(this.velComponent, this.velInitializer);
+            id = this.entityManager.registerComponent(this.velComponent);
             expect(this.entityManager[id]).to.be.an.instanceof(Array);
         });
         
@@ -56,23 +52,69 @@ describe('EntityManager', function() {
             expect(spy.calledWith(this.posComponent)).to.be.true;
         });
         
-        it('invokes [entityFactory].registerInitializer with the [component]s id and [initializer] if [initializer] is a function', () => {
+        it('invokes [entityFactory].registerInitializer with the id of the [component]', () => {
             let spy = sinon.spy(this.entityManager.entityFactory, 'registerInitializer');
             
-            let id = this.entityManager.registerComponent(this.posComponent, this.posInitializer);
+            let id = this.entityManager.registerComponent(this.posComponent);
             
             expect(spy.calledOnce).to.be.true;
-            expect(spy.calledWith(id, this.posInitializer)).to.be.true;
+            expect(spy.calledWith(id)).to.be.true;
+            
+            id = this.entityManager.registerComponent(this.infoComponent);
+            
+            expect(spy.calledTwice).to.be.true;
+            expect(spy.calledWith(id)).to.be.true;
+            
+            id = this.entityManager.registerComponent(this.velComponent);
+            
+            expect(spy.calledThrice).to.be.true;
+            expect(spy.calledWith(id)).to.be.true;
         });
         
-        it('does not invoke [entityFactory].registerInitializer if [initializer] is not a function', () => {
-            let spy = sinon.spy(this.entityManager.entityFactory, 'registerInitializer');
+        it('the generated initializers can be used to initialize components through build -> withComponent -> create', () => {
+            let posComponentId  = this.entityManager.registerComponent(this.posComponent);
+            let infoComponentId = this.entityManager.registerComponent(this.infoComponent);
+            let velComponentId  = this.entityManager.registerComponent(this.velComponent);
             
-            this.entityManager.registerComponent(this.posComponent);
-            this.entityManager.registerComponent(this.infoComponent, []);
-            this.entityManager.registerComponent(this.infoComponent, {});
+            var config = this.entityManager.build()
+                                           .withComponent(posComponentId)
+                                           .withComponent(infoComponentId)
+                                           .withComponent(velComponentId)
+                                           .createConfiguration();
+                                          
+            let entityId = this.entityManager.create(1, config);
             
-            expect(spy.called).to.be.false;
+            expect(this.entityManager[posComponentId][entityId]).property('x').to.equal(10);
+            expect(this.entityManager[posComponentId][entityId]).property('y').to.equal(20);
+            expect(this.entityManager[infoComponentId][entityId]).property('name').to.equal('Tester');
+            expect(this.entityManager[infoComponentId][entityId]).property('age').to.equal(99);
+            expect(this.entityManager[velComponentId][entityId]).to.equal(5.5);
+            
+            this.entityManager[posComponentId][entityId].x = 20;
+            this.entityManager[posComponentId][entityId].y = 40;
+            this.entityManager[infoComponentId][entityId].name = 'New Tester';
+            this.entityManager[infoComponentId][entityId].age = 1;
+            this.entityManager[velComponentId][entityId] = -2.5;
+            
+            expect(this.entityManager[posComponentId][entityId]).property('x').to.equal(20);
+            expect(this.entityManager[posComponentId][entityId]).property('y').to.equal(40);
+            expect(this.entityManager[infoComponentId][entityId]).property('name').to.equal('New Tester');
+            expect(this.entityManager[infoComponentId][entityId]).property('age').to.equal(1);
+            expect(this.entityManager[velComponentId][entityId]).to.equal(-2.5);
+            
+            let oldEntityId = entityId;
+            
+            this.entityManager.deleteEntity(entityId);
+            
+            entityId = this.entityManager.create(1, config);
+            
+            expect(entityId).to.equal(oldEntityId);
+            
+            expect(this.entityManager[posComponentId][entityId]).property('x').to.equal(10);
+            expect(this.entityManager[posComponentId][entityId]).property('y').to.equal(20);
+            expect(this.entityManager[infoComponentId][entityId]).property('name').to.equal('Tester');
+            expect(this.entityManager[infoComponentId][entityId]).property('age').to.equal(99);
+            expect(this.entityManager[velComponentId][entityId]).to.equal(5.5);
         });
         
         it('registers the [component] and creates an array of [capacity] nr of [component]s', () => {

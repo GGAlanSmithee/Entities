@@ -18,24 +18,20 @@
             
             var entityManager = new Entities.EntityManager();
             
-            var transform = entityManager.registerComponent({
-                x : 0,
-                y : 0,
-                w : 0,
-                h : 0
-            }, function() {
-                this.x = Math.random() * 20;
+            var transform = entityManager.registerComponent(function() {
+                this.x =      Math.random() * 20;
                 this.w = 15 + Math.random() * 5,
                 this.h = 15 + Math.random() * 5;
-                this.y = Math.random() * canvas.height - this.h;
+                this.y =      Math.random() * canvas.height - this.h;
             });
             
-            var velocity   = entityManager.registerComponent(0.05, function() { return Math.random() * 0.1 + 0.05; });
-            var clickable  = entityManager.registerComponent({
-                isClicked : false,
+            var velocity = entityManager.registerComponent(0.05);
+            
+            entityManager.registerInitializer(velocity, function() { return Math.random() * 0.1 + 0.05; });
+            
+            var clickable = entityManager.registerComponent({
+                isClicked   : false,
                 hitboxRatio : 1.5
-            }, function() {
-                this.isClicked = false;
             });
             
             var appearance = entityManager.registerComponent({ color : 'red' });

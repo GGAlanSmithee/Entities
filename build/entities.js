@@ -327,7 +327,7 @@ class EntityManager {
 
     // Component Manager
     
-    registerComponent(component, initializer) {
+    registerComponent(component) {
         let componentId = this.componentManager.registerComponent(component);
         
         this[componentId] = [];
@@ -336,9 +336,23 @@ class EntityManager {
             this[componentId].push(this.componentManager.newComponent(componentId));
         }
         
-        if (typeof initializer === 'function') {
-            this.entityFactory.registerInitializer(componentId, initializer);
+        let initializer;
+
+        switch (typeof component) {
+            case 'function': initializer = component; break;
+            case 'object': {
+                initializer = function() {
+                    for (let key of Object.keys(component)) {
+                        this[key] = component[key];
+                    }
+                };
+            
+                break;
+            }
+            default: initializer = function() { return component; }; break;
         }
+        
+        this.entityFactory.registerInitializer(componentId, initializer);
         
         return componentId;
     }
@@ -374,6 +388,10 @@ class EntityManager {
     }
 
     // Entity Factory
+    
+    registerInitializer(componentId, initializer) {
+        this.entityFactory.registerInitializer(componentId, initializer);
+    }
     
     build() {
         this.entityFactory.build();
@@ -440,7 +458,7 @@ class EntityFactory {
         }
         
         if (typeof initializer !== 'function') {
-            initializer = this.initializers.get(componentId) || function() { };
+            initializer = this.initializers.get(componentId);
         }
         
         this.configuration.set(componentId, initializer);
@@ -489,7 +507,7 @@ class EntityFactory {
             entities.push(entityId);
         }
         
-        return entities;
+        return entities.length === 1 ? entities[0] : entities;
     }
 }
 

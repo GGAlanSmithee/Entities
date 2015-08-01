@@ -13,7 +13,27 @@ describe('EntityManager', function() {
         afterEach(() => {
             delete this.entityManager;
         });
+        
+        describe('registerInitializer(component, initializer)', () => {
+            it('is a function', () => {
+                expect(this.entityManager.registerInitializer).to.be.a('function');
+            });
             
+            it('invokes [entityFactory].registerInitializer with the corrent arguments', () => {
+                let spy = sinon.spy(this.entityManager.entityFactory, 'registerInitializer');
+                
+                let component = 1;
+                let initializer = function() {
+                    this.x = 10.0;
+                };
+                
+                this.entityManager.registerInitializer(component, initializer);
+                
+                expect(spy.calledOnce).to.be.true;
+                expect(spy.calledWith(component, initializer)).to.be.true;
+            });
+        });
+        
         describe('build', () => {
             it('is a function', () => {
                 expect(this.entityManager.build).to.be.a('function');
