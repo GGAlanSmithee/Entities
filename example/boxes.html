@@ -12,8 +12,9 @@
         
         <script>
             var canvas = document.getElementById('canvas');
-            canvas.width = 500;
-            canvas.height = 500;
+                canvas.width = 500;
+                canvas.height = 500;
+            
             var context = canvas.getContext('2d');
             
             var entityManager = new Entities.EntityManager();
@@ -30,7 +31,7 @@
             entityManager.registerInitializer(velocity, function() { return Math.random() * 0.1 + 0.05; });
             
             var clickable = entityManager.registerComponent({
-                isClicked   : false,
+                isClicked   : false, // todo : use with timeout to change color before remove
                 hitboxRatio : 1.5
             });
             
@@ -61,6 +62,18 @@
                 }
             }, transform | velocity);
             
+            var numbSpawnedObjects = 0;
+            
+            entityManager.listen('clicked', function(entity) {
+                entityManager.deleteEntity(entity);
+                numbSpawnedObjects--;
+            });
+            
+            entityManager.listen('lose', function(entity) {
+                // todo: reset game -> create init function
+                menuIsOpen = true;
+            });
+            
             entityManager.listen('click', function(x, y) {
                 for (var entity of this.getEntities(clickable, transform)) {
                     var tra = this[transform][entity];
@@ -73,7 +86,7 @@
                     
                     if (x >= boxX && x <= boxX + boxW &&
                         y >= boxY && y <= boxY + boxH) {
-                        this.trigger('collision', entity);
+                        this.trigger('clicked', entity);
                     }
                 }
             });
@@ -84,7 +97,22 @@
                 
                 var rect = canvas.getBoundingClientRect();
                 
-                entityManager.trigger('click', e.clientX - rect.left, e.clientY - rect.top);
+                var x = e.clientX - rect.left;
+                var y = e.clientY - rect.top;
+                
+                if (menuIsOpen) {
+                    var buttonX = (canvas.width / 2) - 50;
+                    var buttonY = (canvas.height / 2) - 20;
+                    var buttonW = 100;
+                    var buttonH = 40;
+                    
+                    if (x >= buttonX && x <= buttonX + buttonW &&
+                        y >= buttonY && y <= buttonY + buttonH) {
+                        menuIsOpen = false;
+                    }
+                } else {
+                    entityManager.trigger('click', x, y);
+                }
             });
             
             var conifguration = entityManager.build()
@@ -94,17 +122,6 @@
                                              .withComponent(appearance)
                                              .createConfiguration();
             
-            var numbSpawnedObjects = 0;
-            
-            entityManager.listen('collision', function(entity) {
-                entityManager.deleteEntity(entity);
-                numbSpawnedObjects--;
-            });
-            
-            entityManager.listen('lose', function(entity) {
-                alert('lose');
-            });
-            
             // spawn
             setInterval(function() {
                 if (numbSpawnedObjects < 15) {
@@ -112,6 +129,19 @@
                     numbSpawnedObjects++;
                 }
             }, 500);
+            
+            function menu() {
+                context.beginPath();
+                context.rect((canvas.width / 2) - 50, (canvas.height / 2) - 20, 100, 40);
+                context.fillStyle = 'lightblue';
+                context.fill();
+                
+                context.font      = '30px Verdana';
+                context.fillStyle = 'black';
+                context.fillText('Start!', (canvas.width / 2) - 40, (canvas.height / 2) + 10);
+            }
+            
+            var menuIsOpen = true;
             
             var delta    = 0;
             var lastTime = new Date();
@@ -123,11 +153,15 @@
                     delta    = time.getTime() - lastTime.getTime();
                     lastTime = time;
                     
-                    entityManager.onLogic(delta);
-                    
-                    context.clearRect(0, 0, canvas.width, canvas.height);
-                    
-                    entityManager.onRender(delta);
+                    if (menuIsOpen) {
+                        menu();
+                    } else {
+                        entityManager.onLogic(delta);
+                        
+                        context.clearRect(0, 0, canvas.width, canvas.height);
+                        
+                        entityManager.onRender(delta);
+                    }
                     
                     loop();
                 }, 16);
