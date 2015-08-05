@@ -19,6 +19,45 @@
             
             var entityManager = new Entities.EntityManager();
             
+            var cubes = [];
+            
+            function init() {
+                for (var i = 0; i < cubes.length; ++i) {
+                    entityManager.deleteEntity(cubes[i]);
+                    numbSpawnedObjects--;
+                }
+            };
+            
+            var Menu = {
+                isOpen : true,
+                
+                draw : function() {
+                    context.beginPath();
+                    context.rect((canvas.width / 2) - 50, (canvas.height / 2) - 20, 100, 40);
+                    context.fillStyle = 'lightblue';
+                    context.fill();
+                    
+                    context.font      = '30px Verdana';
+                    context.fillStyle = 'black';
+                    context.fillText('Start!', (canvas.width / 2) - 40, (canvas.height / 2) + 10);
+                },
+                startIsClicked : function(x, y) {
+                    var buttonX = (canvas.width  / 2) - 50;
+                    var buttonY = (canvas.height / 2) - 20;
+                    var buttonW = 100;
+                    var buttonH = 40;
+                    
+                    return x >= buttonX && x <= buttonX + buttonW && y >= buttonY && y <= buttonY + buttonH;
+                },
+                onStartClicked : function() {
+                    this.isOpen = false;
+                    
+                    init();
+                }
+            };
+            
+            // Components
+            
             var transform = entityManager.registerComponent(function() {
                 this.x =      Math.random() * 20;
                 this.w = 15 + Math.random() * 5,
@@ -28,15 +67,14 @@
             
             var velocity = entityManager.registerComponent(0.05);
             
-            entityManager.registerInitializer(velocity, function() { return Math.random() * 0.1 + 0.05; });
-            
             var clickable = entityManager.registerComponent({
-                isClicked   : false, // todo : use with timeout to change color before remove
+                isClicked   : false, // todo : use with trigger Delayed to change color before remove
                 hitboxRatio : 1.5
             });
             
             var appearance = entityManager.registerComponent({ color : 'red' });
             
+            // Systems
             entityManager.registerSystem(function(entities) {
                 for (var entity of entities) {
                     var tra = this[transform][entity];
@@ -57,10 +95,12 @@
                     tra.x += vel * delta;
                     
                     if (tra.x > canvas.width) {
-                        this.trigger('lose');
+                        this.trigger('lost');
                     }
                 }
             }, transform | velocity);
+            
+            // Events
             
             var numbSpawnedObjects = 0;
             
@@ -69,9 +109,9 @@
                 numbSpawnedObjects--;
             });
             
-            entityManager.listen('lose', function(entity) {
+            entityManager.listen('lost', function(entity) {
                 // todo: reset game -> create init function
-                menuIsOpen = true;
+                Menu.isOpen = true;
             });
             
             entityManager.listen('click', function(x, y) {
@@ -84,12 +124,13 @@
                     var boxX = tra.x - (boxW - tra.w) / 2;
                     var boxY = tra.y - (boxH - tra.h) / 2;
                     
-                    if (x >= boxX && x <= boxX + boxW &&
-                        y >= boxY && y <= boxY + boxH) {
+                    if (x >= boxX && x <= boxX + boxW && y >= boxY && y <= boxY + boxH) {
                         this.trigger('clicked', entity);
                     }
                 }
             });
+            
+            // DOM events
             
             canvas.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -100,15 +141,9 @@
                 var x = e.clientX - rect.left;
                 var y = e.clientY - rect.top;
                 
-                if (menuIsOpen) {
-                    var buttonX = (canvas.width / 2) - 50;
-                    var buttonY = (canvas.height / 2) - 20;
-                    var buttonW = 100;
-                    var buttonH = 40;
-                    
-                    if (x >= buttonX && x <= buttonX + buttonW &&
-                        y >= buttonY && y <= buttonY + buttonH) {
-                        menuIsOpen = false;
+                if (Menu.isOpen) {
+                    if (Menu.startIsClicked(x, y)) {
+                        Menu.onStartClicked();
                     }
                 } else {
                     entityManager.trigger('click', x, y);
@@ -117,7 +152,7 @@
             
             var conifguration = entityManager.build()
                                              .withComponent(transform)
-                                             .withComponent(velocity)
+                                             .withComponent(velocity, function() { return Math.random() * 0.1 + 0.05; })
                                              .withComponent(clickable)
                                              .withComponent(appearance)
                                              .createConfiguration();
@@ -125,23 +160,10 @@
             // spawn
             setInterval(function() {
                 if (numbSpawnedObjects < 15) {
-                    entityManager.create(1, conifguration);
+                    cubes.push(entityManager.create(1, conifguration));
                     numbSpawnedObjects++;
                 }
             }, 500);
-            
-            function menu() {
-                context.beginPath();
-                context.rect((canvas.width / 2) - 50, (canvas.height / 2) - 20, 100, 40);
-                context.fillStyle = 'lightblue';
-                context.fill();
-                
-                context.font      = '30px Verdana';
-                context.fillStyle = 'black';
-                context.fillText('Start!', (canvas.width / 2) - 40, (canvas.height / 2) + 10);
-            }
-            
-            var menuIsOpen = true;
             
             var delta    = 0;
             var lastTime = new Date();
@@ -153,8 +175,8 @@
                     delta    = time.getTime() - lastTime.getTime();
                     lastTime = time;
                     
-                    if (menuIsOpen) {
-                        menu();
+                    if (Menu.isOpen) {
+                        Menu.draw();
                     } else {
                         entityManager.onLogic(delta);
                         
