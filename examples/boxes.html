@@ -76,7 +76,21 @@
                 var appearance = entityManager.registerComponent({ color : 'red' });
                 
                 // Systems
-                entityManager.registerSystem(function(entities) {
+                
+                var movementSystem = function(entities, delta) {
+                    for (var entity of entities) {
+                        var tra = this[transform][entity];
+                        var vel = this[velocity][entity];
+                
+                        tra.x += vel * delta;
+                        
+                        if (tra.x > canvas.width) {
+                            this.trigger('outOfBounds');
+                        }
+                    }
+                };
+                
+                var renderSystem = function(entities) {
                     for (var entity of entities) {
                         var tra = this[transform][entity];
                         var app = this[appearance][entity];
@@ -86,20 +100,10 @@
                         context.fillStyle = app.color;
                         context.fill();
                     }
-                }, transform | appearance, Entities.SystemType.Render);
+                };
                 
-                entityManager.registerSystem(function(entities, delta) {
-                    for (var entity of entities) {
-                        var tra = this[transform][entity];
-                        var vel = this[velocity][entity];
-                
-                        tra.x += vel * delta;
-                        
-                        if (tra.x > canvas.width) {
-                            this.trigger('lost');
-                        }
-                    }
-                }, transform | velocity);
+                entityManager.registerSystem(movementSystem, transform | velocity);
+                entityManager.registerSystem(renderSystem,   transform | appearance, Entities.SystemType.Render);
                 
                 // Events
                 
@@ -110,8 +114,7 @@
                     numbSpawnedObjects--;
                 });
                 
-                entityManager.listen('lost', function(entity) {
-                    // todo: reset game -> create init function
+                entityManager.listen('outOfBounds', function(entity) {
                     Menu.isOpen = true;
                 });
                 
@@ -139,6 +142,7 @@
                     
                     var rect = canvas.getBoundingClientRect();
                     
+                    // x and y relative to canvas
                     var x = e.clientX - rect.left;
                     var y = e.clientY - rect.top;
                     
@@ -151,14 +155,17 @@
                     }
                 });
                 
+                // Create a configuration which we can use with entityManager.create() later
                 var conifguration = entityManager.build()
                                                  .withComponent(transform)
+                                                 // second param is a initializer function
                                                  .withComponent(velocity, function() { return Math.random() * 0.1 + 0.05; })
                                                  .withComponent(clickable)
                                                  .withComponent(appearance)
                                                  .createConfiguration();
                 
-                // spawn
+                // spawn a new object (cube) every .5 secs (if there are less then 15 spawned objects)
+                // timed systems (or coroutines) will probably be added to the library sometime post v. 1.0.0
                 setInterval(function() {
                     if (numbSpawnedObjects < 15) {
                         cubes.push(entityManager.create(1, conifguration));
@@ -166,10 +173,12 @@
                     }
                 }, 500);
                 
+                // For timing
                 var delta    = 0;
                 var lastTime = new Date();
                 var time     = new Date();
                 
+                // Run main loop
                 function loop() {
                     setTimeout(function () {
                         time     = new Date();
