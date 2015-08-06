@@ -1,23 +1,12 @@
 {
   "name": "Entities",
-  "version": "0.0.1",
-  "description": "efficient and easy-to-use Entity-Component System in JavaScript",
-  "main": "Gruntfile.js",
-  "scripts": {
-    "babelify"  : "browserify -t babelify ./build/entities.js --s Entities > ./dist/entities.js -d",
-    "bundle"    : "node ./build/bundle",
-    "clean"     : "./node_modules/.bin/rimraf ./dist/*",
-    "jshint"    : "jshint ./src/core",
-    "test"      : "./node_modules/.bin/istanbul cover _mocha test/* -- --recursive --compilers js:babel/register -R dot",
-    "polyfill"  : "./node_modules/.bin/copyfiles -f ./node_modules/babel/node_modules/babel-core/browser-polyfill.js ./node_modules/babel/node_modules/babel-core/browser-polyfill.min.js dist",
-    
-    "prebuild"  : "npm run jshint && npm run clean && npm run bundle",
-    "build"     : "npm run babelify",
-    "postbuild" : "./node_modules/.bin/rimraf ./build/Entities.js && npm run polyfill"
+  "description": "easy-to-use Entity-Component System in JavaScript",
+  "version": "1.0.0",
+  "author": {
+    "name": "Alan Smithee",
+    "email": "ggnore.alan.smithee@gmail.com"
   },
-  "directories": {
-    "examples": "examples"
-  },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/GGAlanSmithee/Entities"
@@ -29,8 +18,23 @@
     "entity",
     "component"
   ],
-  "author": "Alan Smithee",
-  "license": "MIT",
+  "directories": {
+    "dist": "dist",
+    "src": "src"
+  },
+  "main": "dist/entities.js",
+  "scripts": {
+    "babelify" : "browserify -t babelify ./build/entities.js --s Entities > ./dist/entities.js -d",
+    "bundle" : "node ./build/bundle",
+    "clean" : "./node_modules/.bin/rimraf ./dist/*",
+    "jshint" : "jshint ./src/core",
+    "test" : "./node_modules/.bin/istanbul cover _mocha test/* -- --recursive --compilers js:babel/register -R dot",
+    "polyfill"  : "./node_modules/.bin/copyfiles -f ./node_modules/babel/node_modules/babel-core/browser-polyfill.js ./node_modules/babel/node_modules/babel-core/browser-polyfill.min.js dist",
+    
+    "prebuild" : "npm run jshint && npm run clean && npm run bundle",
+    "build" : "npm run babelify",
+    "postbuild" : "./node_modules/.bin/rimraf ./build/entities.js"
+  },
   "devDependencies": {
     "babel": "^5.5.7",
     "babelify": "^6.1.2",
