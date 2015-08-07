@@ -178,8 +178,16 @@ export default class EntityManager {
     
     // System Manager
     
-    registerSystem(callback, components = 0, type = SystemType.Logic, selector = SelectorType.GetWith) {
-        return this.systemManager.registerSystem(callback, components, type, selector);
+    registerSystem(type, selector, components, callback) {
+        return this.systemManager.registerSystem(type, selector, components, callback);
+    }
+    
+    registerLogicSystem(selector, components, callback) {
+        return this.systemManager.registerSystem(SystemType.Logic, selector, components, callback);
+    }
+    
+    registerRenderSystem(selector, components, callback) {
+        return this.systemManager.registerSystem(SystemType.Render, selector, components, callback);
     }
     
     removeSystem(systemId) {
