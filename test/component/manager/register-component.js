@@ -79,8 +79,10 @@ describe('ComponentManager', function() {
             expect(components.has(33)).to.be.false;
             expect(components.has(64)).to.be.false;
             
-            for (let i in components) {
-                expect(i % 2).to.equal(0);
+            for (let i of components.keys()) {
+                if (i !== 1) {
+                    expect(i % 2).to.equal(0);
+                }
             }
         });
     });

@@ -3,8 +3,8 @@ var esperanto = require( 'esperanto' );
 
 esperanto.bundle({
     base: 'src',
-    entry: 'entities'
+    entry: 'gg-entities'
 }).then( function ( bundle ) {
     var cjs = bundle.toCjs({ strict: true });
-    fs.writeFile('build/entities.js', cjs.code);
+    fs.writeFile('build/gg-entities.js', cjs.code);
 });
