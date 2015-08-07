@@ -102,8 +102,15 @@
                     }
                 };
                 
-                entityManager.registerSystem(movementSystem, transform | velocity);
-                entityManager.registerSystem(renderSystem,   transform | appearance, Entities.SystemType.Render);
+                entityManager.registerSystem(Entities.SystemType.Logic,
+                                             Entities.SelectorType.GetWith,
+                                             transform | velocity,
+                                             movementSystem);
+                                             
+                entityManager.registerSystem(Entities.SystemType.Render,
+                                             Entities.SelectorType.GetWith,
+                                             transform | appearance,
+                                             renderSystem);
                 
                 // Events
                 

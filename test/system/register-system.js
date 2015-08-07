@@ -4,7 +4,7 @@ import SystemManager, { SystemType } from '../../src/core/system';
 import { SelectorType }              from '../../src/core/entity';
 
 describe('SystemManager', function() {
-    describe('registerSystem(callback, components, type, selector)', () => {
+    describe('registerSystem(type = SystemType.Logic, selector = SelectorType.GetWith, components = 0, callback = undefined)', () => {
         beforeEach(() => {
             this.systemManager = new SystemManager();
         });
@@ -21,39 +21,37 @@ describe('SystemManager', function() {
             expect(this.systemManager.logicSystems).property('size').to.equal(0);
             expect(this.systemManager.renderSystems).property('size').to.equal(0);
             
-            this.systemManager.registerSystem(() => { }, 1 | 2, SystemType.Logic, SelectorType.GetWith);
-            this.systemManager.registerSystem(() => { }, 1 | 2, SystemType.Render, SelectorType.GetWith);
+            this.systemManager.registerSystem(SystemType.Logic, SelectorType.GetWith, 1 | 2, () => { });
+            this.systemManager.registerSystem(SystemType.Render, SelectorType.GetWith, 1 | 2, () => { });
             
             expect(this.systemManager.logicSystems).property('size').to.equal(1);
             expect(this.systemManager.renderSystems).property('size').to.equal(1);
         });
         
         it('returns the added sytems id', () => {
-            let system = this.systemManager.registerSystem(() => { }, 1 | 2, SystemType.Render);
+            let system = this.systemManager.registerSystem(SystemType.Render, SelectorType.GetWith, 1 | 2, () => { });
             
             expect(system).to.equal(1);
             
-            system = this.systemManager.registerSystem(() => { }, 1 | 2);
+            system = this.systemManager.registerSystem(SystemType.Logic, SelectorType.GetWith, 1 | 2, () => { });
             
             expect(system).to.equal(2);
             
-            system = this.systemManager.registerSystem(() => { }, 1 | 2, SystemType.Render);
+            system = this.systemManager.registerSystem(SystemType.Render, SelectorType.GetWith, 1 | 2, () => { });
             
             expect(system).to.equal(3);
             
-            system = this.systemManager.registerSystem(() => { }, 1 | 2, SystemType.Logic);
+            system = this.systemManager.registerSystem(SystemType.Logic, SelectorType.GetWith, 1 | 2, () => { });
             
             expect(system).to.equal(4);
         });
         
         it('adds a system with the correct [type] and [selector]', () => {
-            let logicSystem   = this.systemManager.registerSystem(() => { }, 1 | 2, SystemType.Logic, SelectorType.Get);
-            let renderSystem  = this.systemManager.registerSystem(() => { }, 1 | 2, SystemType.Render, SelectorType.GetWith);
-            let logicSystem2  = this.systemManager.registerSystem(() => { }, 1 | 2, SystemType.Logic, SelectorType.GetWithOnly);
-            let renderSystem2 = this.systemManager.registerSystem(() => { }, 1 | 2, SystemType.Render, SelectorType.GetWithout);
-            
-            let systems = this.systemManager.systems;
-            
+            let logicSystem   = this.systemManager.registerSystem(SystemType.Logic, SelectorType.Get, 1 | 2, () => { });
+            let renderSystem  = this.systemManager.registerSystem(SystemType.Render, SelectorType.GetWith, 1 | 2, () => { });
+            let logicSystem2  = this.systemManager.registerSystem(SystemType.Logic, SelectorType.GetWithOnly, 1 | 2, () => { });
+            let renderSystem2 = this.systemManager.registerSystem(SystemType.Render, SelectorType.GetWithout, 1 | 2, () => { });
+
             expect(this.systemManager.logicSystems.get(logicSystem)).property('selector').to.equal(SelectorType.Get);
             expect(this.systemManager.renderSystems.get(renderSystem)).property('selector').to.equal(SelectorType.GetWith);
             expect(this.systemManager.logicSystems.get(logicSystem2)).property('selector').to.equal(SelectorType.GetWithOnly);
@@ -61,10 +59,9 @@ describe('SystemManager', function() {
         });
         
         it('registeres a system with the correct correct [components] and [callback]', () => {
-            
             let spy = sinon.spy();
             
-            let systemId = this.systemManager.registerSystem(spy, 1 | 2, SystemType.Logic, SelectorType.Get);
+            let systemId = this.systemManager.registerSystem(SystemType.Logic, SelectorType.Get, 1 | 2, spy);
             
             let system = this.systemManager.logicSystems.get(systemId);
             
@@ -75,37 +72,20 @@ describe('SystemManager', function() {
             expect(system.callback.calledOnce).to.be.true;
         });
         
-        it('adds a system with type SystemType.Logic if [type] is omitted', () => {
-            this.systemManager.registerSystem(() => { }, 1 | 2);
-            
-            expect(this.systemManager.logicSystems).property('size').to.equal(1);
-            expect(this.systemManager.renderSystems).property('size').to.equal(0);
+        it('throws error if [type] is not a valid SystemType', () => {
+            expect(() => { this.systemManager.registerSystem(2, SelectorType.Get, 1 | 2, () => { }); }).to.throw(TypeError, 'type must be a valid SystemType.');
         });
         
-        it('adds a system with selector SelectorType.GetWith if [selector] is omitted or not a SelectorType', () => {
-            let system = this.systemManager.registerSystem(() => { }, 1 | 2);
-            
-            expect(this.systemManager.logicSystems.get(system)).property('selector').to.equal(SelectorType.GetWith);
+        it('throws error if [selector] is not a valid SelectorType', () => {
+            expect(() => { this.systemManager.registerSystem(SystemType.Logic, 4, 1 | 2, () => { }); }).to.throw(TypeError, 'selector must be a valid SelectorType.');
         });
         
-        it('sets [components] to 0 and [selector] to SelectorType.GetWith if components is omitted or 0', () => {
-            let systemId = this.systemManager.registerSystem(() => { });
-            
-            let system = this.systemManager.logicSystems.get(systemId);
-            
-            expect(system).property('components').to.equal(0);
-            expect(system).property('selector').to.equal(SelectorType.GetWith);
-            
-            systemId = this.systemManager.registerSystem(() => { }, 0);
-            
-            system = this.systemManager.logicSystems.get(systemId);
-            
-            expect(system).property('components').to.equal(0);
-            expect(system).property('selector').to.equal(SelectorType.GetWith);
+        it('throws error if [components] is not a number', () => {
+            expect(() => { this.systemManager.registerSystem(SystemType.Logic, SelectorType.Get, 'component', () => { }); }).to.throw(TypeError, 'components must be a number.');
         });
         
         it('throws error if [callback] is not a function', () => {
-            expect(() => { this.systemManager.registerSystem({ }, 1 | 2); }).to.throw(TypeError, 'callback must be a function.');
+            expect(() => { this.systemManager.registerSystem(SystemType.Logic, SelectorType.GetWith, 1 | 2, { }); }).to.throw(TypeError, 'callback must be a function.');
         });
     });
 });

@@ -165,28 +165,18 @@ describe('EntityManager', function() {
             });
             
             it('invokes [systemManager.registerSystem] with the correct parameters', () => {
-                let callback   = function() { this.x = 10.0; };
                 let type       = SystemType.Render;
-                let components = 1 | 2 | 4;
                 let selector   = SelectorType.GetWithout;
+                let components = 1 | 2 | 4;
+                let callback   = function() { this.x = 10.0; };
                 
                 let spy = sinon.spy(this.entityManager.systemManager, 'registerSystem');
                 
-                let systemId = this.entityManager.registerSystem(callback, components, type, selector);
+                let systemId = this.entityManager.registerSystem(type, selector, components, callback);
 
                 expect(spy.calledOnce).to.be.true;
-                expect(spy.calledWith(callback, components, type, selector)).to.be.true;
+                expect(spy.calledWith(type, selector, components, callback)).to.be.true;
                 expect(systemId).to.equal(1);
-                
-                systemId = this.entityManager.registerSystem(callback);
-                
-                expect(spy.calledTwice).to.be.true;
-                expect(spy.calledWith(callback, 0, SystemType.Logic, SelectorType.GetWith)).to.be.true;
-                expect(systemId).to.equal(2);
-                
-                systemId = this.entityManager.registerSystem(callback);
-                
-                expect(systemId).to.equal(3);
             });
         });
         

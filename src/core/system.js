@@ -11,7 +11,20 @@ export default class SystemManager {
         this.renderSystems = new Map();
     }
     
-    registerSystem(callback, components = 0, type = SystemType.Logic, selector = SelectorType.GetWith) {
+    registerSystem(type, selector, components, callback) {
+    	if (type !== SystemType.Logic && type !== SystemType.Render) {
+    	    throw TypeError('type must be a valid SystemType.');
+    	}
+    	
+    	if (selector !== SelectorType.Get && selector !== SelectorType.GetWith &&
+    	    selector !== SelectorType.GetWithOnly && selector !== SelectorType.GetWithout) {
+    	    throw TypeError('selector must be a valid SelectorType.');
+    	}
+    	
+    	if (typeof components !== 'number')  {
+    		throw TypeError('components must be a number.');
+    	}
+    	
     	if (typeof callback !== 'function') {
     		throw TypeError('callback must be a function.');
     	}
