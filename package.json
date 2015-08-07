@@ -1,5 +1,5 @@
 {
-  "name": "Entities",
+  "name": "entities",
   "description": "easy-to-use Entity-Component System in JavaScript",
   "version": "1.0.0",
   "author": {

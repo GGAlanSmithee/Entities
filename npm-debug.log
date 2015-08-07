@@ -1,0 +1,115 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/home/ubuntu/.nvm/v0.10.35/bin/npm', 'publish' ]
+2 info using npm@2.11.0
+3 info using node@v0.10.35
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec { raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: '/home/ubuntu/workspace',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory /home/ubuntu/.npm/Entities/1.0.0/package.tgz not in flight; packing
+9 verbose tar pack [ '/home/ubuntu/.npm/Entities/1.0.0/package.tgz',
+9 verbose tar pack   '/home/ubuntu/workspace' ]
+10 verbose tarball /home/ubuntu/.npm/Entities/1.0.0/package.tgz
+11 verbose folder /home/ubuntu/workspace
+12 info prepublish Entities@1.0.0
+13 verbose addLocalTarball adding from inside cache /home/ubuntu/.npm/Entities/1.0.0/package.tgz
+14 silly cache afterAdd Entities@1.0.0
+15 verbose afterAdd /home/ubuntu/.npm/Entities/1.0.0/package/package.json not in flight; writing
+16 verbose afterAdd /home/ubuntu/.npm/Entities/1.0.0/package/package.json written
+17 silly publish { name: 'Entities',
+17 silly publish   description: 'easy-to-use Entity-Component System in JavaScript',
+17 silly publish   version: '1.0.0',
+17 silly publish   author: { name: 'Alan Smithee', email: 'ggnore.alan.smithee@gmail.com' },
+17 silly publish   license: 'MIT',
+17 silly publish   repository:
+17 silly publish    { type: 'git',
+17 silly publish      url: 'git+https://github.com/GGAlanSmithee/Entities.git' },
+17 silly publish   keywords: [ 'javascript', 'ces', 'ecs', 'entity', 'component' ],
+17 silly publish   directories: { dist: 'dist', src: 'src' },
+17 silly publish   main: 'dist/entities.js',
+17 silly publish   scripts:
+17 silly publish    { babelify: 'browserify -t babelify ./build/entities.js --s Entities > ./dist/entities.js -d',
+17 silly publish      bundle: 'node ./build/bundle',
+17 silly publish      clean: 'rimraf ./dist/*',
+17 silly publish      jshint: 'jshint ./src/core',
+17 silly publish      test: 'istanbul cover _mocha test/* -- --recursive --compilers js:babel/register -R dot',
+17 silly publish      uglify: 'uglifyjs ./dist/entities.js -o ./dist/entities.min.js -c -m',
+17 silly publish      prebuild: 'npm run jshint && npm run clean && npm run bundle',
+17 silly publish      build: 'npm run babelify',
+17 silly publish      postbuild: 'rimraf ./build/entities.js && npm run uglify' },
+17 silly publish   devDependencies:
+17 silly publish    { babel: '^5.5.7',
+17 silly publish      babelify: '^6.1.2',
+17 silly publish      browserify: '^10.2.4',
+17 silly publish      chai: '^3.0.0',
+17 silly publish      copyfiles: '^0.2.1',
+17 silly publish      esperanto: '^0.7.2',
+17 silly publish      istanbul: '^0.3.15',
+17 silly publish      jshint: '^2.8.0',
+17 silly publish      mocha: '^2.2.5',
+17 silly publish      rimraf: '^2.4.0',
+17 silly publish      sinon: '^1.15.3',
+17 silly publish      'uglify-js': '^2.4.24' },
+17 silly publish   readme: '# Entities\neasy-to-use Entity-Component System in JavaScript\n\n## This library is built using [babel][0] and it uses generators. To use it you must `require` or `include` the [polyfill][1] first\n\n## Usage\n\n```javascript\nrequire(\'babel/polyfill\'); // polyfill for regenerator runtime and maps\nvar Entities = require(\'entities\');\n\nvar entityManager = new Entities.EntityManager();\n\n// Create components\nvar position = entityManager.registerComponent({\n    x : 10.0,\n    y : 10.0\n});\n\nvar velocity = entityManager.registerComponent(2.0);\n\n// Add a system for the created components\nvar movementSystem = function(entities, delta) {\n    for (var entity of entities) {\n        var pos = this[position][entity];\n        var vel = this[velocity][entity];\n\n        pos.x += vel * delta;\n    }\n};\n\nentityManager.registerSystem(Entities.SystemType.Logic, Entities.SelectorType.GetWith, position | velocity, movementSystem);\n\n// Run the systems\n...\n\nvar delta = 0.16;\n\nentityManager.onLogic(delta);\nentityManager.onRender(delta);\n\n...\n```\n*See /examples for more usages*\n\n## Contributing / Building\n\n- **download [nodejs][2]** and install\n\n- **fork the repository** and clone it on your local computer\n\n- **install dependencies** by running `npm i` in the repository folder\n\n- **make changes** \n\n- **run the build script** by typing `npm run build` in the console, eventually genenrating the file `dist/entities.js`\n\n- **add tests** for the added functionality in `/test` and run `npm run test`\n\n- **send a pull request** to the dev branch with an explanation of what it is that you have been done\n\n- **thanks!!** for contributing\n\n[0]: https://github.com/babel/babel\n[1]: https://babeljs.io/docs/usage/polyfill/\n[2]: http://nodejs.org\n',
+17 silly publish   readmeFilename: 'README.md',
+17 silly publish   gitHead: 'bb7c889c81a5b38eed546b3e089ae8af21c75802',
+17 silly publish   bugs: { url: 'https://github.com/GGAlanSmithee/Entities/issues' },
+17 silly publish   homepage: 'https://github.com/GGAlanSmithee/Entities#readme',
+17 silly publish   _id: 'Entities@1.0.0',
+17 silly publish   _shasum: '14372547785f8338efbcd1996896db5d7bbb0cf4',
+17 silly publish   _from: '.' }
+18 verbose getPublishConfig undefined
+19 silly mapToRegistry name Entities
+20 silly mapToRegistry using default registry
+21 silly mapToRegistry registry https://registry.npmjs.org/
+22 silly mapToRegistry uri https://registry.npmjs.org/Entities
+23 verbose publish registryBase https://registry.npmjs.org/
+24 silly publish uploading /home/ubuntu/.npm/Entities/1.0.0/package.tgz
+25 verbose request uri https://registry.npmjs.org/Entities
+26 verbose request sending authorization for write operation
+27 info attempt registry request try #1 at 11:21:54
+28 verbose request using bearer token for auth
+29 verbose request id f01a70e97f383c30
+30 http request PUT https://registry.npmjs.org/Entities
+31 http 400 https://registry.npmjs.org/Entities
+32 verbose headers { 'content-type': 'application/json',
+32 verbose headers   'cache-control': 'max-age=60',
+32 verbose headers   'content-length': '54',
+32 verbose headers   'accept-ranges': 'bytes',
+32 verbose headers   date: 'Fri, 07 Aug 2015 11:21:56 GMT',
+32 verbose headers   via: '1.1 varnish',
+32 verbose headers   connection: 'keep-alive',
+32 verbose headers   'x-served-by': 'cache-ams4129-AMS',
+32 verbose headers   'x-cache': 'MISS',
+32 verbose headers   'x-cache-hits': '0',
+32 verbose headers   'x-timer': 'S1438946514.850271,VS0,VE1419' }
+33 verbose request invalidating /home/ubuntu/.npm/registry.npmjs.org/Entities on PUT
+34 error publish Failed PUT 400
+35 verbose stack Error: name can no longer contain capital letters : Entities
+35 verbose stack     at CachingRegistryClient.<anonymous> (/home/ubuntu/.nvm/v0.10.35/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:247:14)
+35 verbose stack     at Request._callback (/home/ubuntu/.nvm/v0.10.35/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:170:14)
+35 verbose stack     at Request.self.callback (/home/ubuntu/.nvm/v0.10.35/lib/node_modules/npm/node_modules/request/request.js:368:22)
+35 verbose stack     at Request.emit (events.js:98:17)
+35 verbose stack     at Request.<anonymous> (/home/ubuntu/.nvm/v0.10.35/lib/node_modules/npm/node_modules/request/request.js:1219:14)
+35 verbose stack     at Request.emit (events.js:117:20)
+35 verbose stack     at IncomingMessage.<anonymous> (/home/ubuntu/.nvm/v0.10.35/lib/node_modules/npm/node_modules/request/request.js:1167:12)
+35 verbose stack     at IncomingMessage.emit (events.js:117:20)
+35 verbose stack     at _stream_readable.js:944:16
+35 verbose stack     at process._tickCallback (node.js:442:13)
+36 verbose statusCode 400
+37 verbose pkgid Entities
+38 verbose cwd /home/ubuntu/workspace
+39 error Linux 3.14.13-c9
+40 error argv "node" "/home/ubuntu/.nvm/v0.10.35/bin/npm" "publish"
+41 error node v0.10.35
+42 error npm  v2.11.0
+43 error code E400
+44 error name can no longer contain capital letters : Entities
+45 error If you need help, you may report this error at:
+45 error     <https://github.com/npm/npm/issues>
+46 verbose exit [ 1, true ]
