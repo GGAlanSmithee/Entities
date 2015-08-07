@@ -1,7 +1,7 @@
 # Entities
 easy-to-use Entity-Component System in JavaScript
 
-# !! This library is built using [babel][0] and it uses generators. To use it you must `require` or `include` the [polyfill][1] first !!
+## This library is built using [babel][0] and it uses generators. To use it you must `require` or `include` the [polyfill][1] first
 
 ## Usage
 
