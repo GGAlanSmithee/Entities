@@ -24,16 +24,16 @@
   },
   "main": "dist/entities.js",
   "scripts": {
-    "babelify" : "browserify -t babelify ./build/entities.js --s Entities > ./dist/entities.js -d",
-    "bundle" : "node ./build/bundle",
-    "clean" : "./node_modules/.bin/rimraf ./dist/*",
-    "jshint" : "jshint ./src/core",
-    "test" : "./node_modules/.bin/istanbul cover _mocha test/* -- --recursive --compilers js:babel/register -R dot",
-    "polyfill"  : "./node_modules/.bin/copyfiles -f ./node_modules/babel/node_modules/babel-core/browser-polyfill.js ./node_modules/babel/node_modules/babel-core/browser-polyfill.min.js dist",
+    "babelify": "browserify -t babelify ./build/entities.js --s Entities > ./dist/entities.js -d",
+    "bundle": "node ./build/bundle",
+    "clean": "./node_modules/.bin/rimraf ./dist/*",
+    "jshint": "jshint ./src/core",
+    "test": "./node_modules/.bin/istanbul cover _mocha test/* -- --recursive --compilers js:babel/register -R dot",
+    "uglify": "./node_modules/.bin/uglifyjs ./dist/entities.js -o ./dist/entities.min.js -c -m",
     
-    "prebuild" : "npm run jshint && npm run clean && npm run bundle",
-    "build" : "npm run babelify",
-    "postbuild" : "./node_modules/.bin/rimraf ./build/entities.js"
+    "prebuild": "npm run jshint && npm run clean && npm run bundle",
+    "build": "npm run babelify",
+    "postbuild": "./node_modules/.bin/rimraf ./build/entities.js && npm run uglify"
   },
   "devDependencies": {
     "babel": "^5.5.7",
@@ -46,6 +46,7 @@
     "jshint": "^2.8.0",
     "mocha": "^2.2.5",
     "rimraf": "^2.4.0",
-    "sinon": "^1.15.3"
+    "sinon": "^1.15.3",
+    "uglify-js": "^2.4.24"
   }
 }
