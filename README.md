@@ -7,7 +7,7 @@ easy-to-use Entity-Component System in JavaScript
 
 ```javascript
 require('babel/polyfill'); // polyfill for regenerator runtime and maps
-var Entities = require('entities');
+var Entities = require('gg-entities');
 
 var entityManager = new Entities.EntityManager();
 
@@ -29,7 +29,7 @@ var movementSystem = function(entities, delta) {
     }
 };
 
-entityManager.registerSystem(Entities.SystemType.Logic, Entities.SelectorType.GetWith, position | velocity, movementSystem);
+entityManager.registerLogicSystem(Entities.SelectorType.GetWith, position | velocity, movementSystem);
 
 // Run the systems
 ...
