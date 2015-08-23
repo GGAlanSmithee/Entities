@@ -23,6 +23,7 @@
     "src": "src"
   },
   "main": "dist/gg-entities.js",
+  "jsnext:main": "src/gg-entities.js",
   "scripts": {
     "babelify": "browserify -t babelify ./build/gg-entities.js --s GGEntities > ./dist/gg-entities.js -d",
     "bundle": "node ./build/bundle",
