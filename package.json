@@ -25,27 +25,19 @@
   "main": "dist/gg-entities.js",
   "jsnext:main": "src/gg-entities.js",
   "scripts": {
-    "babelify": "browserify -t babelify ./build/gg-entities.js --s GGEntities > ./dist/gg-entities.js -d",
-    "bundle": "node ./build/bundle",
-    "clean": "./node_modules/.bin/rimraf ./dist/*",
-    "jshint": "jshint ./src/core",
-    "test": "./node_modules/.bin/istanbul cover _mocha test/* -- --recursive --compilers js:babel/register -R dot",
-    "uglify": "./node_modules/.bin/uglifyjs ./dist/gg-entities.js -o ./dist/gg-entities.min.js -c -m",
-    "prebuild": "npm run jshint && npm run clean && npm run bundle",
-    "build": "npm run babelify",
-    "postbuild": "./node_modules/.bin/rimraf ./build/gg-entities.js && npm run uglify"
+    "test": "istanbul cover _mocha test/* -- --recursive --compilers js:babel/register -R dot",
+    "prebuild": "eslint src",
+    "build": "mkdir -p dist && rollup src/gg-entities.js | babel -m umd --module-id GGEntities -o dist/gg-entities.js",
+    "deploy": "npm run build && uglifyjs ./dist/gg-entities.js -o ./dist/gg-entities.min.js -c -m"
   },
   "devDependencies": {
     "babel": "^5.8.21",
-    "babelify": "^6.1.3",
-    "browserify": "^11.0.1",
+    "babel-eslint": "^4.1.0",
     "chai": "^3.2.0",
-    "copyfiles": "^0.2.1",
-    "esperanto": "^0.7.4",
+    "eslint": "^1.2.1",
     "istanbul": "^0.3.17",
-    "jshint": "^2.8.0",
     "mocha": "^2.2.5",
-    "rimraf": "^2.4.2",
+    "rollup": "^0.14.1",
     "sinon": "^1.15.4",
     "uglify-js": "^2.4.24"
   }
