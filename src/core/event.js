@@ -6,21 +6,21 @@ export default class EventHandler {
     }
     
     emptyPromise() {
-        return new Promise(function(resolve, reject) {
+        return new Promise(resolve => {
             resolve();
         });
     }
     
     promise(callback, context, args, timeout) {
         if (timeout) {
-            return new Promise(function(resolve, reject) {
+            return new Promise(resolve => {
                 setTimeout(function(){
                     resolve(typeof context ===  'object' ? callback.call(context, ...args) : callback.apply(context, ...args));
                 }, timeout);
             });
         }
         
-        return new Promise(function(resolve, reject) {
+        return new Promise(resolve => {
             resolve(typeof context === 'object' ? callback.call(context, ...args) : callback.apply(context, ...args));
         });
     }

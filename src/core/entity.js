@@ -19,7 +19,7 @@ export default class EntityManager {
         this.componentManager = new ComponentManager();
         this.eventHandler     = new EventHandler();
         
-        this.entities = Array.from({ length: this.capacity }, v => v = 0);
+        this.entities = Array.from({ length: this.capacity }, () => { return 0; } );
     }
     
     increaseCapacity() {
