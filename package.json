@@ -1,7 +1,11 @@
 {
   "name": "gg-entities",
   "description": "easy-to-use Entity-Component System in JavaScript",
+<<<<<<< HEAD
   "version": "1.1.0",
+=======
+  "version": "2.0.0",
+>>>>>>> fixes npm package version number
   "author": {
     "name": "alansmithee",
     "email": "ggnore.alan.smithee@gmail.com"
