@@ -30,13 +30,13 @@ describe('EntityManager', function() {
         
         describe('[type] = SelectorType.Get', () => {
             it('returns an iterable of all entities up to [currentMaxEntity]', () => {
-                let it = this.entityManager.getEntities(0, SelectorType.Get);
+                // let it = this.entityManager.getEntities(0, SelectorType.Get);
                 
-                expect(it.next()).property('done').to.be.true;
+                // expect(it.next()).property('done').to.be.true;
                 
                 this.entityManager.currentMaxEntity = 20;
                 
-                it = this.entityManager.getEntities(0, SelectorType.Get);
+                let it = this.entityManager.getEntities(0, SelectorType.Get);
                 
                 let i = 0;
                 while (it.next().done !== true) {
@@ -45,7 +45,6 @@ describe('EntityManager', function() {
                 
                 expect(i).to.equal(this.entityManager.currentMaxEntity + 1).and.to.equal(21);
                 
-                expect(it.next()).property('value').to.be.undefined;
                 expect(it.next()).property('value').to.be.undefined;
             });
             
