@@ -1,0 +1,4 @@
+key: 'getEntities',
+value: regeneratorRuntime.mark(function getEntities() {
+    var components = _arguments.length <= 0 || _arguments[0] === undefined ? 0 : _arguments[0];
+    var type = _arguments.length <= 1 || _arguments[1] === undefined ? SelectorType.GetWith : _arguments[1]

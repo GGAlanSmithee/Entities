@@ -81,7 +81,14 @@ export default class EntityManager {
         }
     }
     
-    *getEntities(components = 0, type = SelectorType.GetWith) {
+    *getEntities(components, type) {
+        // todo: use these as default args when babel sorted their generator -> default args bug
+        components = components || 0;
+        
+        if (type === undefined || type === null) {
+            type = SelectorType.GetWith;
+        }
+        
         switch (type) {
             case SelectorType.GetWith: {
                 for (let entityId in this.entities) {
