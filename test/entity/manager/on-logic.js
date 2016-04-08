@@ -55,21 +55,26 @@ describe('EntityManager', function() {
         });
         
         it('invokes all [logicSystems] with the [entityManager] as context', () => {
-            this.entityManager.onLogic(this.delta);
+            const opts = {
+                question : 'How many roads must a man walk down?',
+                answer: 42
+            };
+            
+            this.entityManager.onLogic(this.delta, opts);
             
             expect(this.logicSpy1.calledOnce).to.be.true;
             expect(this.logicSpy1.calledOn(this.entityManager)).to.be.true;
-            expect(this.logicSpy1.calledWith(this.entities, this.delta)).to.be.true;
+            expect(this.logicSpy1.calledWith(this.entities, this.delta, opts)).to.be.true;
             
             expect(this.logicSpy2.calledOnce).to.be.true;
             expect(this.logicSpy2.calledOn(this.entityManager)).to.be.true;
-            expect(this.logicSpy2.calledWith(this.entities, this.delta)).to.be.true;
+            expect(this.logicSpy2.calledWith(this.entities, this.delta, opts)).to.be.true;
             
             expect(this.renderSpy1.calledOnce).to.be.false;
             expect(this.renderSpy2.calledOnce).to.be.false;
         });
         
-        it('invokes [entityManager.getEntities()] with the corrent paramters', () => {
+        it('invokes [entityManager.getEntities()] with the correct paramters', () => {
             this.entityManager.onLogic(this.delta);
             
             expect(this.entityManager.getEntities.calledTwice).to.be.true;

@@ -194,15 +194,15 @@ export default class EntityManager {
         return this.systemManager.removeSystem(systemId);
     }
     
-    onLogic(delta) {
+    onLogic(delta, opts) {
         for (let system of this.systemManager.logicSystems.values()) {
-            system.callback.call(this, this.getEntities(system.components, system.selector), delta);
+            system.callback.call(this, this.getEntities(system.components, system.selector), delta, opts);
         }
     }
     
-    onRender(delta) {
+    onRender(delta, opts) {
         for (let system of this.systemManager.renderSystems.values()) {
-            system.callback.call(this, this.getEntities(system.components, system.selector), delta);
+            system.callback.call(this, this.getEntities(system.components, system.selector), delta, opts);
         }
     }
 

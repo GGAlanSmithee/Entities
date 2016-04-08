@@ -500,7 +500,7 @@
             }
         }, {
             key: 'onLogic',
-            value: function onLogic(delta) {
+            value: function onLogic(delta, opts) {
                 var _iteratorNormalCompletion3 = true;
                 var _didIteratorError3 = false;
                 var _iteratorError3 = undefined;
@@ -509,7 +509,7 @@
                     for (var _iterator3 = this.systemManager.logicSystems.values()[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
                         var system = _step3.value;
 
-                        system.callback.call(this, this.getEntities(system.components, system.selector), delta);
+                        system.callback.call(this, this.getEntities(system.components, system.selector), delta, opts);
                     }
                 } catch (err) {
                     _didIteratorError3 = true;
@@ -528,7 +528,7 @@
             }
         }, {
             key: 'onRender',
-            value: function onRender(delta) {
+            value: function onRender(delta, opts) {
                 var _iteratorNormalCompletion4 = true;
                 var _didIteratorError4 = false;
                 var _iteratorError4 = undefined;
@@ -537,7 +537,7 @@
                     for (var _iterator4 = this.systemManager.renderSystems.values()[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
                         var system = _step4.value;
 
-                        system.callback.call(this, this.getEntities(system.components, system.selector), delta);
+                        system.callback.call(this, this.getEntities(system.components, system.selector), delta, opts);
                     }
                 } catch (err) {
                     _didIteratorError4 = true;

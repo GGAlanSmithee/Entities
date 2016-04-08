@@ -54,21 +54,26 @@ describe('EntityManager', function() {
         });
         
         it('invokes all [renderSystems] with the [entityManager] as context', () => {
-            this.entityManager.onRender(this.delta);
+            const opts = {
+                value: 1337,
+                context: 'browser'
+            };
+            
+            this.entityManager.onRender(this.delta, opts);
             
             expect(this.renderSpy1.calledOnce).to.be.true;
             expect(this.renderSpy1.calledOn(this.entityManager)).to.be.true;
-            expect(this.renderSpy1.calledWith(this.entities, this.delta)).to.be.true;
+            expect(this.renderSpy1.calledWith(this.entities, this.delta, opts)).to.be.true;
             
             expect(this.renderSpy2.calledOnce).to.be.true;
             expect(this.renderSpy2.calledOn(this.entityManager)).to.be.true;
-            expect(this.renderSpy2.calledWith(this.entities, this.delta)).to.be.true;
+            expect(this.renderSpy2.calledWith(this.entities, this.delta, opts)).to.be.true;
             
             expect(this.logicSpy1.calledOnce).to.be.false;
             expect(this.logicSpy2.calledOnce).to.be.false;
         });
         
-        it('invokes [entityManager.getEntities()] with the corrent paramters', () => {
+        it('invokes [entityManager.getEntities()] with the correct paramters', () => {
             this.entityManager.onRender(this.delta);
             
             expect(this.entityManager.getEntities.calledTwice).to.be.true;
