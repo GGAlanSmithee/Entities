@@ -4,6 +4,10 @@
 
 Added the ability to pass in an aditional parameter `opts` to the `onRender` and `onLogic` methods of the `entityManager`. This parameter will be passed as the last argument to the registered logic and render systems that is invoked.
 
+### Example
+
+Added `opts.html` example to show how to pass options to a system via `onRedner` and `onLogic`
+
 ## v1.0.4 (2015-10-03)
 
 ### ES6 compatability
