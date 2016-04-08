@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Entities example - Opts</title>
+    </head>
+    
+    <body>
+        <canvas id='canvas'></canvas>
+        
+        <script language="javascript" type="text/javascript" src="polyfill.js"></script>
+        <script language="javascript" type="text/javascript" src="../dist/gg-entities.js"></script>
+        
+        <script>
+            function RendererEngine() {
+                var canvas    = document.getElementById('canvas');
+                canvas.width  = 500;
+                canvas.height = 500;
+            
+                this.context = canvas.getContext('2d');
+            }
+            
+            RendererEngine.prototype.render = function(tra, app) {
+                this.context.beginPath();
+                this.context.rect(tra.x, tra.y, tra.w, tra.h);
+                this.context.fillStyle = app.color;
+                this.context.fill();
+            }
+            
+            window.onload = function() {
+                var entityManager = new GGEntities.EntityManager();
+                
+                // Components
+                
+                var transform = entityManager.registerComponent(function() {
+                    this.x = 250;
+                    this.w = 100,
+                    this.h = 100;
+                    this.y = 250;
+                });
+                
+                var appearance = entityManager.registerComponent({ color : 'red' });
+                
+                // Systems
+                
+                var renderSystem = function(entities, delta, opts) {
+                    for (var entity of entities) {
+                        var tra = this[transform][entity];
+                        var app = this[appearance][entity];
+                        
+                        opts.rendererEngine.render(tra, app);
+                    }
+                };
+                                             
+                entityManager.registerRenderSystem(GGEntities.SelectorType.GetWith, transform | appearance, renderSystem);
+                
+                entityManager.build().withComponent(transform).withComponent(appearance).create();
+                
+                var rendererEngine = new RendererEngine(canvas);
+                
+                entityManager.onRender(0, { rendererEngine });
+            };
+        </script>
+    </body>
+</html>
