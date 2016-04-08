@@ -1,11 +1,7 @@
 {
   "name": "gg-entities",
   "description": "easy-to-use Entity-Component System in JavaScript",
-<<<<<<< HEAD
-  "version": "1.1.0",
-=======
   "version": "2.0.0",
->>>>>>> fixes npm package version number
   "author": {
     "name": "alansmithee",
     "email": "ggnore.alan.smithee@gmail.com"
@@ -34,7 +30,7 @@
     "deploy": "npm run build && uglifyjs dist/gg-entities.js -o dist/gg-entities.min.js -c -m"
   },
   "devDependencies": {
-    "babel-cli": "^6.6.5",
+    "babel-cli": "^6.7.5",
     "babel-eslint": "^6.0.2",
     "babel-polyfill": "^6.7.4",
     "babel-preset-es2015": "^6.6.0",
@@ -42,7 +38,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.7.2",
     "chai": "^3.5.0",
-    "eslint": "^2.6.0",
+    "eslint": "^2.7.0",
     "istanbul": "^1.0.0-alpha",
     "mocha": "^2.4.5",
     "rollup": "^0.25.8",
