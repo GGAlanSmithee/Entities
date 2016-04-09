@@ -197,6 +197,10 @@ export default class EntityManager {
         return this.systemManager.registerSystem(SystemType.Render, selector, components, callback);
     }
     
+    registerInitSystem(selector, components, callback) {
+        return this.systemManager.registerSystem(SystemType.Init, selector, components, callback);
+    }
+    
     removeSystem(systemId) {
         return this.systemManager.removeSystem(systemId);
     }
