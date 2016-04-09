@@ -14,7 +14,7 @@ export default class SystemManager {
     }
     
     registerSystem(type, selector, components, callback) {
-        if (type !== SystemType.Logic && type !== SystemType.Render) {
+        if (type !== SystemType.Logic && type !== SystemType.Render && type !== SystemType.Init) {
             throw TypeError('type must be a valid SystemType.');
         }
     
@@ -32,22 +32,23 @@ export default class SystemManager {
         }
         
         let system = {
-        selector,
-        components,
-        callback
+            selector,
+            components,
+            callback
         };
         
-        let systemId = Math.max(0, ...this.logicSystems.keys(), ...this.renderSystems.keys()) + 1;
+        let systemId = Math.max(0, ...this.logicSystems.keys(), ...this.renderSystems.keys(), ...this.initSystems.keys()) + 1;
         
         switch (type) {
             case SystemType.Logic : this.logicSystems.set(systemId, system); break;
             case SystemType.Render : this.renderSystems.set(systemId, system); break;
+            case SystemType.Init : this.initSystems.set(systemId, system); break;
         }
         
         return systemId;
     }
     
     removeSystem(systemId) {
-        return this.logicSystems.delete(systemId) || this.renderSystems.delete(systemId);
+        return this.logicSystems.delete(systemId) || this.renderSystems.delete(systemId) || this.initSystems.delete(systemId);
     }
 }

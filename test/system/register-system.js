@@ -20,12 +20,15 @@ describe('SystemManager', function() {
         it('adds a system under the correct type', () => {
             expect(this.systemManager.logicSystems).property('size').to.equal(0);
             expect(this.systemManager.renderSystems).property('size').to.equal(0);
+            expect(this.systemManager.initSystems).property('size').to.equal(0);
             
             this.systemManager.registerSystem(SystemType.Logic, SelectorType.GetWith, 1 | 2, () => { });
             this.systemManager.registerSystem(SystemType.Render, SelectorType.GetWith, 1 | 2, () => { });
+            this.systemManager.registerSystem(SystemType.Init, SelectorType.GetWith, 1 | 2, () => { });
             
             expect(this.systemManager.logicSystems).property('size').to.equal(1);
             expect(this.systemManager.renderSystems).property('size').to.equal(1);
+            expect(this.systemManager.initSystems).property('size').to.equal(1);
         });
         
         it('returns the added sytems id', () => {
@@ -73,7 +76,7 @@ describe('SystemManager', function() {
         });
         
         it('throws error if [type] is not a valid SystemType', () => {
-            expect(() => { this.systemManager.registerSystem(2, SelectorType.Get, 1 | 2, () => { }); }).to.throw(TypeError, 'type must be a valid SystemType.');
+            expect(() => { this.systemManager.registerSystem(3, SelectorType.Get, 1 | 2, () => { }); }).to.throw(TypeError, 'type must be a valid SystemType.');
         });
         
         it('throws error if [selector] is not a valid SelectorType', () => {
