@@ -217,6 +217,12 @@ export default class EntityManager {
         }
     }
 
+    onInit(delta, opts) {
+        for (let system of this.systemManager.initSystems.values()) {
+            system.callback.call(this, this.getEntities(system.components, system.selector), delta, opts);
+        }
+    }
+    
     // Entity Factory
     
     registerInitializer(componentId, initializer) {
