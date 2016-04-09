@@ -32,5 +32,6 @@ export function registerSystem(systemManager,
     switch (type) {
         case SystemType.Logic:  systemManager.logicSystems.set(systemId, system);  break;
         case SystemType.Render: systemManager.renderSystems.set(systemId, system); break;
+        case SystemType.Init:   systemManager.initSystems.set(systemId, system); break;
     }
 }

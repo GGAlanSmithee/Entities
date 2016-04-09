@@ -13,4 +13,8 @@ describe('SystemType', () => {
     it('SystemType.Render is defined as 1', () => {
         expect(SystemType.Render).to.equal(1);
     });
+    
+    it('SystemType.Init is defined as 2', () => {
+        expect(SystemType.Init).to.equal(2);
+    });
 });

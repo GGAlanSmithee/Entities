@@ -17,6 +17,12 @@ describe('SystemManager', function() {
             helpers.registerSystem(this.systemManager, 4);
             
             helpers.registerSystem(this.systemManager, 5, SystemType.Render);
+            
+            helpers.registerSystem(this.systemManager, 6, SystemType.Init);
+            
+            helpers.registerSystem(this.systemManager, 7, SystemType.Init);
+            
+            helpers.registerSystem(this.systemManager, 8, SystemType.Init);
         });
         
         afterEach(() => {
@@ -66,7 +72,7 @@ describe('SystemManager', function() {
             expect(this.systemManager.removeSystem(1)).to.be.true;
         });
         
-        it('returns false when a system is not removed (not found)', () => {
+        it('returns false when a system is not removed (not registered)', () => {
             expect(this.systemManager.removeSystem(99)).to.be.false;
         });
         
@@ -79,8 +85,16 @@ describe('SystemManager', function() {
             expect(this.systemManager.removeSystem([])).to.be.false;
         });
         
+        it('removes a system of type [SystemType.Logic]', () => {
+            expect(this.systemManager.removeSystem(2)).to.be.true;
+        });
+        
         it('removes a system of type [SystemType.Render]', () => {
             expect(this.systemManager.removeSystem(5)).to.be.true;
+        });
+        
+        it('removes a system of type [SystemType.Init]', () => {
+            expect(this.systemManager.removeSystem(7)).to.be.true;
         });
     });
 });

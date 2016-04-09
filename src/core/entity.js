@@ -197,6 +197,10 @@ export default class EntityManager {
         return this.systemManager.registerSystem(SystemType.Render, selector, components, callback);
     }
     
+    registerInitSystem(selector, components, callback) {
+        return this.systemManager.registerSystem(SystemType.Init, selector, components, callback);
+    }
+    
     removeSystem(systemId) {
         return this.systemManager.removeSystem(systemId);
     }
@@ -213,6 +217,12 @@ export default class EntityManager {
         }
     }
 
+    onInit(delta, opts) {
+        for (let system of this.systemManager.initSystems.values()) {
+            system.callback.call(this, this.getEntities(system.components, system.selector), delta, opts);
+        }
+    }
+    
     // Entity Factory
     
     registerInitializer(componentId, initializer) {
