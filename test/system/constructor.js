@@ -19,7 +19,7 @@ describe('SystemManager', function() {
             expect(this.systemManager).to.be.an.instanceof(SystemManager);
         });
         
-        it('instatiates a [logicSystems] and a [renderSystems] map', () => {
+        it('instatiates a [logicSystems], a [renderSystems] and a [initSystems] map', () => {
             expect(this.systemManager).to.have.property('logicSystems');
             expect(this.systemManager).property('logicSystems').to.be.an.instanceof(Map);
             expect(this.systemManager).property('logicSystems').property('size').to.equal(0);
@@ -27,6 +27,10 @@ describe('SystemManager', function() {
             expect(this.systemManager).to.have.property('renderSystems');
             expect(this.systemManager).property('renderSystems').to.be.an.instanceof(Map);
             expect(this.systemManager).property('renderSystems').property('size').to.equal(0);
+            
+            expect(this.systemManager).to.have.property('initSystems');
+            expect(this.systemManager).property('initSystems').to.be.an.instanceof(Map);
+            expect(this.systemManager).property('initSystems').property('size').to.equal(0);
         });
     });
 });

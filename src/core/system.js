@@ -1,14 +1,16 @@
 import { SelectorType } from './entity';
 
 export const SystemType = {
-    Logic   : 0,
-    Render  : 1
+    Logic  : 0,
+    Render : 1,
+    Init   : 2
 };
 
 export default class SystemManager {
     constructor() {
         this.logicSystems  = new Map();
         this.renderSystems = new Map();
+        this.initSystems   = new Map();
     }
     
     registerSystem(type, selector, components, callback) {

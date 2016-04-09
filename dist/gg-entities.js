@@ -146,7 +146,8 @@
 
     var SystemType = {
         Logic: 0,
-        Render: 1
+        Render: 1,
+        Init: 2
     };
 
     var SystemManager = function () {
@@ -155,6 +156,7 @@
 
             this.logicSystems = new Map();
             this.renderSystems = new Map();
+            this.initSystems = new Map();
         }
 
         babelHelpers.createClass(SystemManager, [{
