@@ -162,7 +162,7 @@
         babelHelpers.createClass(SystemManager, [{
             key: 'registerSystem',
             value: function registerSystem(type, selector, components, callback) {
-                if (type !== SystemType.Logic && type !== SystemType.Render) {
+                if (type !== SystemType.Logic && type !== SystemType.Render && type !== SystemType.Init) {
                     throw TypeError('type must be a valid SystemType.');
                 }
 
@@ -184,13 +184,15 @@
                     callback: callback
                 };
 
-                var systemId = Math.max.apply(Math, [0].concat(babelHelpers.toConsumableArray(this.logicSystems.keys()), babelHelpers.toConsumableArray(this.renderSystems.keys()))) + 1;
+                var systemId = Math.max.apply(Math, [0].concat(babelHelpers.toConsumableArray(this.logicSystems.keys()), babelHelpers.toConsumableArray(this.renderSystems.keys()), babelHelpers.toConsumableArray(this.initSystems.keys()))) + 1;
 
                 switch (type) {
                     case SystemType.Logic:
                         this.logicSystems.set(systemId, system);break;
                     case SystemType.Render:
                         this.renderSystems.set(systemId, system);break;
+                    case SystemType.Init:
+                        this.initSystems.set(systemId, system);break;
                 }
 
                 return systemId;
@@ -198,7 +200,7 @@
         }, {
             key: 'removeSystem',
             value: function removeSystem(systemId) {
-                return this.logicSystems.delete(systemId) || this.renderSystems.delete(systemId);
+                return this.logicSystems.delete(systemId) || this.renderSystems.delete(systemId) || this.initSystems.delete(systemId);
             }
         }]);
         return SystemManager;
@@ -764,6 +766,11 @@
                 return this.systemManager.registerSystem(SystemType.Render, selector, components, callback);
             }
         }, {
+            key: 'registerInitSystem',
+            value: function registerInitSystem(selector, components, callback) {
+                return this.systemManager.registerSystem(SystemType.Init, selector, components, callback);
+            }
+        }, {
             key: 'removeSystem',
             value: function removeSystem(systemId) {
                 return this.systemManager.removeSystem(systemId);
@@ -820,6 +827,34 @@
                     } finally {
                         if (_didIteratorError4) {
                             throw _iteratorError4;
+                        }
+                    }
+                }
+            }
+        }, {
+            key: 'onInit',
+            value: function onInit(delta, opts) {
+                var _iteratorNormalCompletion5 = true;
+                var _didIteratorError5 = false;
+                var _iteratorError5 = undefined;
+
+                try {
+                    for (var _iterator5 = this.systemManager.initSystems.values()[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                        var system = _step5.value;
+
+                        system.callback.call(this, this.getEntities(system.components, system.selector), delta, opts);
+                    }
+                } catch (err) {
+                    _didIteratorError5 = true;
+                    _iteratorError5 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                            _iterator5.return();
+                        }
+                    } finally {
+                        if (_didIteratorError5) {
+                            throw _iteratorError5;
                         }
                     }
                 }
@@ -945,27 +980,27 @@
 
                 var components = 0;
 
-                var _iteratorNormalCompletion5 = true;
-                var _didIteratorError5 = false;
-                var _iteratorError5 = undefined;
+                var _iteratorNormalCompletion6 = true;
+                var _didIteratorError6 = false;
+                var _iteratorError6 = undefined;
 
                 try {
-                    for (var _iterator5 = configuration.keys()[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                        var component = _step5.value;
+                    for (var _iterator6 = configuration.keys()[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                        var component = _step6.value;
 
                         components |= component;
                     }
                 } catch (err) {
-                    _didIteratorError5 = true;
-                    _iteratorError5 = err;
+                    _didIteratorError6 = true;
+                    _iteratorError6 = err;
                 } finally {
                     try {
-                        if (!_iteratorNormalCompletion5 && _iterator5.return) {
-                            _iterator5.return();
+                        if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                            _iterator6.return();
                         }
                     } finally {
-                        if (_didIteratorError5) {
-                            throw _iteratorError5;
+                        if (_didIteratorError6) {
+                            throw _iteratorError6;
                         }
                     }
                 }
@@ -979,16 +1014,16 @@
                         continue;
                     }
 
-                    var _iteratorNormalCompletion6 = true;
-                    var _didIteratorError6 = false;
-                    var _iteratorError6 = undefined;
+                    var _iteratorNormalCompletion7 = true;
+                    var _didIteratorError7 = false;
+                    var _iteratorError7 = undefined;
 
                     try {
-                        for (var _iterator6 = configuration[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-                            var _step6$value = babelHelpers.slicedToArray(_step6.value, 2);
+                        for (var _iterator7 = configuration[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+                            var _step7$value = babelHelpers.slicedToArray(_step7.value, 2);
 
-                            var componentId = _step6$value[0];
-                            var initializer = _step6$value[1];
+                            var componentId = _step7$value[0];
+                            var initializer = _step7$value[1];
 
                             if (typeof initializer !== 'function') {
                                 continue;
@@ -1001,16 +1036,16 @@
                             }
                         }
                     } catch (err) {
-                        _didIteratorError6 = true;
-                        _iteratorError6 = err;
+                        _didIteratorError7 = true;
+                        _iteratorError7 = err;
                     } finally {
                         try {
-                            if (!_iteratorNormalCompletion6 && _iterator6.return) {
-                                _iterator6.return();
+                            if (!_iteratorNormalCompletion7 && _iterator7.return) {
+                                _iterator7.return();
                             }
                         } finally {
-                            if (_didIteratorError6) {
-                                throw _iteratorError6;
+                            if (_didIteratorError7) {
+                                throw _iteratorError7;
                             }
                         }
                     }

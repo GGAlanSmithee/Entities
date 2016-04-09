@@ -22,15 +22,6 @@
                 
                 var cubes = [];
                 
-                function init() {
-                    for (var i = 0; i < cubes.length; ++i) {
-                        entityManager.deleteEntity(cubes[i]);
-                        numbSpawnedObjects--;
-                    }
-                    
-                    cubes = [];
-                };
-                
                 var Menu = {
                     isOpen : true,
                     
@@ -55,7 +46,7 @@
                     onStartClicked : function() {
                         this.isOpen = false;
                         
-                        init();
+                        entityManager.onInit();
                     }
                 };
                 
@@ -79,6 +70,17 @@
                 var appearance = entityManager.registerComponent({ color : 'red' });
                 
                 // Systems
+                
+                var initSystem = function() {
+                    for (var i = 0; i < cubes.length; ++i) {
+                        this.deleteEntity(cubes[i]);
+                        numbSpawnedObjects--;
+                    }
+                    
+                    cubes = [];
+                }
+                
+                entityManager.registerInitSystem(GGEntities.SelectorType.Get, 0, initSystem);
                 
                 var movementSystem = function(entities, delta) {
                     for (var entity of entities) {
