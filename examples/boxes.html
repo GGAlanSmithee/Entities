@@ -82,7 +82,7 @@
                 
                 entityManager.registerInitSystem(GGEntities.SelectorType.Get, 0, initSystem);
                 
-                var movementSystem = function(entities, delta) {
+                var movementSystem = function(entities, { delta }) {
                     for (var entity of entities) {
                         var tra = this[transform][entity];
                         var vel = this[velocity][entity];
@@ -216,11 +216,11 @@
                         if (Menu.isOpen) {
                             Menu.draw();
                         } else {
-                            entityManager.onLogic(delta);
+                            entityManager.onLogic({ delta });
                             
                             context.clearRect(0, 0, canvas.width, canvas.height);
                             
-                            entityManager.onRender(delta);
+                            entityManager.onRender({ delta });
                         }
                         
                         loop();

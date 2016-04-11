@@ -42,12 +42,12 @@
                 
                 // Systems
                 
-                var renderSystem = function(entities, delta, opts) {
+                var renderSystem = function(entities, { rendererEngine }) {
                     for (var entity of entities) {
                         var tra = this[transform][entity];
                         var app = this[appearance][entity];
                         
-                        opts.rendererEngine.render(tra, app);
+                        rendererEngine.render(tra, app);
                     }
                 };
                                              
@@ -57,7 +57,7 @@
                 
                 var rendererEngine = new RendererEngine(canvas);
                 
-                entityManager.onRender(0, { rendererEngine });
+                entityManager.onRender({ rendererEngine });
             };
         </script>
     </body>

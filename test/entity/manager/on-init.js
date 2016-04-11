@@ -3,7 +3,7 @@ import sinon                           from 'sinon';
 import EntityManager, { SelectorType } from '../../../src/core/entity';
 
 describe('EntityManager', function() {
-    describe('onInit(delta)', () => {
+    describe('onInit(opts)', () => {
         beforeEach(() => {
             this.entityManager = new EntityManager();
             
@@ -42,7 +42,11 @@ describe('EntityManager', function() {
                     components : 8
                 });
             
-            this.delta = 10;
+            this.opts = {
+                delta : 10,
+                test: false,
+                controller: 'game'
+            };
         });
         
         afterEach(() => {
@@ -54,27 +58,22 @@ describe('EntityManager', function() {
         });
         
         it('invokes all [initSystems] with the [entityManager] as context', () => {
-            const opts = {
-                value: 1337,
-                context: 'browser'
-            };
-            
-            this.entityManager.onInit(this.delta, opts);
+            this.entityManager.onInit(this.opts);
             
             expect(this.initSpy1.calledOnce).to.be.true;
             expect(this.initSpy1.calledOn(this.entityManager)).to.be.true;
-            expect(this.initSpy1.calledWith(this.entities, this.delta, opts)).to.be.true;
+            expect(this.initSpy1.calledWith(this.entities, this.opts)).to.be.true;
             
             expect(this.initSpy2.calledOnce).to.be.true;
             expect(this.initSpy2.calledOn(this.entityManager)).to.be.true;
-            expect(this.initSpy2.calledWith(this.entities, this.delta, opts)).to.be.true;
+            expect(this.initSpy2.calledWith(this.entities, this.opts)).to.be.true;
             
             expect(this.logicSpy1.calledOnce).to.be.false;
             expect(this.logicSpy2.calledOnce).to.be.false;
         });
         
         it('invokes [entityManager.getEntities()] with the correct paramters', () => {
-            this.entityManager.onInit(this.delta);
+            this.entityManager.onInit(this.opts);
             
             expect(this.entityManager.getEntities.calledTwice).to.be.true;
             
