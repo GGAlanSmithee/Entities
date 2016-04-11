@@ -1,8 +1,16 @@
+## v2.0.0-alpha2 ()
+
+Removed `delta` argument from `on(Init|Logic|Render)` in favor of passing delta as a part of `opts`
+
+## v2.0.0-alpha1 (2016-04-09)
+
+Added possibility to register init systems as well as added `onInit` method to the `EntityManager`
+
 ## v1.1.0 (2016-04-08)
 
 ### Feature
 
-Added the ability to pass in an aditional parameter `opts` to the `onRender` and `onLogic` methods of the `entityManager`. This parameter will be passed as the last argument to the registered logic and render systems that is invoked.
+Added the ability to pass in an aditional parameter `opts` to the `onRender` and `onLogic` methods of the `EntityManager`. This parameter will be passed as the last argument to the registered logic and render systems that is invoked.
 
 ### Example
 

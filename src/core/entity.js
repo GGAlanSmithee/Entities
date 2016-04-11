@@ -205,21 +205,21 @@ export default class EntityManager {
         return this.systemManager.removeSystem(systemId);
     }
     
-    onLogic(delta, opts) {
+    onLogic(opts) {
         for (let system of this.systemManager.logicSystems.values()) {
-            system.callback.call(this, this.getEntities(system.components, system.selector), delta, opts);
+            system.callback.call(this, this.getEntities(system.components, system.selector), opts);
         }
     }
     
-    onRender(delta, opts) {
+    onRender(opts) {
         for (let system of this.systemManager.renderSystems.values()) {
-            system.callback.call(this, this.getEntities(system.components, system.selector), delta, opts);
+            system.callback.call(this, this.getEntities(system.components, system.selector), opts);
         }
     }
 
-    onInit(delta, opts) {
+    onInit(opts) {
         for (let system of this.systemManager.initSystems.values()) {
-            system.callback.call(this, this.getEntities(system.components, system.selector), delta, opts);
+            system.callback.call(this, this.getEntities(system.components, system.selector), opts);
         }
     }
     

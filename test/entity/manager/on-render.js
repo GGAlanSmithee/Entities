@@ -3,7 +3,7 @@ import sinon                           from 'sinon';
 import EntityManager, { SelectorType } from '../../../src/core/entity';
 
 describe('EntityManager', function() {
-    describe('onRender(delta)', () => {
+    describe('onRender(opts)', () => {
         beforeEach(() => {
             this.entityManager = new EntityManager();
             
@@ -42,7 +42,11 @@ describe('EntityManager', function() {
                     components : 8
                 });
             
-            this.delta = 10;
+            this.opts = {
+                delta   : 10,
+                value   : 1337,
+                context : 'browser'
+            };
         });
         
         afterEach(() => {
@@ -54,27 +58,22 @@ describe('EntityManager', function() {
         });
         
         it('invokes all [renderSystems] with the [entityManager] as context', () => {
-            const opts = {
-                value: 1337,
-                context: 'browser'
-            };
-            
-            this.entityManager.onRender(this.delta, opts);
+            this.entityManager.onRender(this.opts);
             
             expect(this.renderSpy1.calledOnce).to.be.true;
             expect(this.renderSpy1.calledOn(this.entityManager)).to.be.true;
-            expect(this.renderSpy1.calledWith(this.entities, this.delta, opts)).to.be.true;
+            expect(this.renderSpy1.calledWith(this.entities, this.opts)).to.be.true;
             
             expect(this.renderSpy2.calledOnce).to.be.true;
             expect(this.renderSpy2.calledOn(this.entityManager)).to.be.true;
-            expect(this.renderSpy2.calledWith(this.entities, this.delta, opts)).to.be.true;
+            expect(this.renderSpy2.calledWith(this.entities, this.opts)).to.be.true;
             
             expect(this.logicSpy1.calledOnce).to.be.false;
             expect(this.logicSpy2.calledOnce).to.be.false;
         });
         
         it('invokes [entityManager.getEntities()] with the correct paramters', () => {
-            this.entityManager.onRender(this.delta);
+            this.entityManager.onRender(this.opts);
             
             expect(this.entityManager.getEntities.calledTwice).to.be.true;
             
