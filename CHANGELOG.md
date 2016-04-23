@@ -1,6 +1,9 @@
 ## v2.0.0-alpha2 ()
 
 Removed `delta` argument from `on(Init|Logic|Render)` in favor of passing delta as a part of `opts`
+Removed `SelectorType`. The idea is that the user either specifies a list of components to select entities by them, or emits components to select all entities.
+`EntityManager.Entities` is now a list of actual objects with a `components` property that is a list of the components that currently defines the entity.
+The `components` of an `entity` is now a first class property of the acutal entity, instead of an array on the entity manager.
 
 ## v2.0.0-alpha1 (2016-04-09)
 
