@@ -71,22 +71,18 @@ export default class EntityManager {
                 return;
             }
         }
-        
+
         this.currentMaxEntity = 0;
     }
-    
+
     *getEntities(components = null) {
-        for (let id = 0; id < this.currentMaxEntity; ++id) {
-            if (id > this.currentMaxEntity) {
-                return;
-            }
-            
+        for (let id = 0; id <= this.currentMaxEntity; ++id) {
             if (components === null || components.every(component => this.entities[id].components.indexOf(component) !== -1)) {
                 yield { id, entity : this.entities[id] };
             }
         }
     }
-
+    
     // Component Manager
     
     registerComponent(key, component) {

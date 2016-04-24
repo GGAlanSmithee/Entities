@@ -39,12 +39,14 @@ describe('EntityManager', function() {
             
             let it = this.entityManager.getEntities();
             
-            let i = 0;
-            while (it.next().done !== true) {
-                ++i;
+            let res = {};
+            let next = {};
+            
+            while ((next = it.next()).done !== true) {
+                res = next;
             }
             
-            expect(i).to.equal(this.entityManager.currentMaxEntity).and.to.equal(20);
+            expect(res.value.id).to.equal(this.entityManager.currentMaxEntity).and.to.equal(20);
             
             expect(it.next()).property('value').to.be.undefined;
         });
@@ -52,23 +54,27 @@ describe('EntityManager', function() {
         it('for each iteration, returns an object containing the pair of an [id] and [entity]', () => {
             this.entityManager.currentMaxEntity = 20;
             
+            let last = 0;
             let i = 0;
             for (let { id, entity } of this.entityManager.getEntities()) {
                 expect(id).to.equal(i);
                 expect(entity).to.deep.equal(this.entityManager.entities[i]);
+                last = id;
                 ++i;
             }
             
-            expect(i).to.equal(this.entityManager.currentMaxEntity);
+            expect(last).to.equal(this.entityManager.currentMaxEntity);
             
+            last = 0;
             i = 0;
             for (let { id, entity } of this.entityManager.getEntities()) {
                 expect(id).to.equal(i);
                 expect(entity).to.deep.equal(this.entityManager.entities[i]);
+                last = id;
                 ++i;
             }
             
-            expect(i).to.equal(this.entityManager.currentMaxEntity);
+            expect(last).to.equal(this.entityManager.currentMaxEntity);
         });
         
         it('when called with [components], only returns entities that has [components]', () => {

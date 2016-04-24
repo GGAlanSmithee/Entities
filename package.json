@@ -26,7 +26,7 @@
   "jsnext:main": "src/gg-entities.js",
   "scripts": {
     "test": "istanbul cover _mocha test/* -- --recursive --compilers js:babel-register --require babel-polyfill",
-    "build": "node build/bundle",
+    "build": "eslint src && node build/bundle",
     "deploy": "npm run build && uglifyjs dist/gg-entities.js -o dist/gg-entities.min.js -c -m"
   },
   "devDependencies": {

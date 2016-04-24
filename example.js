@@ -2,22 +2,19 @@
 
 import EntityManager from './src';
 
-var entityManager = new EntityManager(1);
+var entityManager = new EntityManager(10);
 
 entityManager.registerComponent('pos', {
-    x : 0,
-    y : 0
+    x : 3,
+    y : 4
 });
 
-entityManager.registerComponent('vel', {
-    x: 10,
-    y: 10
-});
+entityManager.registerComponent('vel', 5);
 
 entityManager.registerLogicSystem('movement', [ 'pos', 'vel' ], (entities, { delta }) => {
-    for (var { id, entity } of entities) { // yields both id and entity as an object
-        console.log(id);
-        
+    for (var { id, entity } of entities) {
+        console.log(id, entity);
+    
         entity.pos.x += entity.vel * delta;
         entity.pos.y += entity.vel * delta;
     }
@@ -28,4 +25,5 @@ entityManager.build()
              .withComponent('vel')
              .create(10);
 
-entityManager.onLogic();
+entityManager.onLogic({ delta : 0.05 });
+entityManager.onLogic({ delta : 0.05 });

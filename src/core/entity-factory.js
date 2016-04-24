@@ -68,7 +68,7 @@ export default class EntityFactory {
                 if (typeof initializer !== 'function') {
                     continue;
                 }
-                
+
                 let result = initializer.call(entity[component]);
                 
                 if (typeof entity[component] !== 'object' && result !== undefined) {

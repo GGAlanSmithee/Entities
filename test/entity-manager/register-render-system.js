@@ -11,7 +11,7 @@ describe('EntityManager', function() {
             this.position = 'position';
             this.velocity = 'velocity';
             
-            this.draw = (entity) => console.log(entity);
+            this.draw = entity => entity;
         });
         
         afterEach(() => {
