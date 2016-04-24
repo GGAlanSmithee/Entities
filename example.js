@@ -1,8 +1,8 @@
 // this is how it should work
 
-import GGEntities from './src';
+import EntityManager from './src';
 
-var entityManager = new GGEntities.EntityManager();
+var entityManager = new EntityManager(1);
 
 entityManager.registerComponent('pos', {
     x : 0,
@@ -23,6 +23,9 @@ entityManager.registerLogicSystem('movement', [ 'pos', 'vel' ], (entities, { del
     }
 })
 
-entityManager.build().withComponents([ 'pos', 'vel' ]).create(10);
+entityManager.build()
+             .withComponent('pos')
+             .withComponent('vel')
+             .create(10);
 
 entityManager.onLogic();

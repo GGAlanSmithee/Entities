@@ -137,41 +137,41 @@ export default class EntityManager {
     
     // System Manager
     
-    registerSystem(type, selector, components, callback) {
-        return this.systemManager.registerSystem(type, selector, components, callback);
+    registerSystem(key, type, components, callback) {
+        return this.systemManager.registerSystem(key, type, components, callback);
     }
     
-    registerLogicSystem(selector, components, callback) {
-        return this.systemManager.registerSystem(SystemType.Logic, selector, components, callback);
+    registerLogicSystem(key, components, callback) {
+        return this.systemManager.registerSystem(key, SystemType.Logic, components, callback);
     }
     
-    registerRenderSystem(selector, components, callback) {
-        return this.systemManager.registerSystem(SystemType.Render, selector, components, callback);
+    registerRenderSystem(key, components, callback) {
+        return this.systemManager.registerSystem(key, SystemType.Render, components, callback);
     }
     
-    registerInitSystem(selector, components, callback) {
-        return this.systemManager.registerSystem(SystemType.Init, selector, components, callback);
+    registerInitSystem(key, components, callback) {
+        return this.systemManager.registerSystem(key, SystemType.Init, components, callback);
     }
     
-    removeSystem(systemId) {
-        return this.systemManager.removeSystem(systemId);
+    removeSystem(key) {
+        return this.systemManager.removeSystem(key);
     }
     
     onLogic(opts) {
         for (let system of this.systemManager.logicSystems.values()) {
-            system.callback.call(this, this.getEntities(system.components, system.selector), opts);
+            system.callback.call(this, this.getEntities(system.components), opts);
         }
     }
     
     onRender(opts) {
         for (let system of this.systemManager.renderSystems.values()) {
-            system.callback.call(this, this.getEntities(system.components, system.selector), opts);
+            system.callback.call(this, this.getEntities(system.components), opts);
         }
     }
 
     onInit(opts) {
         for (let system of this.systemManager.initSystems.values()) {
-            system.callback.call(this, this.getEntities(system.components, system.selector), opts);
+            system.callback.call(this, this.getEntities(system.components), opts);
         }
     }
     

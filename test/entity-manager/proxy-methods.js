@@ -1,13 +1,16 @@
 import { expect }                      from 'chai';
 import sinon                           from 'sinon';
-import EntityManager, { SelectorType } from '../../../src/core/entity-manager';
-import { SystemType }                  from '../../../src/core/system-manager';
-import * as helpers                    from '../../helpers'
+import EntityManager, { SelectorType } from '../../src/core/entity-manager';
+import { SystemType }                  from '../../src/core/system-manager';
 
 describe('EntityManager', function() {
     describe('proxy methods', () => {
         beforeEach(() => {
             this.entityManager = new EntityManager();
+            
+            this.position = 'position';
+            this.velocity = 'velocity';
+            this.stats = 'stats';
         });
         
         afterEach(() => {
@@ -22,7 +25,7 @@ describe('EntityManager', function() {
             it('invokes [entityFactory].registerInitializer with the corrent arguments', () => {
                 let spy = sinon.spy(this.entityManager.entityFactory, 'registerInitializer');
                 
-                let component = 1;
+                let component = this.position;
                 let initializer = function() {
                     this.x = 10.0;
                 };
@@ -60,7 +63,7 @@ describe('EntityManager', function() {
             });
             
             it('invokes [entityFactory].withComponent with [component] and [initializer]', () => {
-                let component   = 1;
+                let component   = this.position;
                 let initializer = function() { return 2; };
                 
                 let spy = sinon.spy(this.entityManager.entityFactory, 'withComponent');
@@ -92,7 +95,7 @@ describe('EntityManager', function() {
             });
             
             it('returns the current configuration', () => {
-                let component   = 1;
+                let component   = this.position;
                 let initializer = function() { return 2; };
                 
                 this.entityManager.entityFactory.configuration.set(component, initializer);
@@ -106,12 +109,6 @@ describe('EntityManager', function() {
         });
         
         describe('create(count, configuration)', () => {
-            beforeEach(() => {
-                helpers.registerComponent(this.entityManager.componentManager, this.entityManager, { x : 10, y : 20 }, 1);
-                helpers.registerComponent(this.entityManager.componentManager, this.entityManager, { name : 'Testing' }, 2);
-                helpers.registerComponent(this.entityManager.componentManager, this.entityManager, 5.5, 4);
-            });
-            
             it('is a function', () => {
                 expect(this.entityManager.create).to.be.a('function');
             });
@@ -125,7 +122,7 @@ describe('EntityManager', function() {
             });
             
             it('invokes [entityFactory].create with [entityManager] (this), [count] and [configuration]', () => {
-                let component   = 1;
+                let component   = this.position;
                 let initializer = function() { return 2; };
                 
                 let configuration = new Map();
@@ -133,7 +130,7 @@ describe('EntityManager', function() {
                 
                 let spy = sinon.spy(this.entityManager.entityFactory, 'create');
                 
-                let count = 1;
+                let count = 3;
                 
                 this.entityManager.create(count, configuration);
                 
@@ -141,8 +138,8 @@ describe('EntityManager', function() {
                 expect(spy.calledWith(this.entityManager, count, configuration)).to.be.true;
             });
             
-            it('returns the created entities', () => {
-                let component   = 1;
+            it('returns the created entities as an object containing { id, entity }', () => {
+                let component   = this.position;
                 let initializer = function() { return 2; };
                 
                 let configuration = new Map();
@@ -154,29 +151,34 @@ describe('EntityManager', function() {
                 
                 expect(entities).to.be.an.instanceof(Array);
                 expect(entities).property('length').to.equal(2);
-                expect(this.entityManager.entities[entities[0]]).to.equal(component);
-                expect(this.entityManager.entities[entities[1]]).to.equal(component);
+                expect(entities[0].entity.components).to.deep.equal([ component ]);
+                expect(entities[1].entity.components).to.deep.equal([ component ]);
             });
         });
          
-        describe('registerSystem(callback, components = 0, type = SystemType.Logic, selector = SelectorType.GetWith)', () => {
+        describe('registerSystem(callback, components = 0, type = SystemType.Logic)', () => {
             it('is a function', () => {
                 expect(this.entityManager.registerSystem).to.be.a('function');
             });
             
             it('invokes [systemManager.registerSystem] with the correct parameters', () => {
                 let type       = SystemType.Render;
-                let selector   = SelectorType.GetWithout;
-                let components = 1 | 2 | 4;
-                let callback   = function() { this.x = 10.0; };
+                let components = [ this.position, this.velocity, this.stats ];
+                let system     = 'movement';
+                
+                let callback = function(entities, { delta }) { 
+                    for (let { entity } of entities) {
+                        entity.position += entity.velocity * delta;
+                    }
+                };
                 
                 let spy = sinon.spy(this.entityManager.systemManager, 'registerSystem');
                 
-                let systemId = this.entityManager.registerSystem(type, selector, components, callback);
+                let systemId = this.entityManager.registerSystem(system, type, components, callback);
 
                 expect(spy.calledOnce).to.be.true;
-                expect(spy.calledWith(type, selector, components, callback)).to.be.true;
-                expect(systemId).to.equal(1);
+                expect(spy.calledWith(system, type, components, callback)).to.be.true;
+                expect(systemId).to.equal(system);
             });
         });
         
@@ -186,14 +188,14 @@ describe('EntityManager', function() {
             });
             
             it('invokes [systemManager.removeSystem] with the correct parameters', () => {
-                let systemId = 1;
+                let system = 'movement';
                 
                 let spy = sinon.spy(this.entityManager.systemManager, 'removeSystem');
                 
-                this.entityManager.removeSystem(systemId);
+                this.entityManager.removeSystem(system);
                 
                 expect(spy.calledOnce).to.be.true;
-                expect(spy.calledWith(systemId)).to.be.true;
+                expect(spy.calledWith(system)).to.be.true;
             });
         });
         

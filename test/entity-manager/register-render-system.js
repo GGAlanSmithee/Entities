@@ -1,12 +1,17 @@
-import { expect }                      from 'chai';
-import sinon                           from 'sinon';
-import EntityManager, { SelectorType } from '../../../src/core/entity-manager';
-import { SystemType }                  from '../../../src/core/system-manager';
+import { expect }     from 'chai';
+import sinon          from 'sinon';
+import EntityManager  from '../../src/core/entity-manager';
+import { SystemType } from '../../src/core/system-manager';
 
 describe('EntityManager', function() {
     describe('registerRenderSystem(selectorType, components, callback)', () => {
         beforeEach(() => {
             this.entityManager = new EntityManager();
+            
+            this.position = 'position';
+            this.velocity = 'velocity';
+            
+            this.draw = (entity) => console.log(entity);
         });
         
         afterEach(() => {
@@ -20,28 +25,36 @@ describe('EntityManager', function() {
         it('invokes [systemManager.registerSystem] with [type] = SystemType.Render', () => {
             let spy = sinon.spy(this.entityManager.systemManager, 'registerSystem');
             
-            let selectorType = SelectorType.GetWith;
-            let components   = 1 | 2;
-            let callback     = () => { this.x = 20.0; };
+            let system     = 'move';
+            let components = [ this.position, this.velocity ];
+            let callback   = (entities, { delta }) => { 
+                for (let { entity } of entities) {
+                    this.draw(entity);
+                }
+            };
             
-            this.entityManager.registerRenderSystem(selectorType, components, callback);
+            this.entityManager.registerRenderSystem(system, components, callback);
             
             expect(spy.calledOnce).to.be.true;
-            expect(spy.calledWith(SystemType.Render, selectorType, components, callback)).to.be.true;
+            expect(spy.calledWith(system, SystemType.Render, components, callback)).to.be.true;
         });
         
         it('returns the registered systems id', () => {
-            let selectorType = SelectorType.GetWith;
-            let components   = 1 | 2;
-            let callback     = () => { this.x = 20.0; };
+            let system     = 'move';
+            let components = [ this.position, this.velocity ];
+            let callback   = (entities, { delta }) => { 
+                for (let { entity } of entities) {
+                    this.draw(entity);
+                }
+            };
             
-            let id = this.entityManager.registerRenderSystem(selectorType, components, callback);
+            let systemId = this.entityManager.registerRenderSystem(system, components, callback);
             
-            expect(id).to.equal(1);
+            expect(systemId).to.equal(system);
             
-            id = this.entityManager.registerRenderSystem(selectorType, components, callback);
+            systemId = this.entityManager.registerRenderSystem(system, components, callback);
             
-            expect(id).to.equal(2);
+            expect(systemId).to.equal(system);
         });
     });
 });

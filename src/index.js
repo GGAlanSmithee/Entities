@@ -1,7 +1,8 @@
-import EntityManager,    { SelectorType } from './core/entity';
-import SystemManager,    { SystemType }   from './core/system';
-import ComponentManager                   from './core/component';
-import EventHandler                       from './core/event';
+import EntityManager                 from './core/entity-manager';
+import EntityFactory                 from './core/entity-factory';
+import SystemManager, { SystemType } from './core/system-manager';
+import ComponentManager              from './core/component-manager';
+import EventHandler                  from './core/event-handler';
 
-export default { EntityManager, SelectorType, SystemManager, SystemType, ComponentManager, EventHandler };
-export { EntityManager, SelectorType, SystemManager, SystemType, ComponentManager, EventHandler };
+export default EntityManager;
+export { EntityFactory, SystemManager, SystemType, ComponentManager, EventHandler };

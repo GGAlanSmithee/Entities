@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect }    from 'chai';
 import SystemManager from '../../src/core/system-manager';
 
 describe('SystemManager', function() {

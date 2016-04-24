@@ -1,9 +1,9 @@
 import { expect }       from 'chai';
-import EntityManager    from '../../../src/core/entity-manager';
-import EntityFactory    from '../../../src/core/entity-factory';
-import EventHandler     from '../../../src/core/event-manager';
-import SystemManager    from '../../../src/core/system-manager';
-import ComponentManager from '../../../src/core/component-manager';
+import EntityManager    from '../../src/core/entity-manager';
+import EntityFactory    from '../../src/core/entity-factory';
+import EventHandler     from '../../src/core/event-handler';
+import SystemManager    from '../../src/core/system-manager';
+import ComponentManager from '../../src/core/component-manager';
 
 describe('EntityManager', function() {
     describe('constructor()', () => {

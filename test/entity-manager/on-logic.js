@@ -1,16 +1,22 @@
-import { expect }                      from 'chai';
-import sinon                           from 'sinon';
-import EntityManager, { SelectorType } from '../../../src/core/entity-manager';
+import { expect }    from 'chai';
+import sinon         from 'sinon';
+import EntityManager from '../../src/core/entity-manager';
 
 describe('EntityManager', function() {
     describe('onLogic(opts)', () => {
         beforeEach(() => {
             this.entityManager = new EntityManager();
             
+            this.position     = 'position';
+            this.velocity     = 'velocity';
+            this.clickable    = 'clickable';
+            this.spawnable    = 'spawnable';
+            this.interactable = 'interactable';
+            
             this.entities = [];
-            this.entities.push(1 | 2 | 4);
-            this.entities.push(1 | 2 | 4);
-            this.entities.push(1 | 4 | 8);
+            this.entities.push([ this.position, this.velocity, this.clickable ]);
+            this.entities.push([ this.position, this.velocity, this.clickable ]);
+            this.entities.push([ this.position, this.velocity, this.spawnable ]);
             
             // todo look up mocks / stubs will callback / callthrough
             this.entityManager.getEntities = sinon.stub().returns(this.entities);
@@ -18,29 +24,25 @@ describe('EntityManager', function() {
             this.logicSpy1 = sinon.spy();
             this.entityManager.systemManager.logicSystems.set(1, {
                     callback   : this.logicSpy1,
-                    selector   : SelectorType.GetWith,
-                    components : 1 | 2 | 4
+                    components : [ this.position, this.velocity, this.clickable ]
                 });
             
             this.logicSpy2 = sinon.spy();
             this.entityManager.systemManager.logicSystems.set(2, {
                     callback   : this.logicSpy2,
-                    selector   : SelectorType.GetWithOnly,
-                    components : 1 | 4 | 16
+                    components : [ this.position, this.clickable, this.interactable ]
                 });
             
             this.renderSpy1 = sinon.spy();
             this.entityManager.systemManager.renderSystems.set(3, {
                     callback   : this.renderSpy1,
-                    selector   : SelectorType.GetWithout,
-                    components : 1 | 2 | 4
+                    components : [ this.position, this.velocity, this.clickable ]
                 });
             
             this.renderSpy2 = sinon.spy();
             this.entityManager.systemManager.renderSystems.set(4, {
                     callback   : this.renderSpy2,
-                    selector   : SelectorType.GetWith,
-                    components : 1 | 2 | 4 |8
+                    components : [ this.position, this.velocity, this.clickable, this.spawnable ]
                 });
             
             this.opts = {
@@ -81,8 +83,8 @@ describe('EntityManager', function() {
             let logicSystem1 = this.entityManager.systemManager.logicSystems.get(1);
             let logicSystem2 = this.entityManager.systemManager.logicSystems.get(2);
             
-            expect(this.entityManager.getEntities.calledWith(logicSystem1.components, logicSystem1.selector)).to.be.true;
-            expect(this.entityManager.getEntities.calledWith(logicSystem2.components, logicSystem2.selector)).to.be.true;
+            expect(this.entityManager.getEntities.calledWith(logicSystem1.components)).to.be.true;
+            expect(this.entityManager.getEntities.calledWith(logicSystem2.components)).to.be.true;
         });
     });
 });

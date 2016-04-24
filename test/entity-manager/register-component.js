@@ -1,7 +1,6 @@
 import { expect }    from 'chai';
 import sinon         from 'sinon';
-import EntityManager from '../../../src/core/entity-manager';
-
+import EntityManager from '../../src/core/entity-manager';
 
 describe('EntityManager', function() {
     describe('registerComponent(key, component)', () => {
@@ -109,51 +108,45 @@ describe('EntityManager', function() {
         });
         
         it('the generated initializers can be used to initialize components through build -> withComponent -> create', () => {
-            expect(true).to.be.false;
+            this.entityManager.registerComponent(this.pos, this.posComponent);
+            this.entityManager.registerComponent(this.info, this.infoComponent);
+            this.entityManager.registerComponent(this.vel, this.velComponent);
             
-            // this.entityManager.registerComponent(this.pos, this.posComponent);
-            // this.entityManager.registerComponent(this.info, this.infoComponent);
-            // this.entityManager.registerComponent(this.vel, this.velComponent);
-            
-            // const config = this.entityManager.build()
-            //                                  .withComponent(this.pos)
-            //                                  .withComponent(this.info)
-            //                                  .withComponent(this.vel)
-            //                                  .createConfiguration();
+            const config = this.entityManager.build()
+                                             .withComponent(this.pos)
+                                             .withComponent(this.info)
+                                             .withComponent(this.vel)
+                                             .createConfiguration();
                                           
-            // let entityId = this.entityManager.create(1, config);
+            let res = this.entityManager.create(1, config);
             
-            // expect(this.entityManager[posComponentId][entityId]).property('x').to.equal(10);
-            // expect(this.entityManager[posComponentId][entityId]).property('y').to.equal(20);
-            // expect(this.entityManager[infoComponentId][entityId]).property('name').to.equal('Tester');
-            // expect(this.entityManager[infoComponentId][entityId]).property('age').to.equal(99);
-            // expect(this.entityManager[velComponentId][entityId]).to.equal(5.5);
+            expect(res.entity).property(this.pos).to.deep.equal({ x : 10, y : 20 });
+            expect(res.entity).property(this.info).to.deep.equal({ name : 'Tester', age : 99 });
+            expect(res.entity).property(this.vel).to.equal(5.5);
             
-            // this.entityManager[posComponentId][entityId].x = 20;
-            // this.entityManager[posComponentId][entityId].y = 40;
-            // this.entityManager[infoComponentId][entityId].name = 'New Tester';
-            // this.entityManager[infoComponentId][entityId].age = 1;
-            // this.entityManager[velComponentId][entityId] = -2.5;
+            res.entity.pos  = { x : 20, y : 40 };
+            res.entity.info = { name : 'New Tester', age : 1 };
+            res.entity.vel  = -2.5;
             
-            // expect(this.entityManager[posComponentId][entityId]).property('x').to.equal(20);
-            // expect(this.entityManager[posComponentId][entityId]).property('y').to.equal(40);
-            // expect(this.entityManager[infoComponentId][entityId]).property('name').to.equal('New Tester');
-            // expect(this.entityManager[infoComponentId][entityId]).property('age').to.equal(1);
-            // expect(this.entityManager[velComponentId][entityId]).to.equal(-2.5);
+            expect(this.entityManager.entities[res.id]).property(this.pos).to.deep.equal({ x : 20, y : 40 });
+            expect(this.entityManager.entities[res.id]).property(this.info).to.deep.equal({ name : 'New Tester', age : 1 });
+            expect(this.entityManager.entities[res.id]).property(this.vel).to.equal(-2.5);
+
+            let oldId = res.id;
             
-            // let oldEntityId = entityId;
+            this.entityManager.deleteEntity(res.id);
             
-            // this.entityManager.deleteEntity(entityId);
+            res = this.entityManager.create(1, config);
             
-            // entityId = this.entityManager.create(1, config);
+            expect(res.id).to.equal(oldId);
             
-            // expect(entityId).to.equal(oldEntityId);
+            expect(res.entity).property(this.pos).to.deep.equal({ x : 10, y : 20 });
+            expect(res.entity).property(this.info).to.deep.equal({ name : 'Tester', age : 99 });
+            expect(res.entity).property(this.vel).to.equal(5.5);
             
-            // expect(this.entityManager[posComponentId][entityId]).property('x').to.equal(10);
-            // expect(this.entityManager[posComponentId][entityId]).property('y').to.equal(20);
-            // expect(this.entityManager[infoComponentId][entityId]).property('name').to.equal('Tester');
-            // expect(this.entityManager[infoComponentId][entityId]).property('age').to.equal(99);
-            // expect(this.entityManager[velComponentId][entityId]).to.equal(5.5);
+            expect(this.entityManager.entities[res.id]).property(this.pos).to.deep.equal({ x : 10, y : 20 });
+            expect(this.entityManager.entities[res.id]).property(this.info).to.deep.equal({ name : 'Tester', age : 99 });
+            expect(this.entityManager.entities[res.id]).property(this.vel).to.equal(5.5);
         });
     });
 });
