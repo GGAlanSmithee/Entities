@@ -1,9 +1,8 @@
 var rollup = require('rollup');
 var babel = require('rollup-plugin-babel');
-var commonjs = require('rollup-plugin-commonjs');
 
 rollup.rollup({
-    entry: 'src/gg-entities.js',
+    entry: 'src/index.js',
     plugins: [
         babel({
             babelrc: false,
@@ -14,7 +13,7 @@ rollup.rollup({
 }).then(function(bundle) {
     bundle.write({
         dest: 'dist/gg-entities.js',
-        //sourceMap: 'inline',
+        sourceMap: 'inline',
         format: 'umd',
         moduleId: 'GGEntities',
         moduleName: 'GGEntities'

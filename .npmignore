@@ -6,3 +6,4 @@ examples
 test
 .gitignore
 .eslintrc
+.babelrc

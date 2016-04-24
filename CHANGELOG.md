@@ -1,6 +1,24 @@
 ## v2.0.0-alpha2 ()
 
 Removed `delta` argument from `on(Init|Logic|Render)` in favor of passing delta as a part of `opts`
+Removed `SelectorType`. The idea is that the user either specifies a list of components to select entities by them, or emits components to select all entities.
+`EntityManager.Entities` is now a list of actual objects with a `components` property that is a list of the components that currently defines the entity.
+The `components` of an `entity` is now a first class property of the acutal entity, instead of an array on the entity manager.
+
+Exchanged `componentId` (int) argument with `key` (string) argument of `ComponentManager.newComponent`.
+Added `key` (string) argument to `ComponentManager.registerComponent`.
+`ComponentManager.registerComponent` now returns the `key` argument.
+
+Exchanged `type` (`SelectorType`) argument with `key` (string) argument to `SystemManager.registerSystem`.
+`components` argument of `SystemManager.registerSystem` is now an `Array<string>`, used to be an `int`.
+
+Exchanged `componentId` (int) argument with `key` (string) argument of `EntityFactory.registerInitializer`.
+Exchanged `componentId` (int) argument with `key` (string) argument of `EntityFactory.withComponent`.
+
+`components` argument of `EntityManager.newEntity` is now an `Array<string>`, used to be an `int`.
+`components` argument of `EntityManager.*getEntities` is now an `Array<string>`, used to be an `int`.
+Removed `selector` argument from `EntityManager.*getEntities`.
+Updated all proxy methods of `EntityManager` to match updates in respective manager class.
 
 ## v2.0.0-alpha1 (2016-04-09)
 
