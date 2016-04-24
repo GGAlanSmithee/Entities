@@ -1,4 +1,8 @@
-## v2.0.0-alpha2 ()
+## v2.0.0-alpha2.1 (2016-04-24)
+
+Fixes `jsnext:main` to point to the correct location
+
+## v2.0.0-alpha2 (2016-04-24)
 
 Removed `delta` argument from `on(Init|Logic|Render)` in favor of passing delta as a part of `opts`
 Removed `SelectorType`. The idea is that the user either specifies a list of components to select entities by them, or emits components to select all entities.

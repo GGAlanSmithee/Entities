@@ -23,7 +23,7 @@
     "src": "src"
   },
   "main": "dist/gg-entities.js",
-  "jsnext:main": "src/gg-entities.js",
+  "jsnext:main": "src/index.js",
   "scripts": {
     "test": "istanbul cover _mocha test/* -- --recursive --compilers js:babel-register --require babel-polyfill",
     "build": "node build/bundle",
