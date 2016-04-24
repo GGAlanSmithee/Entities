@@ -12,6 +12,20 @@
         
         <script>
             window.onload = function() {
+                const TRANSFORM_COMPONENT  = 'transform';
+                const VELOCITY_COMPONENT   = 'velocity';
+                const CLICKABLE_COMPONENT  = 'clickable';
+                const APPEARANCE_COMPONENT = 'appearance';
+                
+                const INIT_SYSTEM     = 'init';
+                const MOVEMENT_SYSTEM = 'movement';
+                const RENDER_SYSTEM   = 'render';
+                
+                const CLICK_EVENT         = 'click';
+                const CLICKED_EVENT       = 'clicked';
+                const OUT_OF_BOUNDS_EVENT = 'outOfBounds';
+                const DESTROY_EVENT       = 'destroy';
+                
                 var canvas = document.getElementById('canvas');
                     canvas.width = 500;
                     canvas.height = 500;
@@ -52,22 +66,22 @@
                 
                 // Components
                 
-                var transform = entityManager.registerComponent(function() {
+                entityManager.registerComponent(TRANSFORM_COMPONENT, function() {
                     this.x =      Math.random() * 20;
                     this.w = 15 + Math.random() * 5,
                     this.h = 15 + Math.random() * 5;
                     this.y =      Math.random() * canvas.height - this.h;
                 });
                 
-                var velocity = entityManager.registerComponent(0.05);
+                entityManager.registerComponent(VELOCITY_COMPONENT, 0.05);
                 
-                var clickable = entityManager.registerComponent(function() {
+                entityManager.registerComponent(CLICKABLE_COMPONENT, function() {
                     this.timesClicked = 0,
                     this.maxClicks    = Math.floor(Math.random() * (2 - 1 + 1)) + 1,
                     this.hitboxRatio  = 1.5
                 });
                 
-                var appearance = entityManager.registerComponent({ color : 'red' });
+                entityManager.registerComponent(APPEARANCE_COMPONENT, { color : 'red' });
                 
                 // Systems
                 
@@ -80,27 +94,26 @@
                     cubes = [];
                 }
                 
-                entityManager.registerInitSystem(GGEntities.SelectorType.Get, 0, initSystem);
+                entityManager.registerInitSystem(INIT_SYSTEM, [], initSystem);
                 
                 var movementSystem = function(entities, { delta }) {
-                    for (var entity of entities) {
-                        var tra = this[transform][entity];
-                        var vel = this[velocity][entity];
-                
-                        tra.x += vel * delta;
+                    for (var { entity } of entities) {
+                        let vel = entity[VELOCITY_COMPONENT];
                         
-                        if (tra.x > canvas.width) {
+                        entity[TRANSFORM_COMPONENT].x += vel * delta;
+                        
+                        if (entity[TRANSFORM_COMPONENT].x > canvas.width) {
                             this.trigger('outOfBounds');
                         }
                     }
                 };
                 
-                entityManager.registerLogicSystem(GGEntities.SelectorType.GetWith, transform | velocity, movementSystem);
+                entityManager.registerLogicSystem(MOVEMENT_SYSTEM, [ TRANSFORM_COMPONENT, VELOCITY_COMPONENT ], movementSystem);
                 
                 var renderSystem = function(entities) {
-                    for (var entity of entities) {
-                        var tra = this[transform][entity];
-                        var app = this[appearance][entity];
+                    for (var { entity } of entities) {
+                        var tra = entity[TRANSFORM_COMPONENT];
+                        var app = entity[APPEARANCE_COMPONENT];
                         
                         context.beginPath();
                         context.rect(tra.x, tra.y, tra.w, tra.h);
@@ -109,14 +122,14 @@
                     }
                 };
                                              
-                entityManager.registerRenderSystem(GGEntities.SelectorType.GetWith, transform | appearance, renderSystem);
+                entityManager.registerRenderSystem(RENDER_SYSTEM, [ TRANSFORM_COMPONENT, APPEARANCE_COMPONENT ], renderSystem);
                 
                 // Events
                 
                 var numbSpawnedObjects = 0;
                 
-                entityManager.listen('clicked', function(entity) {
-                    var cli = this[clickable][entity];
+                entityManager.listen(CLICKED_EVENT, function(id, entity) {
+                    var cli = entity[CLICKABLE_COMPONENT];
                     
                     cli.timesClicked++;
                     
@@ -127,29 +140,33 @@
                     var clicksLeft = cli.maxClicks - cli.timesClicked;
                     
                     switch (clicksLeft) {
-                        case 0 : {
-                            this[appearance][entity].color = 'purple';
-                            this.triggerDelayed('destroy', 400, entity);
+                        case 0:
+                            entity[APPEARANCE_COMPONENT].color = 'purple';
                             
-                             break;
-                        }
-                        case 1 : this[appearance][entity].color = 'blue'; break;
+                            this.triggerDelayed(DESTROY_EVENT, 400, id);
+                            
+                            break;
+                        case 1:
+                            entity[APPEARANCE_COMPONENT].color = 'blue';
+                            
+                            break;
                     }
                 });
                 
-                entityManager.listen('destroy', function(entity) {
-                    this.deleteEntity(entity);
+                entityManager.listen(DESTROY_EVENT, function(entityId) {
+                    this.deleteEntity(entityId);
+                    
                     numbSpawnedObjects--;
                 });
                 
-                entityManager.listen('outOfBounds', function(entity) {
+                entityManager.listen(OUT_OF_BOUNDS_EVENT, function() {
                     Menu.isOpen = true;
                 });
                 
-                entityManager.listen('click', function(x, y) {
-                    for (var entity of this.getEntities(clickable, transform, appearance)) {
-                        var tra = this[transform][entity];
-                        var cli = this[clickable][entity];
+                entityManager.listen(CLICK_EVENT, function(x, y) {
+                    for (var { id, entity } of this.getEntities([ CLICKABLE_COMPONENT, TRANSFORM_COMPONENT, APPEARANCE_COMPONENT ])) {
+                        var tra = entity[TRANSFORM_COMPONENT];
+                        var cli = entity[CLICKABLE_COMPONENT];
                         
                         var boxW = tra.w * cli.hitboxRatio;
                         var boxH = tra.h * cli.hitboxRatio;
@@ -157,14 +174,14 @@
                         var boxY = tra.y - (boxH - tra.h) / 2;
                         
                         if (x >= boxX && x <= boxX + boxW && y >= boxY && y <= boxY + boxH) {
-                            this.trigger('clicked', entity);
+                            this.trigger(CLICKED_EVENT, id, entity);
                         }
                     }
                 });
                 
                 // DOM events
                 
-                canvas.addEventListener('click', function(e) {
+                canvas.addEventListener(CLICK_EVENT, function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     
@@ -179,24 +196,24 @@
                             Menu.onStartClicked();
                         }
                     } else {
-                        entityManager.trigger('click', x, y);
+                        entityManager.trigger(CLICK_EVENT, x, y);
                     }
                 });
                 
                 // Create a configuration which we can use with entityManager.create() later
                 var conifguration = entityManager.build()
-                                                 .withComponent(transform)
+                                                 .withComponent(TRANSFORM_COMPONENT)
                                                  // second param is a initializer function
-                                                 .withComponent(velocity, function() { return Math.random() * 0.075 + 0.025; })
-                                                 .withComponent(clickable)
-                                                 .withComponent(appearance)
+                                                 .withComponent(VELOCITY_COMPONENT, function() { return Math.random() * 0.075 + 0.025; })
+                                                 .withComponent(CLICKABLE_COMPONENT)
+                                                 .withComponent(APPEARANCE_COMPONENT)
                                                  .createConfiguration();
                 
                 // spawn a new object (cube) every .5 secs (if there are less then 15 spawned objects)
                 // timed systems (or coroutines) will probably be added to the library sometime post v. 1.0.0
                 setInterval(function() {
                     if (numbSpawnedObjects < 15) {
-                        cubes.push(entityManager.create(1, conifguration));
+                        cubes.push(entityManager.create(1, conifguration).id);
                         numbSpawnedObjects++;
                     }
                 }, 500);

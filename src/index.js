@@ -5,4 +5,4 @@ import ComponentManager              from './core/component-manager';
 import EventHandler                  from './core/event-handler';
 
 export default EntityManager;
-export { EntityFactory, SystemManager, SystemType, ComponentManager, EventHandler };
+export { EntityManager, EntityFactory, SystemManager, SystemType, ComponentManager, EventHandler };

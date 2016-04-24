@@ -27,33 +27,36 @@
             }
             
             window.onload = function() {
+                'use strict';
+            
+                const TRANSFORM_COMPONENT  = 'transform';
+                const APPEARANCE_COMPONENT = 'appearance';
+                
+                const RENDER_SYSTEM = 'render';
+            
                 var entityManager = new GGEntities.EntityManager();
                 
                 // Components
-                
-                var transform = entityManager.registerComponent(function() {
+                entityManager.registerComponent(TRANSFORM_COMPONENT, function() {
                     this.x = 250;
+                    this.y = 250;
                     this.w = 100,
                     this.h = 100;
-                    this.y = 250;
                 });
                 
-                var appearance = entityManager.registerComponent({ color : 'red' });
+                entityManager.registerComponent(APPEARANCE_COMPONENT, { color : 'red' });
                 
                 // Systems
                 
                 var renderSystem = function(entities, { rendererEngine }) {
-                    for (var entity of entities) {
-                        var tra = this[transform][entity];
-                        var app = this[appearance][entity];
-                        
-                        rendererEngine.render(tra, app);
+                    for (var { entity } of entities) {
+                        rendererEngine.render(entity[TRANSFORM_COMPONENT], entity[APPEARANCE_COMPONENT]);
                     }
                 };
                                              
-                entityManager.registerRenderSystem(GGEntities.SelectorType.GetWith, transform | appearance, renderSystem);
+                entityManager.registerRenderSystem(RENDER_SYSTEM, [ TRANSFORM_COMPONENT, APPEARANCE_COMPONENT ], renderSystem);
                 
-                entityManager.build().withComponent(transform).withComponent(appearance).create();
+                entityManager.build().withComponent(TRANSFORM_COMPONENT).withComponent(APPEARANCE_COMPONENT).create();
                 
                 var rendererEngine = new RendererEngine(canvas);
                 
