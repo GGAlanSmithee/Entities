@@ -138,6 +138,14 @@ describe('EntityFactory', function() {
             expect(this.entityFactory.create(this.entityManager, count, configuration)).property('length').to.equal(count);
         });
         
+        it('creates up to [capacity] number of entities, even if [count] exceeds that', () => {
+            for (let i = 0; i < this.entityManager.capacity - 5; ++i) {
+                this.entityManager.entities[i].components = [ this.position, this.velocity ];
+            }
+            
+            expect(this.entityFactory.create(this.entityManager, 10)).property('length').to.equal(5);
+        });
+        
         it('returns an empty array if [entityManager] is not an instance of EntityManager', () => {
             let entities = this.entityFactory.create();
             expect(entities).to.be.an.instanceof(Array);

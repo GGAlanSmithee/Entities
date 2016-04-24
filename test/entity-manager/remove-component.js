@@ -32,7 +32,7 @@ describe('EntityManager', function() {
             expect(this.entityManager.removeComponent).to.be.a('function');
         });
         
-        it('removes a component by removing [component] from its [components]', () => {
+        it('removes a component from an entity by removing [component] from its [components]', () => {
             let entity = this.entityManager.entities[this.entityId];
             
             expect(entity).property('components').to.contain(this.position);
@@ -59,6 +59,18 @@ describe('EntityManager', function() {
             
             expect(entity).property('components').to.be.empty;
             expect(this.entityManager.entities[this.entityId]).property('components').to.be.empty;
+        });
+        
+        it('does nothing if [component] is not present in the entity', () => {
+            let entity = this.entityManager.entities[this.entityId];
+            
+            this.entityManager.removeComponent(this.entityId, `not a ${this.position}`);
+            
+            expect(entity).property('components').to.deep.equal([ this.position, this.velocity, this.stats ]);
+            
+            this.entityManager.removeComponent(this.entityId, this.position);
+            
+            expect(entity).property('components').to.deep.equal([ this.velocity, this.stats ]);
         });
     });
 });

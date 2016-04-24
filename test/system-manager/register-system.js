@@ -74,6 +74,16 @@ describe('SystemManager', function() {
             expect(spy.calledOnce).to.be.true;
         });
         
+        it('throws error if [key] is not a string or is empty', () => {
+            expect(() => this.systemManager.registerSystem(undefined, SystemType.Init, [], () => { })).to.throw(TypeError, 'key must be a non-empty string.');
+            expect(() => this.systemManager.registerSystem(null, SystemType.Init, [], () => { })).to.throw(TypeError, 'key must be a non-empty string.');
+            expect(() => this.systemManager.registerSystem([], SystemType.Init, [], () => { })).to.throw(TypeError, 'key must be a non-empty string.');
+            expect(() => this.systemManager.registerSystem({}, SystemType.Init, [], () => { })).to.throw(TypeError, 'key must be a non-empty string.');
+            expect(() => this.systemManager.registerSystem(1, SystemType.Init, [], () => { })).to.throw(TypeError, 'key must be a non-empty string.');
+            expect(() => this.systemManager.registerSystem(1.2, SystemType.Init, [], () => { })).to.throw(TypeError, 'key must be a non-empty string.');
+            expect(() => this.systemManager.registerSystem('', SystemType.Init, [], () => { })).to.throw(TypeError, 'key must be a non-empty string.');
+        });
+        
         it('throws error if [type] is not a valid SystemType', () => {
             expect(() => this.systemManager.registerSystem(this.movement, SystemType.Init + 1, [], () => { })).to.throw(TypeError, 'type must be a valid SystemType.');
         });
