@@ -1,3 +1,11 @@
+## v2.0.0-alpha3 (2016-04-30)
+
+Adds `EntityManager.registerConfiguration(key)` 
+Removes `EntityManager.createConfiguration()`
+
+Registered configurations are now stored internally in the `EntityManager`
+and can be used to create an entity by passing `key` to `EntityManager.create(key)`
+
 ## v2.0.0-alpha2.1 (2016-04-24)
 
 Fixes `jsnext:main` to point to the correct location
