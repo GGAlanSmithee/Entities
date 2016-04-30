@@ -1,84 +1,84 @@
-import EntityManager from './entity-manager';
+import EntityManager from './entity-manager'
 
 export default class EntityFactory {
     constructor() {
-        this.initializers  = new Map();
-        this.configuration = new Map();
+        this.initializers  = new Map()
+        this.configuration = new Map()
     }
     
     registerInitializer(key, initializer) {
         if (typeof key !== 'string' || key === '') {
-            throw TypeError('key must be a non-empty string.');
+            throw TypeError('key must be a non-empty string.')
         }
         
         if (typeof initializer !== 'function') {
-            throw TypeError('initializer must be a function.');
+            throw TypeError('initializer must be a function.')
         }
         
-        this.initializers.set(key, initializer);
+        this.initializers.set(key, initializer)
     }
     
     build() {
-        this.configuration = new Map();
+        this.configuration = new Map()
         
-        return this;
+        return this
     }
     
     withComponent(key, initializer) {
         if (typeof key !== 'string' || key === '') {
-            return this;
+            return this
         }
         
         if (typeof initializer !== 'function') {
-            initializer = this.initializers.get(key);
+            initializer = this.initializers.get(key)
         }
         
-        this.configuration.set(key, initializer);
+        this.configuration.set(key, initializer)
         
-        return this;
+        return this
     }
     
     createConfiguration() {
-        return this.configuration;
+        return this.configuration
     }
     
     create(entityManager, count = 1, configuration = undefined) {
         if (!(entityManager instanceof EntityManager)) {
-            return [];
+            return []
         }
     
-        configuration = configuration || this.configuration;
+        configuration = configuration || this.configuration
         
-        let components = [];
+        let components = []
         
         for (let component of configuration.keys()) {
-            components.push(component);
+            components.push(component)
         }
         
-        let entities = [];
+        let entities = []
         
         for (let i = 0; i < count; ++i) {
-            let { id, entity } = entityManager.newEntity(components);
+            let { id, entity } = entityManager.newEntity(components)
             
             if (id >= entityManager.capacity) {
-                break;
+                break
             }
             
             for (let [component, initializer] of configuration) {
                 if (typeof initializer !== 'function') {
-                    continue;
+                    continue
                 }
 
-                let result = initializer.call(entity[component]);
+                let result = initializer.call(entity[component])
                 
                 if (typeof entity[component] !== 'object' && result !== undefined) {
-                    entity[component] = result;
+                    entity[component] = result
                 }
             }
             
-            entities.push({ id, entity });
+            entities.push({ id, entity })
         }
         
-        return entities.length === 1 ? entities[0] : entities;
+        return entities.length === 1 ? entities[0] : entities
     }
 }

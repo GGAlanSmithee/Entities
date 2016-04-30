@@ -201,19 +201,21 @@
                 });
                 
                 // Create a configuration which we can use with entityManager.create() later
-                var conifguration = entityManager.build()
-                                                 .withComponent(TRANSFORM_COMPONENT)
-                                                 // second param is a initializer function
-                                                 .withComponent(VELOCITY_COMPONENT, function() { return Math.random() * 0.075 + 0.025; })
-                                                 .withComponent(CLICKABLE_COMPONENT)
-                                                 .withComponent(APPEARANCE_COMPONENT)
-                                                 .createConfiguration();
+                var configuration = 'entity';
+                
+                entityManager.build()
+                             .withComponent(TRANSFORM_COMPONENT)
+                             // second param is a initializer function
+                             .withComponent(VELOCITY_COMPONENT, function() { return Math.random() * 0.075 + 0.025; })
+                             .withComponent(CLICKABLE_COMPONENT)
+                             .withComponent(APPEARANCE_COMPONENT)
+                             .registerConfiguration(configuration)
                 
                 // spawn a new object (cube) every .5 secs (if there are less then 15 spawned objects)
                 // timed systems (or coroutines) will probably be added to the library sometime post v. 1.0.0
                 setInterval(function() {
                     if (numbSpawnedObjects < 15) {
-                        cubes.push(entityManager.create(1, conifguration).id);
+                        cubes.push(entityManager.create(1, configuration).id);
                         numbSpawnedObjects++;
                     }
                 }, 500);
