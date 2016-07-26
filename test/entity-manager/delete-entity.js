@@ -1,5 +1,5 @@
-import { expect }    from 'chai'
-import EntityManager from '../../src/core/entity-manager'
+import { expect }        from 'chai'
+import { EntityManager } from '../../src/core/entity-manager'
 
 describe('EntityManager', function() {
     beforeEach(() => {

@@ -1,6 +1,6 @@
-import { expect }    from 'chai'
-import sinon         from 'sinon'
-import EntityManager from '../../src/core/entity-manager'
+import { expect }        from 'chai'
+import sinon             from 'sinon'
+import { EntityManager } from '../../src/core/entity-manager'
 
 describe('EntityManager', function() {
     describe('registerComponent(key, component)', () => {

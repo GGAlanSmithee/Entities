@@ -1,6 +1,6 @@
-import EntityManager from './entity-manager'
+import { EntityManager } from './entity-manager'
 
-export default class EntityFactory {
+class EntityFactory {
     constructor() {
         this.initializers  = new Map()
         this.configuration = new Map()
@@ -82,3 +82,5 @@ export default class EntityFactory {
         return entities.length === 1 ? entities[0] : entities
     }
 }
+
+export { EntityFactory }

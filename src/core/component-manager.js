@@ -1,4 +1,4 @@
-export default class ComponentManager {
+class ComponentManager {
     constructor() {
         this.components = new Map()
     }
@@ -45,3 +45,5 @@ export default class ComponentManager {
         return this.components
     }
 }
+
+export { ComponentManager }

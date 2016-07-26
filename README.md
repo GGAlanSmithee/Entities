@@ -1,43 +1,49 @@
 # Entities
-easy-to-use Entity-Component System in JavaScript
 
-## This library is built using [babel][0] and it uses generators. To use it you must `require` or `include` the [polyfill][1] first
+easy-to-use Entity-Component System for browser and node
+
+## Inclusion options
+
+The default (main) distribution is in es6 and requires a es6 compatible browser or node version.
+
+The legacy, es5 compatible, build can be found in `dist/gg-entities.es5.js`.
+
+The `src` main entry point is exposed via `jsnext:main` for bundlers such as [rollup](https://github.com/rollup/rollup) wich can take advantage of that.
 
 ## Usage
 
 ```javascript
-require('babel/polyfill'); // polyfill for regenerator runtime and maps
-var Entities = require('gg-entities');
+import { EntityManager } from 'gg-entities'
 
-var entityManager = new Entities.EntityManager();
+const entityManager = new EntityManager()
 
 // Create components
-var position = entityManager.registerComponent({
+
+const pos = entityManager.registerComponent('position', {
     x : 10.0,
     y : 10.0
-});
+})
 
-var velocity = entityManager.registerComponent(2.0);
+const vel = entityManager.registerComponent('velocity', 2.0)
 
 // Add a system for the created components
-var movementSystem = function(entities, delta) {
-    for (var entity of entities) {
-        var pos = this[position][entity];
-        var vel = this[velocity][entity];
 
-        pos.x += vel * delta;
+const movementSystem = (entities, { delta }) => {
+    for (let entity of entities) {
+        entity[pos].x += entity[vel] * delta
     }
-};
+}
 
-entityManager.registerLogicSystem(Entities.SelectorType.GetWith, position | velocity, movementSystem);
+entityManager.registerLogicSystem('movement', [ pos, vel ], movementSystem)
 
 // Run the systems
+
 ...
 
-var delta = 0.16;
+let delta = 0.16
 
-entityManager.onLogic(delta);
-entityManager.onRender(delta);
+entityManager.onLogic({delta})
+entityManager.onRender({delta})
 
 ...
 ```

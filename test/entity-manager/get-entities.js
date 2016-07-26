@@ -1,5 +1,5 @@
-import { expect }    from 'chai'
-import EntityManager from '../../src/core/entity-manager'
+import { expect }        from 'chai'
+import { EntityManager } from '../../src/core/entity-manager'
 
 describe('EntityManager', function() {
     describe('getEntities(components = null)', () => {
@@ -30,8 +30,8 @@ describe('EntityManager', function() {
             delete this.entityManager
         })
         
-        it('is a function', () => {
-            expect(this.entityManager.getEntities).to.be.a('function')
+        it('is a generator function', () => {
+            expect(this.entityManager.getEntities).to.be.a('generatorFunction')
         })
         
         it('returns an iterable of all entities up to [currentMaxEntity]', () => {

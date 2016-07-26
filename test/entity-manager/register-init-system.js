@@ -1,7 +1,7 @@
-import { expect }     from 'chai'
-import sinon          from 'sinon'
-import EntityManager  from '../../src/core/entity-manager'
-import { SystemType } from '../../src/core/system-manager'
+import { expect }        from 'chai'
+import sinon             from 'sinon'
+import { EntityManager } from '../../src/core/entity-manager'
+import { SystemType }    from '../../src/core/system-manager'
 
 describe('EntityManager', function() {
     describe('registerInitSystem(selectorType, components, callback)', () => {

@@ -4,7 +4,7 @@ export const SystemType = {
     Init   : 2
 }
 
-export default class SystemManager {
+class SystemManager {
     constructor() {
         this.logicSystems  = new Map()
         this.renderSystems = new Map()
@@ -46,3 +46,5 @@ export default class SystemManager {
         return this.logicSystems.delete(key) || this.renderSystems.delete(key) || this.initSystems.delete(key)
     }
 }
+
+export { SystemManager }

@@ -1,7 +1,16 @@
+## v2.0.0-beta1 (2016-07-23)
+
+Removed all default exports
+Changed default dist file to be in es6
+Moved the es5 compatible build to `dist/gg-entities.es5.js`
+The es5 build now includes `babel-polyfill`
+Moved promise related functions out of the `EventHandler` class (still in file as free functions)
+Updated all npm dependencies to latest
+
 ## v2.0.0-alpha3 (2016-04-30)
 
-Adds `EntityManager.registerConfiguration(key)` 
-Removes `EntityManager.createConfiguration()`
+Added `EntityManager.registerConfiguration(key)` 
+Removed `EntityManager.createConfiguration()`
 
 Registered configurations are now stored internally in the `EntityManager`
 and can be used to create an entity by passing `key` to `EntityManager.create(key)`

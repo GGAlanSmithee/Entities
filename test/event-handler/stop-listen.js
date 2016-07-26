@@ -1,5 +1,5 @@
-import { expect }   from 'chai'
-import EventHandler from '../../src/core/event-handler'
+import { expect }       from 'chai'
+import { EventHandler } from '../../src/core/event-handler'
 
 describe('EventHandler', function() {
     describe('stopListen(eventId)', () => {

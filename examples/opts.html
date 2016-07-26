@@ -6,62 +6,62 @@
     
     <body>
         <canvas id='canvas'></canvas>
-        
-        <script language="javascript" type="text/javascript" src="polyfill.js"></script>
-        <script language="javascript" type="text/javascript" src="../dist/gg-entities.js"></script>
+
+        <script language="javascript" type="text/javascript" src="../dist/gg-entities.es5.js"></script>
         
         <script>
             function RendererEngine() {
-                var canvas    = document.getElementById('canvas');
-                canvas.width  = 500;
-                canvas.height = 500;
+                const canvas    = document.getElementById('canvas')
+                canvas.width  = 500
+                canvas.height = 500
             
-                this.context = canvas.getContext('2d');
+                this.context = canvas.getContext('2d')
             }
             
             RendererEngine.prototype.render = function(tra, app) {
-                this.context.beginPath();
-                this.context.rect(tra.x, tra.y, tra.w, tra.h);
-                this.context.fillStyle = app.color;
-                this.context.fill();
+                this.context.beginPath()
+                this.context.rect(tra.x, tra.y, tra.w, tra.h)
+                this.context.fillStyle = app.color
+                this.context.fill()
             }
             
             window.onload = function() {
-                'use strict';
+                'use strict'
             
-                const TRANSFORM_COMPONENT  = 'transform';
-                const APPEARANCE_COMPONENT = 'appearance';
+                const TRANSFORM_COMPONENT  = 'transform'
+                const APPEARANCE_COMPONENT = 'appearance'
                 
-                const RENDER_SYSTEM = 'render';
+                const RENDER_SYSTEM = 'render'
             
-                var entityManager = new GGEntities.EntityManager();
+                var entityManager = new GGEntities.EntityManager()
                 
                 // Components
-                entityManager.registerComponent(TRANSFORM_COMPONENT, function() {
-                    this.x = 250;
-                    this.y = 250;
-                    this.w = 100,
-                    this.h = 100;
-                });
                 
-                entityManager.registerComponent(APPEARANCE_COMPONENT, { color : 'red' });
+                entityManager.registerComponent(TRANSFORM_COMPONENT, function() {
+                    this.x = 250
+                    this.y = 250
+                    this.w = 100
+                    this.h = 100
+                })
+                
+                entityManager.registerComponent(APPEARANCE_COMPONENT, { color : 'red' })
                 
                 // Systems
                 
-                var renderSystem = function(entities, { rendererEngine }) {
+                const renderSystem = function(entities, { rendererEngine }) {
                     for (var { entity } of entities) {
-                        rendererEngine.render(entity[TRANSFORM_COMPONENT], entity[APPEARANCE_COMPONENT]);
+                        rendererEngine.render(entity[TRANSFORM_COMPONENT], entity[APPEARANCE_COMPONENT])
                     }
-                };
+                }
                                              
-                entityManager.registerRenderSystem(RENDER_SYSTEM, [ TRANSFORM_COMPONENT, APPEARANCE_COMPONENT ], renderSystem);
+                entityManager.registerRenderSystem(RENDER_SYSTEM, [ TRANSFORM_COMPONENT, APPEARANCE_COMPONENT ], renderSystem)
                 
-                entityManager.build().withComponent(TRANSFORM_COMPONENT).withComponent(APPEARANCE_COMPONENT).create();
+                entityManager.build().withComponent(TRANSFORM_COMPONENT).withComponent(APPEARANCE_COMPONENT).create()
                 
-                var rendererEngine = new RendererEngine(canvas);
+                const rendererEngine = new RendererEngine()
                 
-                entityManager.onRender({ rendererEngine });
-            };
+                entityManager.onRender({ rendererEngine })
+            }
         </script>
     </body>
 </html>

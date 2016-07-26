@@ -1,5 +1,5 @@
-import { expect }    from 'chai'
-import SystemManager from '../../src/core/system-manager'
+import { expect }        from 'chai'
+import { SystemManager } from '../../src/core/system-manager'
 
 describe('SystemManager', function() {
     describe('removeSystem(type, system)', () => {

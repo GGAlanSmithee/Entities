@@ -7,206 +7,205 @@
     <body>
         <canvas id='canvas'></canvas>
         
-        <script language="javascript" type="text/javascript" src="polyfill.js"></script>
-        <script language="javascript" type="text/javascript" src="../dist/gg-entities.js"></script>
+        <script language="javascript" type="text/javascript" src="../dist/gg-entities.es5.js"></script>
         
         <script>
             window.onload = function() {
-                const TRANSFORM_COMPONENT  = 'transform';
-                const VELOCITY_COMPONENT   = 'velocity';
-                const CLICKABLE_COMPONENT  = 'clickable';
-                const APPEARANCE_COMPONENT = 'appearance';
+                const TRANSFORM_COMPONENT  = 'transform'
+                const VELOCITY_COMPONENT   = 'velocity'
+                const CLICKABLE_COMPONENT  = 'clickable'
+                const APPEARANCE_COMPONENT = 'appearance'
                 
-                const INIT_SYSTEM     = 'init';
-                const MOVEMENT_SYSTEM = 'movement';
-                const RENDER_SYSTEM   = 'render';
+                const INIT_SYSTEM     = 'init'
+                const MOVEMENT_SYSTEM = 'movement'
+                const RENDER_SYSTEM   = 'render'
                 
-                const CLICK_EVENT         = 'click';
-                const CLICKED_EVENT       = 'clicked';
-                const OUT_OF_BOUNDS_EVENT = 'outOfBounds';
-                const DESTROY_EVENT       = 'destroy';
+                const CLICK_EVENT         = 'click'
+                const CLICKED_EVENT       = 'clicked'
+                const OUT_OF_BOUNDS_EVENT = 'outOfBounds'
+                const DESTROY_EVENT       = 'destroy'
                 
-                var canvas = document.getElementById('canvas');
-                    canvas.width = 500;
-                    canvas.height = 500;
+                const canvas = document.getElementById('canvas')
+                      canvas.width = 500
+                      canvas.height = 500
                 
-                var context = canvas.getContext('2d');
+                const context = canvas.getContext('2d')
                 
-                var entityManager = new GGEntities.EntityManager();
+                const entityManager = new GGEntities.EntityManager()
                 
-                var cubes = [];
+                let cubes = []
                 
-                var Menu = {
+                const Menu = {
                     isOpen : true,
                     
                     draw : function() {
-                        context.beginPath();
-                        context.rect((canvas.width / 2) - 50, (canvas.height / 2) - 20, 100, 40);
-                        context.fillStyle = 'lightblue';
-                        context.fill();
+                        context.beginPath()
+                        context.rect((canvas.width / 2) - 50, (canvas.height / 2) - 20, 100, 40)
+                        context.fillStyle = 'lightblue'
+                        context.fill()
                         
-                        context.font      = '30px Verdana';
-                        context.fillStyle = 'black';
-                        context.fillText('Start!', (canvas.width / 2) - 40, (canvas.height / 2) + 10);
+                        context.font      = '30px Verdana'
+                        context.fillStyle = 'black'
+                        context.fillText('Start!', (canvas.width / 2) - 40, (canvas.height / 2) + 10)
                     },
                     startIsClicked : function(x, y) {
-                        var buttonX = (canvas.width  / 2) - 50;
-                        var buttonY = (canvas.height / 2) - 20;
-                        var buttonW = 100;
-                        var buttonH = 40;
+                        const buttonX = (canvas.width  / 2) - 50
+                        const buttonY = (canvas.height / 2) - 20
+                        const buttonW = 100
+                        const buttonH = 40
                         
-                        return x >= buttonX && x <= buttonX + buttonW && y >= buttonY && y <= buttonY + buttonH;
+                        return x >= buttonX && x <= buttonX + buttonW && y >= buttonY && y <= buttonY + buttonH
                     },
                     onStartClicked : function() {
-                        this.isOpen = false;
+                        this.isOpen = false
                         
-                        entityManager.onInit();
+                        entityManager.onInit()
                     }
-                };
+                }
                 
                 // Components
                 
                 entityManager.registerComponent(TRANSFORM_COMPONENT, function() {
-                    this.x =      Math.random() * 20;
+                    this.x =      Math.random() * 20
                     this.w = 15 + Math.random() * 5,
-                    this.h = 15 + Math.random() * 5;
-                    this.y =      Math.random() * canvas.height - this.h;
-                });
+                    this.h = 15 + Math.random() * 5
+                    this.y =      Math.random() * canvas.height - this.h
+                })
                 
-                entityManager.registerComponent(VELOCITY_COMPONENT, 0.05);
+                entityManager.registerComponent(VELOCITY_COMPONENT, 0.05)
                 
                 entityManager.registerComponent(CLICKABLE_COMPONENT, function() {
                     this.timesClicked = 0,
                     this.maxClicks    = Math.floor(Math.random() * (2 - 1 + 1)) + 1,
                     this.hitboxRatio  = 1.5
-                });
+                })
                 
-                entityManager.registerComponent(APPEARANCE_COMPONENT, { color : 'red' });
+                entityManager.registerComponent(APPEARANCE_COMPONENT, { color : 'red' })
                 
                 // Systems
                 
-                var initSystem = function() {
-                    for (var i = 0; i < cubes.length; ++i) {
-                        this.deleteEntity(cubes[i]);
-                        numbSpawnedObjects--;
+                const initSystem = function() {
+                    for (let i = 0; i < cubes.length; ++i) {
+                        this.deleteEntity(cubes[i])
+                        numbSpawnedObjects--
                     }
                     
-                    cubes = [];
+                    cubes = []
                 }
                 
-                entityManager.registerInitSystem(INIT_SYSTEM, [], initSystem);
+                entityManager.registerInitSystem(INIT_SYSTEM, [], initSystem)
                 
-                var movementSystem = function(entities, { delta }) {
-                    for (var { entity } of entities) {
-                        let vel = entity[VELOCITY_COMPONENT];
+                const movementSystem = function(entities, { delta }) {
+                    for (const { entity } of entities) {
+                        const vel = entity[VELOCITY_COMPONENT]
                         
-                        entity[TRANSFORM_COMPONENT].x += vel * delta;
+                        entity[TRANSFORM_COMPONENT].x += vel * delta
                         
                         if (entity[TRANSFORM_COMPONENT].x > canvas.width) {
-                            this.trigger('outOfBounds');
+                            this.trigger('outOfBounds')
                         }
                     }
-                };
+                }
                 
-                entityManager.registerLogicSystem(MOVEMENT_SYSTEM, [ TRANSFORM_COMPONENT, VELOCITY_COMPONENT ], movementSystem);
+                entityManager.registerLogicSystem(MOVEMENT_SYSTEM, [ TRANSFORM_COMPONENT, VELOCITY_COMPONENT ], movementSystem)
                 
-                var renderSystem = function(entities) {
-                    for (var { entity } of entities) {
-                        var tra = entity[TRANSFORM_COMPONENT];
-                        var app = entity[APPEARANCE_COMPONENT];
+                const renderSystem = function(entities) {
+                    for (const { entity } of entities) {
+                        const tra = entity[TRANSFORM_COMPONENT]
+                        const app = entity[APPEARANCE_COMPONENT]
                         
-                        context.beginPath();
-                        context.rect(tra.x, tra.y, tra.w, tra.h);
-                        context.fillStyle = app.color;
-                        context.fill();
+                        context.beginPath()
+                        context.rect(tra.x, tra.y, tra.w, tra.h)
+                        context.fillStyle = app.color
+                        context.fill()
                     }
-                };
+                }
                                              
-                entityManager.registerRenderSystem(RENDER_SYSTEM, [ TRANSFORM_COMPONENT, APPEARANCE_COMPONENT ], renderSystem);
+                entityManager.registerRenderSystem(RENDER_SYSTEM, [ TRANSFORM_COMPONENT, APPEARANCE_COMPONENT ], renderSystem)
                 
                 // Events
                 
-                var numbSpawnedObjects = 0;
+                let numbSpawnedObjects = 0
                 
                 entityManager.listen(CLICKED_EVENT, function(id, entity) {
-                    var cli = entity[CLICKABLE_COMPONENT];
+                    const cli = entity[CLICKABLE_COMPONENT]
                     
-                    cli.timesClicked++;
+                    cli.timesClicked++
                     
                     if (cli.timesClicked > cli.maxClicks) {
-                        return;
+                        return
                     }
                     
-                    var clicksLeft = cli.maxClicks - cli.timesClicked;
+                    const clicksLeft = cli.maxClicks - cli.timesClicked
                     
                     switch (clicksLeft) {
                         case 0:
-                            entity[APPEARANCE_COMPONENT].color = 'purple';
+                            entity[APPEARANCE_COMPONENT].color = 'purple'
                             
-                            this.triggerDelayed(DESTROY_EVENT, 400, id);
+                            this.triggerDelayed(DESTROY_EVENT, 400, id)
                             
-                            break;
+                            break
                         case 1:
-                            entity[APPEARANCE_COMPONENT].color = 'blue';
+                            entity[APPEARANCE_COMPONENT].color = 'blue'
                             
-                            break;
+                            break
                     }
-                });
+                })
                 
                 entityManager.listen(DESTROY_EVENT, function(entityId) {
-                    this.deleteEntity(entityId);
+                    this.deleteEntity(entityId)
                     
-                    numbSpawnedObjects--;
-                });
+                    numbSpawnedObjects--
+                })
                 
                 entityManager.listen(OUT_OF_BOUNDS_EVENT, function() {
-                    Menu.isOpen = true;
-                });
+                    Menu.isOpen = true
+                })
                 
                 entityManager.listen(CLICK_EVENT, function(x, y) {
-                    for (var { id, entity } of this.getEntities([ CLICKABLE_COMPONENT, TRANSFORM_COMPONENT, APPEARANCE_COMPONENT ])) {
-                        var tra = entity[TRANSFORM_COMPONENT];
-                        var cli = entity[CLICKABLE_COMPONENT];
+                    for (const { id, entity } of this.getEntities([ CLICKABLE_COMPONENT, TRANSFORM_COMPONENT, APPEARANCE_COMPONENT ])) {
+                        const tra = entity[TRANSFORM_COMPONENT]
+                        const cli = entity[CLICKABLE_COMPONENT]
                         
-                        var boxW = tra.w * cli.hitboxRatio;
-                        var boxH = tra.h * cli.hitboxRatio;
-                        var boxX = tra.x - (boxW - tra.w) / 2;
-                        var boxY = tra.y - (boxH - tra.h) / 2;
+                        const boxW = tra.w * cli.hitboxRatio
+                        const boxH = tra.h * cli.hitboxRatio
+                        const boxX = tra.x - (boxW - tra.w) / 2
+                        const boxY = tra.y - (boxH - tra.h) / 2
                         
                         if (x >= boxX && x <= boxX + boxW && y >= boxY && y <= boxY + boxH) {
-                            this.trigger(CLICKED_EVENT, id, entity);
+                            this.trigger(CLICKED_EVENT, id, entity)
                         }
                     }
-                });
+                })
                 
                 // DOM events
                 
                 canvas.addEventListener(CLICK_EVENT, function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
+                    e.preventDefault()
+                    e.stopPropagation()
                     
-                    var rect = canvas.getBoundingClientRect();
+                    const rect = canvas.getBoundingClientRect()
                     
                     // x and y relative to canvas
-                    var x = e.clientX - rect.left;
-                    var y = e.clientY - rect.top;
+                    const x = e.clientX - rect.left
+                    const y = e.clientY - rect.top
                     
                     if (Menu.isOpen) {
                         if (Menu.startIsClicked(x, y)) {
-                            Menu.onStartClicked();
+                            Menu.onStartClicked()
                         }
                     } else {
-                        entityManager.trigger(CLICK_EVENT, x, y);
+                        entityManager.trigger(CLICK_EVENT, x, y)
                     }
-                });
+                })
                 
                 // Create a configuration which we can use with entityManager.create() later
-                var configuration = 'entity';
+                const configuration = 'entity'
                 
                 entityManager.build()
                              .withComponent(TRANSFORM_COMPONENT)
                              // second param is a initializer function
-                             .withComponent(VELOCITY_COMPONENT, function() { return Math.random() * 0.075 + 0.025; })
+                             .withComponent(VELOCITY_COMPONENT, function() { return Math.random() * 0.075 + 0.025 })
                              .withComponent(CLICKABLE_COMPONENT)
                              .withComponent(APPEARANCE_COMPONENT)
                              .registerConfiguration(configuration)
@@ -215,39 +214,39 @@
                 // timed systems (or coroutines) will probably be added to the library sometime post v. 1.0.0
                 setInterval(function() {
                     if (numbSpawnedObjects < 15) {
-                        cubes.push(entityManager.create(1, configuration).id);
-                        numbSpawnedObjects++;
+                        cubes.push(entityManager.create(1, configuration).id)
+                        numbSpawnedObjects++
                     }
-                }, 500);
+                }, 500)
                 
                 // For timing
-                var delta    = 0;
-                var lastTime = new Date();
-                var time     = new Date();
+                let delta    = 0
+                let lastTime = new Date()
+                let time     = new Date()
                 
                 // Run main loop
                 function loop() {
                     setTimeout(function () {
-                        time     = new Date();
-                        delta    = time.getTime() - lastTime.getTime();
-                        lastTime = time;
+                        time     = new Date()
+                        delta    = time.getTime() - lastTime.getTime()
+                        lastTime = time
                         
                         if (Menu.isOpen) {
-                            Menu.draw();
+                            Menu.draw()
                         } else {
-                            entityManager.onLogic({ delta });
+                            entityManager.onLogic({ delta })
                             
-                            context.clearRect(0, 0, canvas.width, canvas.height);
+                            context.clearRect(0, 0, canvas.width, canvas.height)
                             
-                            entityManager.onRender({ delta });
+                            entityManager.onRender({ delta })
                         }
                         
-                        loop();
-                    }, 16);
+                        loop()
+                    }, 16)
                 }
                 
-                loop();
-            };
+                loop()
+            }
         </script>
     </body>
 </html>

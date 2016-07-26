@@ -1,28 +1,28 @@
-import EntityManager from './entity-manager'
+import { EntityManager } from './entity-manager'
 
-export default class EventHandler {
+const emptyPromise = () => {
+    return new Promise(resolve => {
+        resolve()
+    })
+}
+
+const promise = (callback, context, args, timeout) => {
+    if (timeout) {
+        return new Promise(resolve => {
+            setTimeout(function(){
+                resolve(typeof context ===  'object' ? callback.call(context, ...args) : callback.apply(context, ...args))
+            }, timeout)
+        })
+    }
+    
+    return new Promise(resolve => {
+        resolve(typeof context === 'object' ? callback.call(context, ...args) : callback.apply(context, ...args))
+    })
+}
+    
+class EventHandler {
     constructor() {
         this.events = new Map()
-    }
-    
-    emptyPromise() {
-        return new Promise(resolve => {
-            resolve()
-        })
-    }
-    
-    promise(callback, context, args, timeout) {
-        if (timeout) {
-            return new Promise(resolve => {
-                setTimeout(function(){
-                    resolve(typeof context ===  'object' ? callback.call(context, ...args) : callback.apply(context, ...args))
-                }, timeout)
-            })
-        }
-        
-        return new Promise(resolve => {
-            resolve(typeof context === 'object' ? callback.call(context, ...args) : callback.apply(context, ...args))
-        })
     }
     
     listen(event, callback) {
@@ -67,13 +67,13 @@ export default class EventHandler {
         let [ event ] = args.splice(0, 1)
         
         if (typeof event !== 'string' || !self.events.has(event)) {
-            return self.emptyPromise()
+            return emptyPromise()
         }
         
         let promises = []
         
         for (let callback of self.events.get(event).values()) {
-            promises.push(self.promise(callback, this, args, 1))
+            promises.push(promise(callback, this, args))
         }
         
         return Promise.all(promises)
@@ -87,15 +87,17 @@ export default class EventHandler {
         let [ event, timeout ] = args.splice(0, 2)
         
         if (typeof event !== 'string' || !Number.isInteger(timeout) || !self.events.has(event)) {
-            return self.emptyPromise()
+            return emptyPromise()
         }
         
         let promises = []
         
         for (let callback of self.events.get(event).values()) {
-            promises.push(self.promise(callback, this, args, timeout))
+            promises.push(promise(callback, this, args, timeout))
         }
         
         return Promise.all(promises)
     }
 }
+
+export { EventHandler }

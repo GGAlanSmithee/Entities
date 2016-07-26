@@ -1,9 +1,9 @@
-import EntityFactory                 from './entity-factory'
-import ComponentManager              from './component-manager'
-import SystemManager, { SystemType } from './system-manager'
-import EventHandler                  from './event-handler'
+import { EntityFactory }             from './entity-factory'
+import { ComponentManager }          from './component-manager'
+import { SystemManager, SystemType } from './system-manager'
+import { EventHandler }              from './event-handler'
 
-export default class EntityManager {
+class EntityManager {
     constructor(capacity = 1000) {
         this.capacity         = capacity
         this.currentMaxEntity = -1
@@ -233,3 +233,5 @@ export default class EntityManager {
         return this.eventHandler.triggerDelayed.call(this, ...arguments)
     }
 }
+
+export { EntityManager }

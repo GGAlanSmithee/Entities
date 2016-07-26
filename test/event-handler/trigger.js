@@ -1,7 +1,7 @@
-import { expect }    from 'chai'
-import sinon         from 'sinon'
-import EventHandler  from '../../src/core/event-handler'
-import EntityManager from  '../../src/core/entity-manager'
+import { expect }        from 'chai'
+import sinon             from 'sinon'
+import { EventHandler }  from '../../src/core/event-handler'
+import { EntityManager } from  '../../src/core/entity-manager'
 
 describe('EventHandler', function() {
     describe('trigger()', () => {

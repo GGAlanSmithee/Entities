@@ -1,6 +1,6 @@
 import { expect }                    from 'chai'
 import sinon                         from 'sinon'
-import SystemManager, { SystemType } from '../../src/core/system-manager'
+import { SystemManager, SystemType } from '../../src/core/system-manager'
 
 describe('SystemManager', function() {
     describe('registerSystem(type = SystemType.Logic, selector = SelectorType.GetWith, components = 0, callback = undefined)', () => {

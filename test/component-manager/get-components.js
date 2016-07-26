@@ -1,5 +1,5 @@
-import { expect }       from 'chai'
-import ComponentManager from '../../src/core/component-manager'
+import { expect }          from 'chai'
+import { ComponentManager} from '../../src/core/component-manager'
 
 describe('ComponentManager', function() {
     describe('getComponents()', () => {

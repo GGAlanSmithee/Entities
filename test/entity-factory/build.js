@@ -1,5 +1,5 @@
-import { expect }    from 'chai'
-import EntityFactory from '../../src/core/entity-factory'
+import { expect }        from 'chai'
+import { EntityFactory } from '../../src/core/entity-factory'
 
 describe('EntityFactory', function() {
     describe('build()', () => {
