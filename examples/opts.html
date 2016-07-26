@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Entities example - Opts</title>
+    </head>
+    
+    <body>
+        <canvas id='canvas'></canvas>
+
+        <script language="javascript" type="text/javascript" src="../dist/gg-entities.es5.js"></script>
+        
+        <script>
+            function RendererEngine() {
+                const canvas    = document.getElementById('canvas')
+                canvas.width  = 500
+                canvas.height = 500
+            
+                this.context = canvas.getContext('2d')
+            }
+            
+            RendererEngine.prototype.render = function(tra, app) {
+                this.context.beginPath()
+                this.context.rect(tra.x, tra.y, tra.w, tra.h)
+                this.context.fillStyle = app.color
+                this.context.fill()
+            }
+            
+            window.onload = function() {
+                'use strict'
+            
+                const TRANSFORM_COMPONENT  = 'transform'
+                const APPEARANCE_COMPONENT = 'appearance'
+                
+                const RENDER_SYSTEM = 'render'
+            
+                var entityManager = new GGEntities.EntityManager()
+                
+                // Components
+                
+                entityManager.registerComponent(TRANSFORM_COMPONENT, function() {
+                    this.x = 250
+                    this.y = 250
+                    this.w = 100
+                    this.h = 100
+                })
+                
+                entityManager.registerComponent(APPEARANCE_COMPONENT, { color : 'red' })
+                
+                // Systems
+                
+                const renderSystem = function(entities, { rendererEngine }) {
+                    for (var { entity } of entities) {
+                        rendererEngine.render(entity[TRANSFORM_COMPONENT], entity[APPEARANCE_COMPONENT])
+                    }
+                }
+                                             
+                entityManager.registerRenderSystem(RENDER_SYSTEM, [ TRANSFORM_COMPONENT, APPEARANCE_COMPONENT ], renderSystem)
+                
+                entityManager.build().withComponent(TRANSFORM_COMPONENT).withComponent(APPEARANCE_COMPONENT).create()
+                
+                const rendererEngine = new RendererEngine()
+                
+                entityManager.onRender({ rendererEngine })
+            }
+        </script>
+    </body>
+</html>

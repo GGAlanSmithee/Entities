@@ -1,0 +1,51 @@
+{
+  "name": "gg-entities",
+  "description": "easy-to-use Entity-Component System in JavaScript",
+  "version": "2.0.0-beta.1",
+  "author": {
+    "name": "alansmithee",
+    "email": "ggnore.alan.smithee@gmail.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GGAlanSmithee/Entities"
+  },
+  "keywords": [
+    "javascript",
+    "ces",
+    "ecs",
+    "entity",
+    "component"
+  ],
+  "directories": {
+    "dist": "dist",
+    "src": "src"
+  },
+  "main": "dist/gg-entities.js",
+  "jsnext:main": "src/index.js",
+  "scripts": {
+    "test": "istanbul cover _mocha test/* -- --recursive --compilers js:babel-register --require babel-polyfill",
+    "build": "node build/bundle && node build/bundle.es5",
+    "lint": "eslint src",
+    "minify": "uglifyjs dist/gg-entities.es5.js -o dist/gg-entities.es5.min.js -c -m",
+    "prepublish": "npm run lint && npm test && npm run build && npm run minify"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-eslint": "^6.1.2",
+    "babel-polyfill": "^6.9.1",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-es2015-rollup": "^1.1.1",
+    "babel-preset-stage-0": "^6.5.0",
+    "babel-register": "^6.9.0",
+    "chai": "^3.5.0",
+    "eslint": "^3.1.1",
+    "istanbul": "^1.0.0-alpha",
+    "mocha": "^2.5.3",
+    "rollup": "^0.34.1",
+    "rollup-plugin-babel": "^2.6.1",
+    "sinon": "^1.17.4",
+    "uglify-js": "^2.7.0"
+  }
+}

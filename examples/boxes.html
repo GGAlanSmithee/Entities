@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Entities example - Boxes</title>
+    </head>
+    
+    <body>
+        <canvas id='canvas'></canvas>
+        
+        <script language="javascript" type="text/javascript" src="../dist/gg-entities.es5.js"></script>
+        
+        <script>
+            window.onload = function() {
+                const TRANSFORM_COMPONENT  = 'transform'
+                const VELOCITY_COMPONENT   = 'velocity'
+                const CLICKABLE_COMPONENT  = 'clickable'
+                const APPEARANCE_COMPONENT = 'appearance'
+                
+                const INIT_SYSTEM     = 'init'
+                const MOVEMENT_SYSTEM = 'movement'
+                const RENDER_SYSTEM   = 'render'
+                
+                const CLICK_EVENT         = 'click'
+                const CLICKED_EVENT       = 'clicked'
+                const OUT_OF_BOUNDS_EVENT = 'outOfBounds'
+                const DESTROY_EVENT       = 'destroy'
+                
+                const canvas = document.getElementById('canvas')
+                      canvas.width = 500
+                      canvas.height = 500
+                
+                const context = canvas.getContext('2d')
+                
+                const entityManager = new GGEntities.EntityManager()
+                
+                let cubes = []
+                
+                const Menu = {
+                    isOpen : true,
+                    
+                    draw : function() {
+                        context.beginPath()
+                        context.rect((canvas.width / 2) - 50, (canvas.height / 2) - 20, 100, 40)
+                        context.fillStyle = 'lightblue'
+                        context.fill()
+                        
+                        context.font      = '30px Verdana'
+                        context.fillStyle = 'black'
+                        context.fillText('Start!', (canvas.width / 2) - 40, (canvas.height / 2) + 10)
+                    },
+                    startIsClicked : function(x, y) {
+                        const buttonX = (canvas.width  / 2) - 50
+                        const buttonY = (canvas.height / 2) - 20
+                        const buttonW = 100
+                        const buttonH = 40
+                        
+                        return x >= buttonX && x <= buttonX + buttonW && y >= buttonY && y <= buttonY + buttonH
+                    },
+                    onStartClicked : function() {
+                        this.isOpen = false
+                        
+                        entityManager.onInit()
+                    }
+                }
+                
+                // Components
+                
+                entityManager.registerComponent(TRANSFORM_COMPONENT, function() {
+                    this.x =      Math.random() * 20
+                    this.w = 15 + Math.random() * 5,
+                    this.h = 15 + Math.random() * 5
+                    this.y =      Math.random() * canvas.height - this.h
+                })
+                
+                entityManager.registerComponent(VELOCITY_COMPONENT, 0.05)
+                
+                entityManager.registerComponent(CLICKABLE_COMPONENT, function() {
+                    this.timesClicked = 0,
+                    this.maxClicks    = Math.floor(Math.random() * (2 - 1 + 1)) + 1,
+                    this.hitboxRatio  = 1.5
+                })
+                
+                entityManager.registerComponent(APPEARANCE_COMPONENT, { color : 'red' })
+                
+                // Systems
+                
+                const initSystem = function() {
+                    for (let i = 0; i < cubes.length; ++i) {
+                        this.deleteEntity(cubes[i])
+                        numbSpawnedObjects--
+                    }
+                    
+                    cubes = []
+                }
+                
+                entityManager.registerInitSystem(INIT_SYSTEM, [], initSystem)
+                
+                const movementSystem = function(entities, { delta }) {
+                    for (const { entity } of entities) {
+                        const vel = entity[VELOCITY_COMPONENT]
+                        
+                        entity[TRANSFORM_COMPONENT].x += vel * delta
+                        
+                        if (entity[TRANSFORM_COMPONENT].x > canvas.width) {
+                            this.trigger('outOfBounds')
+                        }
+                    }
+                }
+                
+                entityManager.registerLogicSystem(MOVEMENT_SYSTEM, [ TRANSFORM_COMPONENT, VELOCITY_COMPONENT ], movementSystem)
+                
+                const renderSystem = function(entities) {
+                    for (const { entity } of entities) {
+                        const tra = entity[TRANSFORM_COMPONENT]
+                        const app = entity[APPEARANCE_COMPONENT]
+                        
+                        context.beginPath()
+                        context.rect(tra.x, tra.y, tra.w, tra.h)
+                        context.fillStyle = app.color
+                        context.fill()
+                    }
+                }
+                                             
+                entityManager.registerRenderSystem(RENDER_SYSTEM, [ TRANSFORM_COMPONENT, APPEARANCE_COMPONENT ], renderSystem)
+                
+                // Events
+                
+                let numbSpawnedObjects = 0
+                
+                entityManager.listen(CLICKED_EVENT, function(id, entity) {
+                    const cli = entity[CLICKABLE_COMPONENT]
+                    
+                    cli.timesClicked++
+                    
+                    if (cli.timesClicked > cli.maxClicks) {
+                        return
+                    }
+                    
+                    const clicksLeft = cli.maxClicks - cli.timesClicked
+                    
+                    switch (clicksLeft) {
+                        case 0:
+                            entity[APPEARANCE_COMPONENT].color = 'purple'
+                            
+                            this.triggerDelayed(DESTROY_EVENT, 400, id)
+                            
+                            break
+                        case 1:
+                            entity[APPEARANCE_COMPONENT].color = 'blue'
+                            
+                            break
+                    }
+                })
+                
+                entityManager.listen(DESTROY_EVENT, function(entityId) {
+                    this.deleteEntity(entityId)
+                    
+                    numbSpawnedObjects--
+                })
+                
+                entityManager.listen(OUT_OF_BOUNDS_EVENT, function() {
+                    Menu.isOpen = true
+                })
+                
+                entityManager.listen(CLICK_EVENT, function(x, y) {
+                    for (const { id, entity } of this.getEntities([ CLICKABLE_COMPONENT, TRANSFORM_COMPONENT, APPEARANCE_COMPONENT ])) {
+                        const tra = entity[TRANSFORM_COMPONENT]
+                        const cli = entity[CLICKABLE_COMPONENT]
+                        
+                        const boxW = tra.w * cli.hitboxRatio
+                        const boxH = tra.h * cli.hitboxRatio
+                        const boxX = tra.x - (boxW - tra.w) / 2
+                        const boxY = tra.y - (boxH - tra.h) / 2
+                        
+                        if (x >= boxX && x <= boxX + boxW && y >= boxY && y <= boxY + boxH) {
+                            this.trigger(CLICKED_EVENT, id, entity)
+                        }
+                    }
+                })
+                
+                // DOM events
+                
+                canvas.addEventListener(CLICK_EVENT, function(e) {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    
+                    const rect = canvas.getBoundingClientRect()
+                    
+                    // x and y relative to canvas
+                    const x = e.clientX - rect.left
+                    const y = e.clientY - rect.top
+                    
+                    if (Menu.isOpen) {
+                        if (Menu.startIsClicked(x, y)) {
+                            Menu.onStartClicked()
+                        }
+                    } else {
+                        entityManager.trigger(CLICK_EVENT, x, y)
+                    }
+                })
+                
+                // Create a configuration which we can use with entityManager.create() later
+                const configuration = 'entity'
+                
+                entityManager.build()
+                             .withComponent(TRANSFORM_COMPONENT)
+                             // second param is a initializer function
+                             .withComponent(VELOCITY_COMPONENT, function() { return Math.random() * 0.075 + 0.025 })
+                             .withComponent(CLICKABLE_COMPONENT)
+                             .withComponent(APPEARANCE_COMPONENT)
+                             .registerConfiguration(configuration)
+                
+                // spawn a new object (cube) every .5 secs (if there are less then 15 spawned objects)
+                // timed systems (or coroutines) will probably be added to the library sometime post v. 1.0.0
+                setInterval(function() {
+                    if (numbSpawnedObjects < 15) {
+                        cubes.push(entityManager.create(1, configuration).id)
+                        numbSpawnedObjects++
+                    }
+                }, 500)
+                
+                // For timing
+                let delta    = 0
+                let lastTime = new Date()
+                let time     = new Date()
+                
+                // Run main loop
+                function loop() {
+                    setTimeout(function () {
+                        time     = new Date()
+                        delta    = time.getTime() - lastTime.getTime()
+                        lastTime = time
+                        
+                        if (Menu.isOpen) {
+                            Menu.draw()
+                        } else {
+                            entityManager.onLogic({ delta })
+                            
+                            context.clearRect(0, 0, canvas.width, canvas.height)
+                            
+                            entityManager.onRender({ delta })
+                        }
+                        
+                        loop()
+                    }, 16)
+                }
+                
+                loop()
+            }
+        </script>
+    </body>
+</html>
