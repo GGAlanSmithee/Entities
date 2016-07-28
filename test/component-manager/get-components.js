@@ -22,15 +22,15 @@ describe('ComponentManager', function() {
             expect(components).property('size').to.equal(0)
             expect(components).to.equal(this.componentManager.components)
             
-            const key = 'key'
+            const id = 1
             
-            this.componentManager.components.set(key, 10)
+            this.componentManager.components.set(id, 10)
             
             components = this.componentManager.getComponents()
             
             expect(components).to.be.an.instanceof(Map)
             expect(components).property('size').to.equal(1)
-            expect(components.get(key)).to.equal(10)
+            expect(components.get(id)).to.equal(10)
             expect(components).to.equal(this.componentManager.components)
         })
     })

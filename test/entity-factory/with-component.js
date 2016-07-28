@@ -6,7 +6,7 @@ describe('EntityFactory', function() {
         beforeEach(() => {
             this.entityFactory = new EntityFactory()
             
-            this.position = 'position'
+            this.position = 1
         })
         
         afterEach(() => {
@@ -82,10 +82,18 @@ describe('EntityFactory', function() {
             expect(this.entityFactory.configuration.get(this.position)).to.be.undefined
         })
         
-        it('does not add [component] to configuration if [component] is not a number', () => {
+        it('does not add [component] to configuration if [component] is not a posetive integer', () => {
             expect(this.entityFactory).property('configuration').property('size').to.equal(0)
             
             this.entityFactory.withComponent()
+            
+            expect(this.entityFactory).property('configuration').property('size').to.equal(0)
+            
+            this.entityFactory.withComponent(0)
+            
+            expect(this.entityFactory).property('configuration').property('size').to.equal(0)
+            
+            this.entityFactory.withComponent(-1)
             
             expect(this.entityFactory).property('configuration').property('size').to.equal(0)
         })

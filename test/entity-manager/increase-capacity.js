@@ -6,16 +6,16 @@ describe('EntityManager', function() {
         beforeEach(() => {
             this.entityManager = new EntityManager(100)
             
-            this.position = 'position'
+            this.position = 1
             this.positionComponent = { x : 1, y : 1, z : -2 }
             
-            this.velocity = 'velocity'
+            this.velocity = 2
             this.velocityComponent = 0.25
             
-            this.stats = 'stats'
+            this.stats = 4
             this.statsComponent = { xp : 10000, level : 20 }
             
-            this.components = [ this.position, this.velocity, this.stats ]
+            this.components = this.position | this.velocity | this.stats
             this.entityManager.componentManager.components.set(this.position, this.positionComponent)
             this.entityManager.componentManager.components.set(this.velocity, this.velocityComponent)
             this.entityManager.componentManager.components.set(this.stats, this.statsComponent)
@@ -54,7 +54,7 @@ describe('EntityManager', function() {
             
             for (let i = 0; i < this.entityManager.capacity; ++i) {
                 expect(this.entityManager.entities[i]).to.be.any.instanceof(Object)
-                expect(this.entityManager.entities[i]).property('components').to.be.an.instanceof(Array).and.to.be.empty
+                expect(this.entityManager.entities[i]).property('components').to.equal(0)
             }
             
             this.entityManager.increaseCapacity()
@@ -63,7 +63,7 @@ describe('EntityManager', function() {
             
             for (let i = 0; i < this.entityManager.capacity; ++i) {
                 expect(this.entityManager.entities[i]).to.be.any.instanceof(Object)
-                expect(this.entityManager.entities[i]).property('components').to.be.an.instanceof(Array).and.to.be.empty
+                expect(this.entityManager.entities[i]).property('components').to.equal(0)
             }
         })
         

@@ -27,24 +27,21 @@
             
             window.onload = function() {
                 'use strict'
-            
-                const TRANSFORM_COMPONENT  = 'transform'
-                const APPEARANCE_COMPONENT = 'appearance'
                 
-                const RENDER_SYSTEM = 'render'
-            
                 var entityManager = new GGEntities.EntityManager()
                 
                 // Components
                 
-                entityManager.registerComponent(TRANSFORM_COMPONENT, function() {
+                const TRANSFORM_COMPONENT = entityManager.registerComponent(function() {
                     this.x = 250
                     this.y = 250
                     this.w = 100
                     this.h = 100
                 })
                 
-                entityManager.registerComponent(APPEARANCE_COMPONENT, { color : 'red' })
+                const APPEARANCE_COMPONENT = entityManager.registerComponent({
+                    color : 'red'
+                })
                 
                 // Systems
                 
@@ -53,10 +50,13 @@
                         rendererEngine.render(entity[TRANSFORM_COMPONENT], entity[APPEARANCE_COMPONENT])
                     }
                 }
-                                             
-                entityManager.registerRenderSystem(RENDER_SYSTEM, [ TRANSFORM_COMPONENT, APPEARANCE_COMPONENT ], renderSystem)
                 
-                entityManager.build().withComponent(TRANSFORM_COMPONENT).withComponent(APPEARANCE_COMPONENT).create()
+                entityManager.registerRenderSystem(TRANSFORM_COMPONENT | APPEARANCE_COMPONENT, renderSystem)
+                
+                entityManager.build()
+                             .withComponent(TRANSFORM_COMPONENT)
+                             .withComponent(APPEARANCE_COMPONENT)
+                             .create()
                 
                 const rendererEngine = new RendererEngine()
                 

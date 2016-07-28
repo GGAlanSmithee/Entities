@@ -8,8 +8,8 @@ describe('EntityManager', function() {
         beforeEach(() => {
             this.entityManager = new EntityManager()
             
-            this.position = 'position'
-            this.velocity = 'velocity'
+            this.position = 1
+            this.velocity = 2
             
             this.draw = entity => entity
         })
@@ -24,37 +24,35 @@ describe('EntityManager', function() {
         
         it('invokes [systemManager.registerSystem] with [type] = SystemType.Render', () => {
             let spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
-            
-            let system     = 'move'
-            let components = [ this.position, this.velocity ]
+
+            let components = this.position | this.velocity
             let callback   = (entities) => { 
                 for (let { entity } of entities) {
                     this.draw(entity)
                 }
             }
             
-            this.entityManager.registerRenderSystem(system, components, callback)
+            this.entityManager.registerRenderSystem(components, callback)
             
             expect(spy.calledOnce).to.be.true
-            expect(spy.calledWith(system, SystemType.Render, components, callback)).to.be.true
+            expect(spy.calledWith(SystemType.Render, components, callback)).to.be.true
         })
         
         it('returns the registered systems id', () => {
-            let system     = 'move'
-            let components = [ this.position, this.velocity ]
+            let components = this.position | this.velocity
             let callback   = (entities) => { 
                 for (let { entity } of entities) {
                     this.draw(entity)
                 }
             }
             
-            let systemId = this.entityManager.registerRenderSystem(system, components, callback)
+            let systemId = this.entityManager.registerRenderSystem(components, callback)
             
-            expect(systemId).to.equal(system)
+            expect(systemId).to.equal(1)
             
-            systemId = this.entityManager.registerRenderSystem(system, components, callback)
+            systemId = this.entityManager.registerRenderSystem(components, callback)
             
-            expect(systemId).to.equal(system)
+            expect(systemId).to.equal(2)
         })
     })
 })

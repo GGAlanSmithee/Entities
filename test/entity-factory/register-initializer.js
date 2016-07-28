@@ -6,9 +6,9 @@ describe('EntityFactory', function() {
         beforeEach(() => {
             this.entityFactory = new EntityFactory()
             
-            this.position = 'position'
-            this.velocity = 'velocity'
-            this.stats = 'stats'
+            this.position = 1
+            this.velocity = 2
+            this.stats    = 4
         })
         
         afterEach(() => {
@@ -39,34 +39,42 @@ describe('EntityFactory', function() {
             expect(this.entityFactory.initializers.size).to.equal(3)
         })
         
-        it('throws error if [key] is not a string or an empty string', () => {
+        it('throws error if [componentId] is not a posetive integer', () => {
             expect(this.entityFactory.initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(undefined, () => { })).to.throw(TypeError, 'key must be a non-empty string.')
-            
-            expect(this.entityFactory.initializers.size).to.equal(0)
-            
-            expect(() => this.entityFactory.registerInitializer(null, () => { })).to.throw(TypeError, 'key must be a non-empty string.')
+            expect(() => this.entityFactory.registerInitializer(undefined, () => { })).to.throw(TypeError, 'id must be a posetive integer.')
             
             expect(this.entityFactory.initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(1, () => { })).to.throw(TypeError, 'key must be a non-empty string.')
+            expect(() => this.entityFactory.registerInitializer(null, () => { })).to.throw(TypeError, 'id must be a posetive integer.')
             
             expect(this.entityFactory.initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(1.2, () => { })).to.throw(TypeError, 'key must be a non-empty string.')
+            expect(() => this.entityFactory.registerInitializer('1', () => { })).to.throw(TypeError, 'id must be a posetive integer.')
             
             expect(this.entityFactory.initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer([], () => { })).to.throw(TypeError, 'key must be a non-empty string.')
+            expect(() => this.entityFactory.registerInitializer(1.2, () => { })).to.throw(TypeError, 'id must be a posetive integer.')
             
             expect(this.entityFactory.initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer({}, () => { })).to.throw(TypeError, 'key must be a non-empty string.')
+            expect(() => this.entityFactory.registerInitializer([], () => { })).to.throw(TypeError, 'id must be a posetive integer.')
             
             expect(this.entityFactory.initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer('', () => { })).to.throw(TypeError, 'key must be a non-empty string.')
+            expect(() => this.entityFactory.registerInitializer({}, () => { })).to.throw(TypeError, 'id must be a posetive integer.')
+            
+            expect(this.entityFactory.initializers.size).to.equal(0)
+            
+            expect(() => this.entityFactory.registerInitializer('', () => { })).to.throw(TypeError, 'id must be a posetive integer.')
+            
+            expect(this.entityFactory.initializers.size).to.equal(0)
+            
+            expect(() => this.entityFactory.registerInitializer(0, () => { })).to.throw(TypeError, 'id must be a posetive integer.')
+            
+            expect(this.entityFactory.initializers.size).to.equal(0)
+            
+            expect(() => this.entityFactory.registerInitializer(-1, () => { })).to.throw(TypeError, 'id must be a posetive integer.')
             
             expect(this.entityFactory.initializers.size).to.equal(0)
         })

@@ -7,42 +7,41 @@ describe('EntityManager', function() {
         beforeEach(() => {
             this.entityManager = new EntityManager()
             
-            this.position     = 'position'
-            this.velocity     = 'velocity'
-            this.clickable    = 'clickable'
-            this.spawnable    = 'spawnable'
-            this.interactable = 'interactable'
+            this.position     = 1
+            this.velocity     = 2
+            this.clickable    = 4
+            this.spawnable    = 8
+            this.interactable = 16
             
             this.entities = []
-            this.entities.push([ this.position, this.velocity, this.clickable ])
-            this.entities.push([ this.position, this.velocity, this.clickable ])
-            this.entities.push([ this.position, this.velocity, this.spawnable ])
+            this.entities.push({ id: 0, entity: { components: this.position | this.velocity | this.clickable } })
+            this.entities.push({ id: 1, entity: { components: this.position | this.velocity | this.clickable } })
+            this.entities.push({ id: 2, entity: { components: this.position | this.velocity | this.spawnable } })
             
-            // todo look up mocks / stubs will callback / callthrough
             this.entityManager.getEntities = sinon.stub().returns(this.entities)
             
             this.logicSpy1 = sinon.spy()
             this.entityManager.systemManager.logicSystems.set(1, {
                     callback   : this.logicSpy1,
-                    components : [ this.position, this.velocity, this.clickable ]
+                    components : this.position | this.velocity | this.clickable
                 })
             
             this.logicSpy2 = sinon.spy()
             this.entityManager.systemManager.logicSystems.set(2, {
                     callback   : this.logicSpy2,
-                    components : [ this.position, this.clickable, this.interactable ]
+                    components : this.position | this.clickable | this.interactable
                 })
             
             this.renderSpy1 = sinon.spy()
             this.entityManager.systemManager.renderSystems.set(3, {
                     callback   : this.renderSpy1,
-                    components : [ this.position, this.velocity, this.clickable ]
+                    components : this.position | this.velocity | this.clickable
                 })
             
             this.renderSpy2 = sinon.spy()
             this.entityManager.systemManager.renderSystems.set(4, {
                     callback   : this.renderSpy2,
-                    components : [ this.position, this.velocity, this.clickable, this.spawnable ]
+                    components : this.position | this.velocity | this.clickable | this.spawnable
                 })
             
             this.opts = {

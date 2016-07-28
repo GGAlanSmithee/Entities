@@ -13,9 +13,9 @@ class EntityManager {
         this.componentManager = new ComponentManager()
         this.eventHandler     = new EventHandler()
         
-        this.entities = Array.from({ length : this.capacity }, () => ({ components: [ ] }))
-        
         this.entityConfigurations = new Map()
+        
+        this.entities = Array.from({ length : this.capacity }, () => ({ components: 0 }))
     }
     
     increaseCapacity() {
@@ -23,7 +23,7 @@ class EntityManager {
         
         this.capacity *= 2
         
-        this.entities = [...this.entities, ...Array.from({ length : oldCapacity }, () => ({ components: [ ] }))]
+        this.entities = [...this.entities, ...Array.from({ length : oldCapacity }, () => ({ components: 0 }))]
 
         for (let i = oldCapacity; i < this.capacity; ++i) {
             for (let component of this.componentManager.getComponents().keys()) {
@@ -33,14 +33,14 @@ class EntityManager {
     }
     
     newEntity(components) {
-        if (!Array.isArray(components)) {
-            throw TypeError('components argument must be an array of components.')
+        if (!Number.isInteger(components) || components <= 0) {
+            return { id : this.capacity, entity : null }
         }
         
         let id = 0
         
         for (; id < this.capacity; ++id) {
-            if (this.entities[id].components.length === 0) {
+            if (this.entities[id].components === 0) {
                 break
             }
         }
@@ -60,14 +60,15 @@ class EntityManager {
     }
     
     deleteEntity(id) {
-        this.entities[id].components = []
+        //todo add sanity check
+        this.entities[id].components = 0
         
         if (id < this.currentMaxEntity) {
             return
         }
         
         for (let i = id; i >= 0; --i) {
-            if (this.entities[i].components.length !== 0) {
+            if (this.entities[i].components !== 0) {
                 this.currentMaxEntity = i
                 
                 return
@@ -77,31 +78,29 @@ class EntityManager {
         this.currentMaxEntity = 0
     }
 
-    *getEntities(components = null) {
+    *getEntities(components = 0) {
         for (let id = 0; id <= this.currentMaxEntity; ++id) {
-            if (components === null || components.every(component => this.entities[id].components.indexOf(component) !== -1)) {
+            if (components === 0 || (this.entities[id].components & components) === components) {
                 yield { id, entity : this.entities[id] }
             }
         }
     }
     
-    registerConfiguration(key) {
-        if (typeof key !== 'string' || key === '') {
-            throw TypeError('key must be a non empty string.')
-        }
+    registerConfiguration() {
+        const configurationId = Math.max(0, ...this.entityConfigurations.keys()) + 1
         
-        this.entityConfigurations.set(key, this.entityFactory.createConfiguration())
+        this.entityConfigurations.set(configurationId, this.entityFactory.createConfiguration())
         
-        return key
+        return configurationId
     }
     
     // Component Manager
     
-    registerComponent(key, component) {
-        this.componentManager.registerComponent(key, component)
+    registerComponent(component) {
+        const componentId = this.componentManager.registerComponent(component)
         
         for (let entity of this.entities) {
-            entity[key] = this.componentManager.newComponent(key)
+            entity[componentId] = this.componentManager.newComponent(componentId)
         }
         
         let initializer
@@ -120,49 +119,39 @@ class EntityManager {
             default: initializer = function() { return component }; break
         }
         
-        this.entityFactory.registerInitializer(key, initializer)
+        this.entityFactory.registerInitializer(componentId, initializer)
         
-        return key
+        return componentId
     }
     
-    addComponent(id, componentKey) {
-        if (this.entities[id].components.indexOf(componentKey) !== -1) {
-            return
-        }
-        
-        this.entities[id].components.push(componentKey)
+    addComponent(entityId, componentId) {
+        this.entities[entityId].components |= componentId
     }
     
-    removeComponent(id, component) {
-        let index = this.entities[id].components.indexOf(component)
-        
-        if (index === -1) {
-            return
-        }
-        
-        this.entities[id].components.splice(index, 1)
+    removeComponent(entityId, componentId) {
+        this.entities[entityId].components &= ~componentId
     }
     
     // System Manager
     
-    registerSystem(key, type, components, callback) {
-        return this.systemManager.registerSystem(key, type, components, callback)
+    registerSystem(type, components, callback) {
+        return this.systemManager.registerSystem(type, components, callback)
     }
     
-    registerLogicSystem(key, components, callback) {
-        return this.systemManager.registerSystem(key, SystemType.Logic, components, callback)
+    registerLogicSystem(components, callback) {
+        return this.systemManager.registerSystem(SystemType.Logic, components, callback)
     }
     
-    registerRenderSystem(key, components, callback) {
-        return this.systemManager.registerSystem(key, SystemType.Render, components, callback)
+    registerRenderSystem(components, callback) {
+        return this.systemManager.registerSystem(SystemType.Render, components, callback)
     }
     
-    registerInitSystem(key, components, callback) {
-        return this.systemManager.registerSystem(key, SystemType.Init, components, callback)
+    registerInitSystem(components, callback) {
+        return this.systemManager.registerSystem(SystemType.Init, components, callback)
     }
     
-    removeSystem(key) {
-        return this.systemManager.removeSystem(key)
+    removeSystem(systemId) {
+        return this.systemManager.removeSystem(systemId)
     }
     
     onLogic(opts) {
@@ -201,14 +190,14 @@ class EntityManager {
         return this
     }
     
-    create(count, key) {
+    create(count, configurationId) {
         let configuration = undefined
         
-        if (typeof key === 'string') {
-            configuration = this.entityConfigurations.get(key)
+        if (Number.isInteger(configurationId) && configurationId > 0) {
+            configuration = this.entityConfigurations.get(configurationId)
             
             if (configuration === undefined) {
-                throw TypeError('could not find entity configuration for the supplied key. if you wish to create an entity without a configuration, do not pass a key.')
+                throw Error('Could not find entity configuration. If you wish to create entities without a configuration, do not pass a configurationId.')
             }
         }
         

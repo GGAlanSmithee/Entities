@@ -7,16 +7,16 @@ describe('EntityManager', function() {
         
         this.entityId = 5
         
-        this.position = 'position'
+        this.position = 1
         this.positionComponent = { x : 1, y : 1, z : -2 }
         
-        this.velocity = 'velocity'
+        this.velocity = 2
         this.velocityComponent = 0.25
         
-        this.stats = 'stats'
+        this.stats = 4
         this.statsComponent = { xp : 10000, level : 20 }
         
-        this.components = [ this.position, this.velocity, this.stats ]
+        this.components = 1 | 2 | 4
         this.entityManager.componentManager.components.set(this.position, this.positionComponent)
         this.entityManager.componentManager.components.set(this.velocity, this.velocityComponent)
         this.entityManager.componentManager.components.set(this.stats, this.statsComponent)
@@ -40,7 +40,7 @@ describe('EntityManager', function() {
             expect(this.entityManager.deleteEntity).to.be.a('function')
         })
         
-        it('\'removes\' an entity by emptying its [components] array', () => {
+        it('\'removes\' an entity by settings its [components] mask to 0', () => {
             for (let entity of this.entityManager.entities) {
                 expect(entity.components).to.deep.equal(this.components)
             }
@@ -51,7 +51,7 @@ describe('EntityManager', function() {
             
             for (let entity of this.entityManager.entities) {
                 if (idx === this.entityId) {
-                    expect(entity.components).to.be.an.instanceof(Array).and.to.be.empty
+                    expect(entity.components).to.equal(0)
                 } else {
                     expect(entity.components).to.deep.equal(this.components)
                 }
@@ -82,7 +82,7 @@ describe('EntityManager', function() {
             
             this.entityManager.deleteEntity(this.entityId)
             
-            expect(this.entityManager.entities[this.entityId].components).to.be.an.instanceof(Array).and.to.be.empty
+            expect(this.entityManager.entities[this.entityId].components).to.equal(0)
         })
         
         it('exits early when [entity] is more than [maxEntity]', () => {
@@ -100,9 +100,9 @@ describe('EntityManager', function() {
             
             this.entityManager.entities[2].components = this.components
             this.entityManager.entities[4].components = this.components
-            this.entityManager.entities[5].components = [ this.position ]
-            this.entityManager.entities[13].components = [ this.vel, this.position ]
-            this.entityManager.entities[50].components = [ this.stats ]
+            this.entityManager.entities[5].components = this.position
+            this.entityManager.entities[13].components = this.vel | this.position
+            this.entityManager.entities[50].components = this.stats
             
             expect(this.entityManager.currentMaxEntity).to.equal(50)
             

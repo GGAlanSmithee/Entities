@@ -6,16 +6,16 @@ describe('EntityManager', function() {
         beforeEach(() => {
             this.entityManager = new EntityManager(100)
             
-            this.position = 'position'
+            this.position = 1
             this.positionComponent = { x : 1, y : 1, z : -2 }
             
-            this.velocity = 'velocity'
+            this.velocity = 2
             this.velocityComponent = 0.25
             
-            this.stats = 'stats'
+            this.stats = 4
             this.statsComponent = { xp : 10000, level : 20 }
             
-            this.components = [ this.position, this.velocity, this.stats ]
+            this.components = this.position | this.velocity | this.stats
             this.entityManager.componentManager.components.set(this.position, this.positionComponent)
             this.entityManager.componentManager.components.set(this.velocity, this.velocityComponent)
             this.entityManager.componentManager.components.set(this.stats, this.statsComponent)
@@ -42,16 +42,47 @@ describe('EntityManager', function() {
         })
         
         it('does not add an entity and returns [capacity], given wrong [components] input', () => {
-            expect(() => this.entityManager.newEntity()).to.throw(TypeError, 'components argument must be an array of components.')
-            expect(() => this.entityManager.newEntity('not an array')).to.throw(TypeError, 'components argument must be an array of components.')
-            expect(() => this.entityManager.newEntity('')).to.throw(TypeError, 'components argument must be an array of components.')
-            expect(() => this.entityManager.newEntity(null)).to.throw(TypeError, 'components argument must be an array of components.')
-            expect(() => this.entityManager.newEntity(undefined)).to.throw(TypeError, 'components argument must be an array of components.')
-            expect(() => this.entityManager.newEntity(0)).to.throw(TypeError, 'components argument must be an array of components.')
-            expect(() => this.entityManager.newEntity(-1)).to.throw(TypeError, 'components argument must be an array of components.')
-            expect(() => this.entityManager.newEntity(1)).to.throw(TypeError, 'components argument must be an array of components.')
-            expect(() => this.entityManager.newEntity(1.5)).to.throw(TypeError, 'components argument must be an array of components.')
-            expect(() => this.entityManager.newEntity({})).to.throw(TypeError, 'components argument must be an array of components.')
+            const capacity = this.entityManager.capacity
+            
+            let res = this.entityManager.newEntity()
+            expect(res.id).to.equal(capacity)
+            expect(res.entity).to.be.null
+            
+            res = this.entityManager.newEntity('not a number')
+            expect(res.id).to.equal(capacity)
+            expect(res.entity).to.be.null
+            
+            res = this.entityManager.newEntity('')
+            expect(res.id).to.equal(capacity)
+            expect(res.entity).to.be.null
+            
+            res = this.entityManager.newEntity(null)
+            expect(res.id).to.equal(capacity)
+            expect(res.entity).to.be.null
+            
+            res = this.entityManager.newEntity(undefined)
+            expect(res.id).to.equal(capacity)
+            expect(res.entity).to.be.null
+            
+            res = this.entityManager.newEntity(0)
+            expect(res.id).to.equal(capacity)
+            expect(res.entity).to.be.null
+            
+            res = this.entityManager.newEntity(-1)
+            expect(res.id).to.equal(capacity)
+            expect(res.entity).to.be.null
+            
+            res = this.entityManager.newEntity('1')
+            expect(res.id).to.equal(capacity)
+            expect(res.entity).to.be.null
+            
+            res = this.entityManager.newEntity(1.5)
+            expect(res.id).to.equal(capacity)
+            expect(res.entity).to.be.null
+            
+            res = this.entityManager.newEntity({})
+            expect(res.id).to.equal(capacity)
+            expect(res.entity).to.be.null
         })
         
         it('sets the [components] property of entities[entityId] to passed in [components]', () => {
@@ -63,22 +94,22 @@ describe('EntityManager', function() {
         
         it('returns capacity and does not add an entity if there is no more space in the entityManager', () => {
             for (let i = 0; i < this.entityManager.capacity; ++i) {
-                this.entityManager.newEntity([ this.position ])
+                this.entityManager.newEntity(this.position)
             }
             
-            let res = this.entityManager.newEntity([ this.position ])
+            let res = this.entityManager.newEntity(this.position)
             expect(res.id).to.equal(this.entityManager.capacity)
             expect(res.entity).to.be.null
             
-            res = this.entityManager.newEntity([ this.position ])
+            res = this.entityManager.newEntity(this.position)
             expect(res.id).to.equal(this.entityManager.capacity)
             expect(res.entity).to.be.null
             
-            res = this.entityManager.newEntity([ this.position, this.stats ])
+            res = this.entityManager.newEntity(this.position, this.stats)
             expect(res.id).to.equal(this.entityManager.capacity)
             expect(res.entity).to.be.null
             
-            res = this.entityManager.newEntity([ this.velocity ])
+            res = this.entityManager.newEntity(this.velocity)
             expect(res.id).to.equal(this.entityManager.capacity)
             expect(res.entity).to.be.null
         })
@@ -101,7 +132,7 @@ describe('EntityManager', function() {
             expect(res.id).to.equal(2)
             expect(this.entityManager.currentMaxEntity).to.equal(2)
             
-            this.entityManager.entities[1].components = []
+            this.entityManager.entities[1].components = 0
             
             res = this.entityManager.newEntity(this.components)
             

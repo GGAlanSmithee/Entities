@@ -6,13 +6,13 @@ describe('SystemManager', function() {
         beforeEach(() => {
             this.systemManager = new SystemManager()
             
-            this.init = 'init'
+            this.init = 1
             this.initSystem = () => { }
             
-            this.movement = 'movement'
+            this.movement = 2
             this.movementSystem = () => { }
             
-            this.render = 'render'
+            this.render = 3
             this.renderSystem = () => { }
             
             this.systemManager.initSystems.set(this.init, this.initSystems)
@@ -67,7 +67,7 @@ describe('SystemManager', function() {
         })
         
         it('returns false on bad input', () => {
-            expect(this.systemManager.removeSystem(1)).to.be.false
+            expect(this.systemManager.removeSystem('id')).to.be.false
             expect(this.systemManager.removeSystem(null)).to.be.false
             expect(this.systemManager.removeSystem([])).to.be.false
             expect(this.systemManager.removeSystem(1.2)).to.be.false

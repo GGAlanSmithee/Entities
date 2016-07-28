@@ -8,13 +8,13 @@ describe('EntityManager', function() {
             
             this.entityId = 0
             
-            this.position = 'position'
+            this.position = 1
             this.positionComponent = { x : 1, y : 1, z : -2 }
             
-            this.velocity = 'velocity'
+            this.velocity = 2
             this.velocityComponent = 0.25
             
-            this.stats = 'stats'
+            this.stats = 4
             this.statsComponent = { xp : 10000, level : 20 }
             
             this.entityManager.componentManager.components.set(this.position, this.positionComponent)
@@ -30,54 +30,49 @@ describe('EntityManager', function() {
             expect(this.entityManager.addComponent).to.be.a('function')
         })
         
-        it('adds a component to an entity by adding it to the entity\'s [component] array', () => {
-            expect(this.entityManager.entities[this.entityId]).property('components').to.be.an.instanceof(Array).and.to.be.empty
+        it('adds a component to an entity by adding it to the entity\'s component mask', () => {
+            let entity = this.entityManager.entities[this.entityId]
             
-            expect(this.entityManager.entities[this.entityId]).property('components').to.not.contain(this.position)
-            expect(this.entityManager.entities[this.entityId]).property('components').to.not.contain(this.velocity)
-            expect(this.entityManager.entities[this.entityId]).property('components').to.not.contain(this.stats)
-            expect(this.entityManager.entities[this.entityId]).property('components').property('length').to.equal(0)
+            expect(entity).property('components').to.be.a.number
+            
+            expect((entity.components & this.position) === this.position).to.be.false
+            expect((entity.components & this.velocity) === this.velocity).to.be.false
+            expect((entity.components & this.stats) === this.stats).to.be.false
             
             this.entityManager.addComponent(this.entityId, this.position)
             
-            expect(this.entityManager.entities[this.entityId]).property('components').to.contain(this.position)
-            expect(this.entityManager.entities[this.entityId]).property('components').to.not.contain(this.velocity)
-            expect(this.entityManager.entities[this.entityId]).property('components').to.not.contain(this.stats)
-            expect(this.entityManager.entities[this.entityId]).property('components').property('length').to.equal(1)
+            expect((entity.components & this.position) === this.position).to.be.true
+            expect((entity.components & this.velocity) === this.velocity).to.be.false
+            expect((entity.components & this.stats) === this.stats).to.be.false
             
             this.entityManager.addComponent(this.entityId, this.velocity)
             
-            expect(this.entityManager.entities[this.entityId]).property('components').to.contain(this.position)
-            expect(this.entityManager.entities[this.entityId]).property('components').to.contain(this.velocity)
-            expect(this.entityManager.entities[this.entityId]).property('components').to.not.contain(this.stats)
-            expect(this.entityManager.entities[this.entityId]).property('components').property('length').to.equal(2)
+            expect((entity.components & this.position) === this.position).to.be.true
+            expect((entity.components & this.velocity) === this.velocity).to.be.true
+            expect((entity.components & this.stats) === this.stats).to.be.false
             
             this.entityManager.addComponent(this.entityId, this.stats)
             
-            expect(this.entityManager.entities[this.entityId]).property('components').to.contain(this.position)
-            expect(this.entityManager.entities[this.entityId]).property('components').to.contain(this.velocity)
-            expect(this.entityManager.entities[this.entityId]).property('components').to.contain(this.stats)
-            expect(this.entityManager.entities[this.entityId]).property('components').property('length').to.equal(3)
+            expect((entity.components & this.position) === this.position).to.be.true
+            expect((entity.components & this.velocity) === this.velocity).to.be.true
+            expect((entity.components & this.stats) === this.stats).to.be.true
         })
         
         it('does not add additional components if the component is already present on the entity', () => {
-            expect(this.entityManager.entities[this.entityId]).property('components').property('length').to.equal(0)
+            const entity = this.entityManager.entities[this.entityId]
+            expect(entity).property('components').to.equal(0)
             
             this.entityManager.addComponent(this.entityId, this.position)
-            
-            expect(this.entityManager.entities[this.entityId]).property('components').property('length').to.equal(1)
+            expect(entity).property('components').to.equal(1)
             
             this.entityManager.addComponent(this.entityId, this.position)
-            
-            expect(this.entityManager.entities[this.entityId]).property('components').property('length').to.equal(1)
+            expect(entity).property('components').to.equal(1)
             
             this.entityManager.addComponent(this.entityId, this.stats)
-            
-            expect(this.entityManager.entities[this.entityId]).property('components').property('length').to.equal(2)
+            expect(entity).property('components').to.equal(5)
             
             this.entityManager.addComponent(this.entityId, this.position)
-            
-            expect(this.entityManager.entities[this.entityId]).property('components').property('length').to.equal(2)
+            expect(entity).property('components').to.equal(5)
         })
     })
 })

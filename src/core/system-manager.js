@@ -11,39 +11,37 @@ class SystemManager {
         this.initSystems   = new Map()
     }
     
-    registerSystem(key, type, components, callback) {
-        if (typeof key !== 'string' || key === '') {
-            throw TypeError('key must be a non-empty string.')
-        }
-        
+    registerSystem(type, components, callback) {
         if (type !== SystemType.Logic && type !== SystemType.Render && type !== SystemType.Init) {
             throw TypeError('type must be a valid SystemType.')
         }
         
-        if (!Array.isArray(components)) {
-            throw TypeError('components argument must be an array of components.')
+        if (typeof components !== 'number')  {
+            throw TypeError('components must be a number.')
         }
         
         if (typeof callback !== 'function') {
             throw TypeError('callback must be a function.')
         }
         
-        let system = {
+        const system = {
             components,
             callback
         }
         
+        const systemId = Math.max(0, ...this.logicSystems.keys(), ...this.renderSystems.keys(), ...this.initSystems.keys()) + 1
+        
         switch (type) {
-            case SystemType.Logic : this.logicSystems.set(key, system); break
-            case SystemType.Render : this.renderSystems.set(key, system); break
-            case SystemType.Init : this.initSystems.set(key, system); break
+            case SystemType.Logic : this.logicSystems.set(systemId, system); break
+            case SystemType.Render : this.renderSystems.set(systemId, system); break
+            case SystemType.Init : this.initSystems.set(systemId, system); break
         }
         
-        return key
+        return systemId
     }
     
-    removeSystem(key) {
-        return this.logicSystems.delete(key) || this.renderSystems.delete(key) || this.initSystems.delete(key)
+    removeSystem(systemId) {
+        return this.logicSystems.delete(systemId) || this.renderSystems.delete(systemId) || this.initSystems.delete(systemId)
     }
 }
 

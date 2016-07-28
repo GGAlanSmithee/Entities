@@ -3,10 +3,10 @@ class ComponentManager {
         this.components = new Map()
     }
     
-    newComponent(key) {
-        let component = this.components.get(key)
+    newComponent(componentId) {
+        let component = this.components.get(componentId)
         
-        if (component == null) {
+        if (component === null || component === undefined) {
             return null
         }
         
@@ -27,18 +27,18 @@ class ComponentManager {
         }
     }
     
-    registerComponent(key, component) {
-        if (typeof key !== 'string' || key === '') {
-            throw TypeError('key must be a non-empty string.')
-        }
-        
+    registerComponent(component) {
         if (component === null || component === undefined) {
             throw TypeError('component cannot be null or undefined.')
         }
         
-        this.components.set(key, component)
+        const max = Math.max(...this.components.keys())
+        
+        const id = max === undefined || max === null || max === -Infinity ? 1 : max === 0 ? 1 : max * 2
 
-        return key
+        this.components.set(id, component)
+
+        return id
     }
     
     getComponents() {

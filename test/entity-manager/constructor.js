@@ -77,7 +77,7 @@ describe('EntityManager', function() {
             
             for (let entity of this.entityManager.entities) {
                 expect(entity).to.be.an.instanceof(Object)
-                expect(entity).property('components').to.be.an.instanceof(Array).and.to.be.empty
+                expect(entity).property('components').to.equal(0)
             }
         })
         

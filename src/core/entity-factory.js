@@ -6,16 +6,16 @@ class EntityFactory {
         this.configuration = new Map()
     }
     
-    registerInitializer(key, initializer) {
-        if (typeof key !== 'string' || key === '') {
-            throw TypeError('key must be a non-empty string.')
+    registerInitializer(id, initializer) {
+        if (!Number.isInteger(id) || id <= 0) {
+            throw TypeError('id must be a posetive integer.')
         }
         
         if (typeof initializer !== 'function') {
             throw TypeError('initializer must be a function.')
         }
         
-        this.initializers.set(key, initializer)
+        this.initializers.set(id, initializer)
     }
     
     build() {
@@ -24,16 +24,16 @@ class EntityFactory {
         return this
     }
     
-    withComponent(key, initializer) {
-        if (typeof key !== 'string' || key === '') {
+    withComponent(componentId, initializer) {
+        if (!Number.isInteger(componentId) || componentId <= 0) {
             return this
         }
         
         if (typeof initializer !== 'function') {
-            initializer = this.initializers.get(key)
+            initializer = this.initializers.get(componentId)
         }
         
-        this.configuration.set(key, initializer)
+        this.configuration.set(componentId, initializer)
         
         return this
     }
@@ -47,13 +47,11 @@ class EntityFactory {
             return []
         }
     
-        configuration = configuration || this.configuration
-        
-        let components = []
-        
-        for (let component of configuration.keys()) {
-            components.push(component)
+        if (configuration == null) {
+            configuration = this.configuration
         }
+        
+        const components = Array.from(configuration.keys()).reduce((curr, next) => curr |= next, 0)
         
         let entities = []
         

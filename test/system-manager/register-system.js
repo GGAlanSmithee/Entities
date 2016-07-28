@@ -3,13 +3,9 @@ import sinon                         from 'sinon'
 import { SystemManager, SystemType } from '../../src/core/system-manager'
 
 describe('SystemManager', function() {
-    describe('registerSystem(type = SystemType.Logic, selector = SelectorType.GetWith, components = 0, callback = undefined)', () => {
+    describe('registerSystem(type, components, callback)', () => {
         beforeEach(() => {
             this.systemManager = new SystemManager()
-            
-            this.movement = 'movement'
-            this.render = 'render'
-            this.init = 'init'
         })
         
         afterEach(() => {
@@ -25,85 +21,65 @@ describe('SystemManager', function() {
             expect(this.systemManager.renderSystems).property('size').to.equal(0)
             expect(this.systemManager.initSystems).property('size').to.equal(0)
             
-            this.systemManager.registerSystem(this.movement, SystemType.Logic, [ 'position', 'velocity' ], () => { })
-            this.systemManager.registerSystem(this.render, SystemType.Render, [ 'position', 'appearance' ], () => { })
-            this.systemManager.registerSystem(this.init, SystemType.Init, [], () => { })
+            this.systemManager.registerSystem(SystemType.Logic, 1 | 2, () => { })
+            this.systemManager.registerSystem(SystemType.Render, 1 | 2, () => { })
+            this.systemManager.registerSystem(SystemType.Init, 1 | 2, () => { })
             
             expect(this.systemManager.logicSystems).property('size').to.equal(1)
             expect(this.systemManager.renderSystems).property('size').to.equal(1)
             expect(this.systemManager.initSystems).property('size').to.equal(1)
         })
         
-        it('returns the added sytems key', () => {
-            const movementSystem = this.systemManager.registerSystem(this.movement, SystemType.Logic, [ 'position', 'velocity' ], () => { })
+        it('returns the added sytems id', () => {
+            let system = this.systemManager.registerSystem(SystemType.Render, 1 | 2, () => { })
             
-            expect(movementSystem).to.equal(this.movement)
+            expect(system).to.equal(1)
             
-            const renderSystem = this.systemManager.registerSystem(this.render, SystemType.Render, [ 'position', 'appearance' ], () => { })
+            system = this.systemManager.registerSystem(SystemType.Logic, 1 | 2, () => { })
             
-            expect(renderSystem).to.equal(this.render)
+            expect(system).to.equal(2)
             
-            const initSystem = this.systemManager.registerSystem(this.init, SystemType.Init, [], () => { })
+            system = this.systemManager.registerSystem(SystemType.Init, 1 | 2, () => { })
             
-            expect(initSystem).to.equal(this.init)
+            expect(system).to.equal(3)
+            
+            system = this.systemManager.registerSystem(SystemType.Render, 1 | 2, () => { })
+        
+            expect(system).to.equal(4)
+            
+            system = this.systemManager.registerSystem(SystemType.Logic, 1 | 2, () => { })
+            
+            expect(system).to.equal(5)
+            
+            system = this.systemManager.registerSystem(SystemType.Init, 1 | 2, () => { })
+            
+            expect(system).to.equal(6)
         })
         
-        it('adds a system with the correct [type] and [components]', () => {
-            const logicSystem = this.systemManager.registerSystem(this.movement, SystemType.Logic, [ 'position' ], () => { })
-            const renderSystem = this.systemManager.registerSystem(this.render, SystemType.Render, [ 'position', 'appearance' ], () => { })
-            const initSystem = this.systemManager.registerSystem(this.init, SystemType.Init, [], () => { })
-            const logicSystem2 = this.systemManager.registerSystem(`${this.movement}2`, SystemType.Logic, [ 'position', 'velocity' ], () => { })
-            const renderSystem2 = this.systemManager.registerSystem(`${this.render}2`, SystemType.Render, [ 'position' ], () => { })
-            const initSystem2 = this.systemManager.registerSystem(`${this.init}2`, SystemType.Init, [ 'velocity'], () => { })
+        it('registeres a system with the correct correct [components] and [callback]', () => {
+            let spy = sinon.spy()
             
-            expect(this.systemManager.logicSystems.get(logicSystem)).property('components').to.deep.equal([ 'position' ])
-            expect(this.systemManager.renderSystems.get(renderSystem)).property('components').to.deep.equal([ 'position', 'appearance' ])
-            expect(this.systemManager.initSystems.get(initSystem)).property('components').to.deep.equal([])
-            expect(this.systemManager.logicSystems.get(logicSystem2)).property('components').to.deep.equal([ 'position', 'velocity' ])
-            expect(this.systemManager.renderSystems.get(renderSystem2)).property('components').to.deep.equal([ 'position' ])
-            expect(this.systemManager.initSystems.get(initSystem2)).property('components').to.deep.equal([ 'velocity' ])
-        })
-        
-        it('registeres a system with the correct correct [callback]', () => {
-            const spy = sinon.spy()
+            let systemId = this.systemManager.registerSystem(SystemType.Logic, 1 | 2, spy)
             
-            const movementSystem = this.systemManager.registerSystem(this.movement, SystemType.Logic, [ 'position', 'velocity' ], spy)
+            let system = this.systemManager.logicSystems.get(systemId)
             
-            this.systemManager.logicSystems.get(movementSystem).callback()
+            expect(system).property('components').to.equal(1 | 2)
             
-            expect(spy.calledOnce).to.be.true
-        })
-        
-        it('throws error if [key] is not a string or is empty', () => {
-            expect(() => this.systemManager.registerSystem(undefined, SystemType.Init, [], () => { })).to.throw(TypeError, 'key must be a non-empty string.')
-            expect(() => this.systemManager.registerSystem(null, SystemType.Init, [], () => { })).to.throw(TypeError, 'key must be a non-empty string.')
-            expect(() => this.systemManager.registerSystem([], SystemType.Init, [], () => { })).to.throw(TypeError, 'key must be a non-empty string.')
-            expect(() => this.systemManager.registerSystem({}, SystemType.Init, [], () => { })).to.throw(TypeError, 'key must be a non-empty string.')
-            expect(() => this.systemManager.registerSystem(1, SystemType.Init, [], () => { })).to.throw(TypeError, 'key must be a non-empty string.')
-            expect(() => this.systemManager.registerSystem(1.2, SystemType.Init, [], () => { })).to.throw(TypeError, 'key must be a non-empty string.')
-            expect(() => this.systemManager.registerSystem('', SystemType.Init, [], () => { })).to.throw(TypeError, 'key must be a non-empty string.')
+            system.callback()
+            
+            expect(system.callback.calledOnce).to.be.true
         })
         
         it('throws error if [type] is not a valid SystemType', () => {
-            expect(() => this.systemManager.registerSystem(this.movement, SystemType.Init + 1, [], () => { })).to.throw(TypeError, 'type must be a valid SystemType.')
+            expect(() => { this.systemManager.registerSystem(3, 1 | 2, () => { }) }).to.throw(TypeError, 'type must be a valid SystemType.')
         })
         
-        it('throws error if [components] is not an array', () => {
-            expect(() => this.systemManager.registerSystem(this.movement, SystemType.Logic, null, () => { })).to.throw(TypeError, 'components argument must be an array of components.')
-            expect(() => this.systemManager.registerSystem(this.movement, SystemType.Logic, undefined, () => { })).to.throw(TypeError, 'components argument must be an array of components.')
-            expect(() => this.systemManager.registerSystem(this.movement, SystemType.Logic, {}, () => { })).to.throw(TypeError, 'components argument must be an array of components.')
-            expect(() => this.systemManager.registerSystem(this.movement, SystemType.Logic, 1, () => { })).to.throw(TypeError, 'components argument must be an array of components.')
-            expect(() => this.systemManager.registerSystem(this.movement, SystemType.Logic, 1.2, () => { })).to.throw(TypeError, 'components argument must be an array of components.')
-            expect(() => this.systemManager.registerSystem(this.movement, SystemType.Logic, 'not an array', () => { })).to.throw(TypeError, 'components argument must be an array of components.')
+        it('throws error if [components] is not a number', () => {
+            expect(() => { this.systemManager.registerSystem(SystemType.Logic, 'component', () => { }) }).to.throw(TypeError, 'components must be a number.')
         })
         
         it('throws error if [callback] is not a function', () => {
-            expect(() => this.systemManager.registerSystem(this.movement, SystemType.Logic, [])).to.throw(TypeError, 'callback must be a function.')
-            expect(() => this.systemManager.registerSystem(this.movement, SystemType.Logic, [], { })).to.throw(TypeError, 'callback must be a function.')
-            expect(() => this.systemManager.registerSystem(this.movement, SystemType.Logic, [], 1)).to.throw(TypeError, 'callback must be a function.')
-            expect(() => this.systemManager.registerSystem(this.movement, SystemType.Logic, [], '')).to.throw(TypeError, 'callback must be a function.')
-            expect(() => this.systemManager.registerSystem(this.movement, SystemType.Logic, [], 1.2)).to.throw(TypeError, 'callback must be a function.')
-            expect(() => this.systemManager.registerSystem(this.movement, SystemType.Logic, [], null)).to.throw(TypeError, 'callback must be a function.')
+            expect(() => { this.systemManager.registerSystem(SystemType.Logic, 1 | 2, { }) }).to.throw(TypeError, 'callback must be a function.')
         })
     })
 })

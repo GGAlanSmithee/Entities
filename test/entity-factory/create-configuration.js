@@ -6,8 +6,8 @@ describe('EntityFactory', function() {
         beforeEach(() => {
             this.entityFactory = new EntityFactory()
             
-            this.position = 'position'
-            this.velocity = 'velocity'
+            this.position = 1
+            this.velocity = 2
         })
         
         afterEach(() => {

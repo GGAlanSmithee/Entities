@@ -2,7 +2,7 @@ import { expect }           from 'chai'
 import { ComponentManager } from '../../src/core/component-manager'
 
 describe('ComponentManager', function() {
-    describe('newComponent(key)', () => {
+    describe('newComponent(componentId)', () => {
         beforeEach(() => {
             this.componentManager = new ComponentManager()
         })
@@ -16,14 +16,14 @@ describe('ComponentManager', function() {
         })
         
         it('creates a new component from a function', () => {
-            const key = 'key'
+            const id = 1
             
-            this.componentManager.components.set(key, function() { 
+            this.componentManager.components.set(id, function() { 
                 this.x = 10.0
                 this.y = 10.0
             })
             
-            const component = this.componentManager.newComponent(key)
+            const component = this.componentManager.newComponent(id)
             
             expect(component).to.be.an('object')
             expect(component).to.have.property('x')
@@ -34,14 +34,14 @@ describe('ComponentManager', function() {
         })
         
         it('creates a new component from an object', () => {
-            const key = 'key'
+            const id = 1
             
-            this.componentManager.components.set(key, { 
+            this.componentManager.components.set(id, { 
                 x : 10.0,
                 y : 10.0
             })
             
-            const component = this.componentManager.newComponent(key)
+            const component = this.componentManager.newComponent(id)
             
             expect(component).to.be.an('object')
             expect(component).to.have.property('x')
@@ -52,38 +52,38 @@ describe('ComponentManager', function() {
         })
         
         it('creates a new component from an int', () => {
-            const key = 'key'
+            const id = 1
             
-            this.componentManager.components.set(key, 5)
+            this.componentManager.components.set(id, 5)
             
-            let component = this.componentManager.newComponent(key)
+            let component = this.componentManager.newComponent(id)
             
             expect(component).to.be.a('number')
             expect(component).to.equal(5)
             
-            this.componentManager.components.set(key, -10)
+            this.componentManager.components.set(id, -10)
             
-            component = this.componentManager.newComponent(key)
+            component = this.componentManager.newComponent(id)
             
             expect(component).to.be.a('number')
             expect(component).to.equal(-10)
         })
         
         it('creates a new component from a float', () => {
-            const key = 'key'
+            const id = 1
             
-            this.componentManager.components.set(key, 5.5)
+            this.componentManager.components.set(id, 5.5)
             
-            let component = this.componentManager.newComponent(key)
+            let component = this.componentManager.newComponent(id)
             
             expect(component).to.be.a('number')
             expect(Number.isInteger(component)).to.be.false
             expect(component).to.equal(5.5)
             expect(component).to.not.equal(5)
             
-            this.componentManager.components.set(key, -20.5)
+            this.componentManager.components.set(id, -20.5)
             
-            component = this.componentManager.newComponent(key)
+            component = this.componentManager.newComponent(id)
             
             expect(component).to.be.a('number')
             expect(Number.isInteger(component)).to.be.false
@@ -92,30 +92,30 @@ describe('ComponentManager', function() {
         })
         
         it('creates a new component from a string', () => {
-            let key = 'key'
+            let id = 1
             
-            this.componentManager.components.set(key, 'test')
+            this.componentManager.components.set(id, 'test')
             
-            let component = this.componentManager.newComponent(key)
+            let component = this.componentManager.newComponent(id)
             
             expect(component).to.be.a('string')
             expect(component).to.equal('test')
             
-            this.componentManager.components.set(key, '')
+            this.componentManager.components.set(id, '')
             
-            component = this.componentManager.newComponent(key)
+            component = this.componentManager.newComponent(id)
             
             expect(component).to.be.a('string')
             expect(component).to.equal('')
         })
         
-        it('returns null if a component has not been registered for the passed in [key]', () => {
-            const key            = 'key'
-            const nonExistingKey = 'keyy'
+        it('returns null if a component has not been registered for the passed in [id]', () => {
+            const id            = 1
+            const nonExistingId = 2
             
-            this.componentManager.components.set(key, 'test')
+            this.componentManager.components.set(id, 'test')
             
-            expect(this.componentManager.newComponent(nonExistingKey)).to.be.null
+            expect(this.componentManager.newComponent(nonExistingId)).to.be.null
         })
             
         it('returns null on bad input', () => {

@@ -8,8 +8,8 @@ describe('EntityManager', function() {
         beforeEach(() => {
             this.entityManager = new EntityManager()
             
-            this.position = 'position'
-            this.velocity = 'velocity'
+            this.position = 1
+            this.velocity = 2
         })
         
         afterEach(() => {
@@ -23,8 +23,7 @@ describe('EntityManager', function() {
         it('invokes [systemManager.registerSystem] with [type] = SystemType.Init', () => {
             let spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
             
-            let system     = 'init'
-            let components = [ this.position, this.velocity ]
+            let components = this.position | this.velocity
             let callback   = (entities) => { 
                 for (let { entity } of entities) {
                     entity.position = { x : 5, y : 5 }
@@ -32,15 +31,14 @@ describe('EntityManager', function() {
                 }
             }
             
-            this.entityManager.registerInitSystem(system, components, callback)
+            this.entityManager.registerInitSystem(components, callback)
             
             expect(spy.calledOnce).to.be.true
-            expect(spy.calledWith(system, SystemType.Init, components, callback)).to.be.true
+            expect(spy.calledWith(SystemType.Init, components, callback)).to.be.true
         })
         
         it('returns the registered systems id', () => {
-            let system     = 'init'
-            let components = [ this.position, this.velocity ]
+            let components = this.position | this.velocity
             let callback   = (entities) => { 
                 for (let { entity } of entities) {
                     entity.position = { x : 5, y : 5 }
@@ -48,13 +46,13 @@ describe('EntityManager', function() {
                 }
             }
             
-            let systemId = this.entityManager.registerInitSystem(system, components, callback)
+            let systemId = this.entityManager.registerInitSystem(components, callback)
             
-            expect(systemId).to.equal(system)
+            expect(systemId).to.equal(1)
             
-            systemId = this.entityManager.registerInitSystem(system, components, callback)
+            systemId = this.entityManager.registerInitSystem(components, callback)
             
-            expect(systemId).to.equal(system)
+            expect(systemId).to.equal(2)
         })
     })
 })

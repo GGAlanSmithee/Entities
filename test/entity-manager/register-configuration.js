@@ -3,7 +3,7 @@ import sinon             from 'sinon'
 import { EntityManager } from '../../src/core/entity-manager'
 
 describe('EntityManager', function() {
-    describe('registerConfiguration(key)', () => {
+    describe('registerConfiguration()', () => {
         beforeEach(() => {
             this.entityManager = new EntityManager()
         })
@@ -25,35 +25,24 @@ describe('EntityManager', function() {
         })
         
         it('saves the created configuration in [entityConfigurations]', () => {
-            let component   = this.position
+            let component   = 1
             let initializer = function() { return 2 }
             
             this.entityManager.entityFactory.configuration.set(component, initializer)
             
-            this.entityManager.registerConfiguration('conf')
+            let conf = this.entityManager.registerConfiguration()
             
-            const configuration = this.entityManager.entityConfigurations.get('conf')
+            const configuration = this.entityManager.entityConfigurations.get(conf)
             
             expect(configuration).to.be.an.instanceof(Map)
             expect(configuration).property('size').to.equal(1)
             expect(configuration.get(component)).to.equal(initializer)
         })
         
-        it('returns [key]', () => {
-            let configuration = this.entityManager.registerConfiguration('conf')
+        it('returns [id]', () => {
+            const id = this.entityManager.registerConfiguration()
             
-            expect(configuration).to.equal('conf')
-        })
-        
-        it('throws exception on bad [key]', () => {
-            expect(() => this.entityManager.registerConfiguration()).to.throw(TypeError, 'key must be a non empty string.')
-            expect(() => this.entityManager.registerConfiguration(null)).to.throw(TypeError, 'key must be a non empty string.')
-            expect(() => this.entityManager.registerConfiguration('')).to.throw(TypeError, 'key must be a non empty string.')
-            expect(() => this.entityManager.registerConfiguration(1)).to.throw(TypeError, 'key must be a non empty string.')
-            expect(() => this.entityManager.registerConfiguration(1.2)).to.throw(TypeError, 'key must be a non empty string.')
-            expect(() => this.entityManager.registerConfiguration([])).to.throw(TypeError, 'key must be a non empty string.')
-            expect(() => this.entityManager.registerConfiguration({})).to.throw(TypeError, 'key must be a non empty string.')
-            expect(() => this.entityManager.registerConfiguration(() => { })).to.throw(TypeError, 'key must be a non empty string.')
+            expect(id).to.equal(1)
         })
     })
 })

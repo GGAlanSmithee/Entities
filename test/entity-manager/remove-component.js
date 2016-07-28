@@ -4,24 +4,16 @@ import { EntityManager } from '../../src/core/entity-manager'
 describe('EntityManager', function() {
     describe('removeComponent(entityId, componentId)', () => {
         beforeEach(() => {
-            this.entityManager = new EntityManager(100)
+            this.entityManager = new EntityManager()
             
-            this.entityId = 0
+            this.entityId       = 0
             
-            this.position = 'position'
-            this.positionComponent = { x : 1, y : 1, z : -2 }
+            this.componentOne   = 1
+            this.componentTwo   = 2
+            this.componentThree = 4
+            this.componentFour  = 8
             
-            this.velocity = 'velocity'
-            this.velocityComponent = 0.25
-            
-            this.stats = 'stats'
-            this.statsComponent = { xp : 10000, level : 20 }
-            
-            this.entityManager.componentManager.components.set(this.position, this.positionComponent)
-            this.entityManager.componentManager.components.set(this.velocity, this.velocityComponent)
-            this.entityManager.componentManager.components.set(this.stats, this.statsComponent)
-            
-            this.entityManager.entities[this.entityId].components = [ this.position, this.velocity, this.stats ]
+            this.entityManager.entities[this.entityId].components = this.componentOne | this.componentTwo | this.componentThree | this.componentFour
         })
         
         afterEach(() => {
@@ -32,45 +24,43 @@ describe('EntityManager', function() {
             expect(this.entityManager.removeComponent).to.be.a('function')
         })
         
-        it('removes a component from an entity by removing [component] from its [components]', () => {
+        it('removes a component by unsetting the components bit in the entity mask', () => {
             let entity = this.entityManager.entities[this.entityId]
             
-            expect(entity).property('components').to.contain(this.position)
-            expect(entity).property('components').to.contain(this.velocity)
-            expect(entity).property('components').to.contain(this.stats)
+            expect(entity.components).to.equal(15)
             
-            this.entityManager.removeComponent(this.entityId, this.position)
+            expect((entity.components & this.componentFour) === this.componentFour).to.be.true
+            expect((entity.components & this.componentThree) === this.componentThree).to.be.true
+            expect((entity.components & this.componentTwo) === this.componentTwo).to.be.true
+            expect((entity.components & this.componentOne) === this.componentOne).to.be.true
             
-            expect(entity).property('components').to.not.contain(this.position)
-            expect(entity).property('components').to.contain(this.velocity)
-            expect(entity).property('components').to.contain(this.stats)
+            this.entityManager.removeComponent(this.entityId, this.componentThree)
             
-            this.entityManager.removeComponent(this.entityId, this.velocity)
+            expect((entity.components & this.componentFour) === this.componentFour).to.be.true
+            expect((entity.components & this.componentThree) === this.componentThree).to.be.false
+            expect((entity.components & this.componentTwo) === this.componentTwo).to.be.true
+            expect((entity.components & this.componentOne) === this.componentOne).to.be.true
             
-            expect(entity).property('components').to.not.contain(this.position)
-            expect(entity).property('components').to.not.contain(this.velocity)
-            expect(entity).property('components').to.contain(this.stats)
+            this.entityManager.removeComponent(this.entityId, this.componentOne)
             
-            this.entityManager.removeComponent(this.entityId, this.stats)
+            expect((entity.components & this.componentFour) === this.componentFour).to.be.true
+            expect((entity.components & this.componentThree) === this.componentThree).to.be.false
+            expect((entity.components & this.componentTwo) === this.componentTwo).to.be.true
+            expect((entity.components & this.componentOne) === this.componentOne).to.be.false
             
-            expect(entity).property('components').to.not.contain(this.position)
-            expect(entity).property('components').to.not.contain(this.velocity)
-            expect(entity).property('components').to.not.contain(this.stats)
+            this.entityManager.removeComponent(this.entityId, this.componentFour)
             
-            expect(entity).property('components').to.be.empty
-            expect(this.entityManager.entities[this.entityId]).property('components').to.be.empty
-        })
-        
-        it('does nothing if [component] is not present in the entity', () => {
-            let entity = this.entityManager.entities[this.entityId]
+            expect((entity.components & this.componentFour) === this.componentFour).to.be.false
+            expect((entity.components & this.componentThree) === this.componentThree).to.be.false
+            expect((entity.components & this.componentTwo) === this.componentTwo).to.be.true
+            expect((entity.components & this.componentOne) === this.componentOne).to.be.false
             
-            this.entityManager.removeComponent(this.entityId, `not a ${this.position}`)
+            this.entityManager.removeComponent(this.entityId, this.componentTwo)
             
-            expect(entity).property('components').to.deep.equal([ this.position, this.velocity, this.stats ])
-            
-            this.entityManager.removeComponent(this.entityId, this.position)
-            
-            expect(entity).property('components').to.deep.equal([ this.velocity, this.stats ])
+            expect((entity.components & this.componentFour) === this.componentFour).to.be.false
+            expect((entity.components & this.componentThree) === this.componentThree).to.be.false
+            expect((entity.components & this.componentTwo) === this.componentTwo).to.be.false
+            expect((entity.components & this.componentOne) === this.componentOne).to.be.false
         })
     })
 })

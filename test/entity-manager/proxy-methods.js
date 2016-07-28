@@ -8,9 +8,9 @@ describe('EntityManager', function() {
         beforeEach(() => {
             this.entityManager = new EntityManager()
             
-            this.position = 'position'
-            this.velocity = 'velocity'
-            this.stats = 'stats'
+            this.position = 1
+            this.velocity = 2
+            this.stats = 4
         })
         
         afterEach(() => {
@@ -23,10 +23,10 @@ describe('EntityManager', function() {
             })
             
             it('invokes [entityFactory].registerInitializer with the corrent arguments', () => {
-                let spy = sinon.spy(this.entityManager.entityFactory, 'registerInitializer')
+                const spy = sinon.spy(this.entityManager.entityFactory, 'registerInitializer')
                 
-                let component = this.position
-                let initializer = function() {
+                const component = this.position
+                const initializer = function() {
                     this.x = 10.0
                 }
                 
@@ -43,7 +43,7 @@ describe('EntityManager', function() {
             })
             
             it('invokes [entityFactory].build', () => {
-                let spy = sinon.spy(this.entityManager.entityFactory, 'build')
+                const spy = sinon.spy(this.entityManager.entityFactory, 'build')
                 
                 this.entityManager.build()
                 
@@ -51,7 +51,7 @@ describe('EntityManager', function() {
             })
             
             it('returns the [entityManager] instance to allow for method chaining', () => {
-                let entityManager = this.entityManager.build()
+                const entityManager = this.entityManager.build()
                 
                 expect(entityManager).to.equal(this.entityManager)
             })
@@ -63,10 +63,10 @@ describe('EntityManager', function() {
             })
             
             it('invokes [entityFactory].withComponent with [component] and [initializer]', () => {
-                let component   = this.position
-                let initializer = function() { return 2 }
+                const component   = this.position
+                const initializer = function() { return 2 }
                 
-                let spy = sinon.spy(this.entityManager.entityFactory, 'withComponent')
+                const spy = sinon.spy(this.entityManager.entityFactory, 'withComponent')
                 
                 this.entityManager.withComponent(component, initializer)
                 
@@ -75,70 +75,71 @@ describe('EntityManager', function() {
             })
             
             it('returns the [entityManager] instance to allow for method chaining', () => {
-                let entityManager = this.entityManager.withComponent(1)
+                const entityManager = this.entityManager.withComponent(1)
                 
                 expect(entityManager).to.equal(this.entityManager)
             })
         })
         
-        describe('create(count, key)', () => {
+        describe('create(count, configurationId)', () => {
             it('is a function', () => {
                 expect(this.entityManager.create).to.be.a('function')
             })
             
             it('invokes [entityFactory].create', () => {
-                let spy = sinon.spy(this.entityManager.entityFactory, 'create')
+                const spy = sinon.spy(this.entityManager.entityFactory, 'create')
                 
                 this.entityManager.create()
                 
                 expect(spy.calledOnce).to.be.true
             })
             
-            it('invokes [entityFactory].create with [entityManager] (this), [count] and the configuration corresponding to [key]', () => {
-                let component   = this.position
-                let initializer = function() { return 2 }
+            it('invokes [entityFactory].create with [entityManager] (this), [count] and the configuration corresponding to [id]', () => {
+                const component   = this.position
+                const initializer = function() { return 2 }
                 
-                let key = 'conf'
-                let configuration = new Map()
+                const id = 1
+                
+                const configuration = new Map()
                 configuration.set(component, initializer)
                 
-                this.entityManager.entityConfigurations.set(key, configuration)
+                this.entityManager.entityConfigurations.set(id, configuration)
                 
-                let spy = sinon.spy(this.entityManager.entityFactory, 'create')
+                const spy = sinon.spy(this.entityManager.entityFactory, 'create')
                 
-                let count = 3
+                const count = 3
                 
-                this.entityManager.create(count, key)
+                this.entityManager.create(count, id)
                 
                 expect(spy.calledOnce).to.be.true
                 expect(spy.calledWith(this.entityManager, count, configuration)).to.be.true
             })
             
             it('returns the created entities as an object containing { id, entity }', () => {
-                let component   = this.position
-                let initializer = function() { return 2 }
+                const component   = this.position
+                const initializer = function() { return 2 }
                 
-                let key = 'conf'
-                let configuration = new Map()
+                const id = 1
+                const configuration = new Map()
                 configuration.set(component, initializer)
                 
-                this.entityManager.entityConfigurations.set(key, configuration)
+                this.entityManager.entityConfigurations.set(id, configuration)
                 
-                let count = 2
+                const count = 2
                 
-                let entities = this.entityManager.create(count, key)
+                const entities = this.entityManager.create(count, id)
                 
                 expect(entities).to.be.an.instanceof(Array)
                 expect(entities).property('length').to.equal(2)
-                expect(entities[0].entity.components).to.deep.equal([ component ])
-                expect(entities[1].entity.components).to.deep.equal([ component ])
+                expect(entities[0].entity.components).to.deep.equal(component)
+                expect(entities[1].entity.components).to.deep.equal(component)
             })
             
-            it('throws exception if a [key] is supplied that doesn\'t correspond to a configuration [entityConfigurations]', () => {
-                const msg = 'could not find entity configuration for the supplied key. if you wish to create an entity without a configuration, do not pass a key.'
+            it('throws exception if a [configurationId] is supplied that doesn\'t correspond to a configuration [entityConfigurations]', () => {
+                const msg = 'Could not find entity configuration. If you wish to create entities without a configuration, do not pass a configurationId.'
                 
-                expect(() => this.entityManager.create(0, 'not in entityConfigurations')).to.throw(TypeError, msg)
-                expect(() => this.entityManager.create(0)).to.not.throw(TypeError, msg)
+                expect(() => this.entityManager.create(1, 1)).to.throw(Error, msg)
+                expect(() => this.entityManager.create(1)).to.not.throw(Error, msg)
             })
         })
          
@@ -148,23 +149,22 @@ describe('EntityManager', function() {
             })
             
             it('invokes [systemManager.registerSystem] with the correct parameters', () => {
-                let type       = SystemType.Render
-                let components = [ this.position, this.velocity, this.stats ]
-                let system     = 'movement'
+                const type       = SystemType.Render
+                const components = this.position | this.velocity | this.stats
                 
-                let callback = function(entities, { delta }) { 
-                    for (let { entity } of entities) {
+                const callback = function(entities, { delta }) { 
+                    for (const { entity } of entities) {
                         entity.position += entity.velocity * delta
                     }
                 }
                 
-                let spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
+                const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
                 
-                let systemId = this.entityManager.registerSystem(system, type, components, callback)
+                const systemId = this.entityManager.registerSystem(type, components, callback)
 
                 expect(spy.calledOnce).to.be.true
-                expect(spy.calledWith(system, type, components, callback)).to.be.true
-                expect(systemId).to.equal(system)
+                expect(spy.calledWith(type, components, callback)).to.be.true
+                expect(systemId).to.equal(1)
             })
         })
         
@@ -174,9 +174,9 @@ describe('EntityManager', function() {
             })
             
             it('invokes [systemManager.removeSystem] with the correct parameters', () => {
-                let system = 'movement'
+                const system = 'movement'
                 
-                let spy = sinon.spy(this.entityManager.systemManager, 'removeSystem')
+                const spy = sinon.spy(this.entityManager.systemManager, 'removeSystem')
                 
                 this.entityManager.removeSystem(system)
                 
@@ -191,10 +191,10 @@ describe('EntityManager', function() {
             })
             
             it('invokes [eventHandler.listen] with the correct parameters', () => {
-                let event    = 'onEvent'
-                let callback = function() { this.hi = 'hi' }
+                const event    = 'onEvent'
+                const callback = function() { this.hi = 'hi' }
                 
-                let spy = sinon.spy(this.entityManager.eventHandler, 'listen')
+                const spy = sinon.spy(this.entityManager.eventHandler, 'listen')
                 
                 this.entityManager.listen(event, callback)
                 
@@ -203,8 +203,8 @@ describe('EntityManager', function() {
             })
             
             it('returns the id of the added event', () => {
-                let event    = 'onEvent'
-                let callback = function() { this.hi = 'hi' }
+                const event    = 'onEvent'
+                const callback = function() { this.hi = 'hi' }
                 
                 expect(this.entityManager.listen(event, callback)).to.equal(0)
                 expect(this.entityManager.listen(event, callback)).to.equal(1)
@@ -217,9 +217,9 @@ describe('EntityManager', function() {
             })
             
             it('invokes [eventHandler.stopListen] with the correct parameters', () => {
-                let eventId = 1
+                const eventId = 1
                 
-                let spy = sinon.spy(this.entityManager.eventHandler, 'stopListen')
+                const spy = sinon.spy(this.entityManager.eventHandler, 'stopListen')
                 
                 this.entityManager.stopListen(eventId)
                 
@@ -228,10 +228,10 @@ describe('EntityManager', function() {
             })
             
             it('returns true when there was an event to stop listen to, and false when not', () => {
-                let event    = 'onEvent'
-                let callback = function() { this.hi = 'hi' }
+                const event    = 'onEvent'
+                const callback = function() { this.hi = 'hi' }
                 
-                let eventId = this.entityManager.listen(event, callback)
+                const eventId = this.entityManager.listen(event, callback)
                 
                 expect(this.entityManager.stopListen(eventId)).to.be.true
                 expect(this.entityManager.stopListen(eventId)).to.be.false
@@ -244,15 +244,15 @@ describe('EntityManager', function() {
             })
             
             it('invokes [eventHandler.trigger] with the correct parameters and the [entityManager] as the context (this)', () => {
-                let event    = 'onEvent'
-                let callback = function() { this.hi = 'hi' }
+                const event    = 'onEvent'
+                const callback = function() { this.hi = 'hi' }
                 
                 this.entityManager.listen(event, callback)
                 
-                let spy = sinon.spy(this.entityManager.eventHandler, 'trigger')
+                const spy = sinon.spy(this.entityManager.eventHandler, 'trigger')
                 
-                let paramOne = 'one'
-                let paramTwo = { name : 'test', age : 99 }
+                const paramOne = 'one'
+                const paramTwo = { name : 'test', age : 99 }
                 
                 this.entityManager.trigger(event, paramOne, paramTwo)
                 
@@ -262,8 +262,8 @@ describe('EntityManager', function() {
             })
             
             it('returns a promise', () => {
-                let event    = 'onEvent'
-                let callback = function() { this.hi = 'hi' }
+                const event    = 'onEvent'
+                const callback = function() { this.hi = 'hi' }
                 
                 this.entityManager.listen(event, callback)
                 
@@ -277,16 +277,16 @@ describe('EntityManager', function() {
             })
             
             it('invokes [eventHandler.triggerDelayed] with the correct parameters and the [entityManager] as the context (this)', () => {
-                let event    = 'onEvent'
-                let callback = function() { this.hi = 'hi' }
+                const event    = 'onEvent'
+                const callback = function() { this.hi = 'hi' }
                 
                 this.entityManager.listen(event, callback)
                 
-                let spy = sinon.spy(this.entityManager.eventHandler, 'triggerDelayed')
+                const spy = sinon.spy(this.entityManager.eventHandler, 'triggerDelayed')
                 
-                let timeout  = 10
-                let paramOne = 'one'
-                let paramTwo = { name : 'test', age : 99 }
+                const timeout  = 10
+                const paramOne = 'one'
+                const paramTwo = { name : 'test', age : 99 }
                 
                 this.entityManager.triggerDelayed(event, timeout, paramOne, paramTwo)
                 
@@ -296,8 +296,8 @@ describe('EntityManager', function() {
             })
             
             it('returns a promise', () => {
-                let event    = 'onEvent'
-                let callback = function() { this.hi = 'hi' }
+                const event    = 'onEvent'
+                const callback = function() { this.hi = 'hi' }
                 
                 this.entityManager.listen(event, callback)
                 

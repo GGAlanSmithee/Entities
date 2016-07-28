@@ -5,40 +5,31 @@ import { EntityFactory } from '../../src/core/entity-factory'
 describe('EntityFactory', function() {
     describe('create(entityManager, count = 1, configuration = undefined)', () => {
         beforeEach(() => {
-            this.entityFactory = new EntityFactory(100)
+            this.entityFactory = new EntityFactory()
             this.entityManager = new EntityManager()
             
-            this.position = 'position'
-            this.velocity = 'velocity'
-            this.stats = 'stats'
-            this.authentication = 'authentication'
+            this.componentOne   = 1
+            this.componentTwo   = 2
+            this.componentThree = 8
+            this.componentFour  = 32
             
-            this.positionInitializer = function() {
-                this.x = 4.0
-                this.y = 4.0
-            }
+            this.componentOneInitializer   = function() { this.x = 4.0 }
+            this.componentTwoInitializer   = function() { this.y = 5.0 }
+            this.componentThreeInitializer = () => { return 15 }
+            this.componentFourInitializer  = () => { return "Full Name" }
             
-            this.velocityInitializer = () => 0.5
+            this.entityFactory.configuration.set(this.componentOne, this.componentOneInitializer)
+            this.entityFactory.configuration.set(this.componentTwo, this.componentTwoInitializer)
+            this.entityFactory.configuration.set(this.componentThree, this.componentThreeInitializer)
+            this.entityFactory.configuration.set(this.componentFour, this.componentFourInitializer)
             
-            this.statsInitializer = function() {
-                this.strength = 100
-                this.agility = 20
-            }
+            this.components = this.componentOne | this.componentTwo | this.componentThree | this.componentFour
             
-            this.authenticationInitializer = () => 'authenticated'
-            
-            this.entityFactory.configuration.set(this.position, this.positionInitializer)
-            this.entityFactory.configuration.set(this.velocity, this.velocityInitializer)
-            this.entityFactory.configuration.set(this.stats, this.statsInitializer)
-            this.entityFactory.configuration.set(this.authentication, this.authenticationInitializer)
-            
-            this.components = [ this.position, this.velocity, this.stats, this.authentication ]
-            
-            for (var entity of this.entityManager.entities) {
-                entity[this.position] = { x : 1.0, y : 1.0 }
-                entity[this.velocity] = 1.5
-                entity[this.stats] = new function() { this.strength = 50; this.agility = 10 }
-                entity[this.authentication] = 'not-authenticated'
+            for (let entity of this.entityManager.entities) {
+                entity[this.componentOne] = new (function() { this.x = 1.0 })()
+                entity[this.componentTwo] = { y : 2.0 }
+                entity[this.componentThree] = 1
+                entity[this.componentFour] = 'Name'
             }
         })
         
@@ -51,53 +42,29 @@ describe('EntityFactory', function() {
             expect(this.entityFactory.create).to.be.a('function')
         })
         
-        it('adds an entity to the [entityManager] and returns an object containing the entity and its id', () => {
-            let res = this.entityFactory.create(this.entityManager)
-            
-            expect(res.id).to.equal(0)
-            
-            res = this.entityFactory.create(this.entityManager)
-            
-            expect(res.id).to.equal(1)
-            
-            res = this.entityFactory.create(this.entityManager)
-            
-            expect(res.id).to.equal(2)
-            
-            this.entityManager.entities[1].components = []
-            
-            res = this.entityFactory.create(this.entityManager)
-            
-            expect(res.id).to.equal(1)
-        })
-        
         it('creates an entity according to the current [configuration]', () => {
-            let { entity } = this.entityFactory.create(this.entityManager)
-
-            expect(entity.components).to.deep.equal(this.components)
-            expect(entity[this.position]).property('x').to.equal(4.0)
-            expect(entity[this.position]).property('y').to.equal(4.0)
-            expect(entity[this.velocity]).to.equal(0.5)
-            expect(entity[this.stats]).property('strength').to.equal(100)
-            expect(entity[this.stats]).property('agility').to.equal(20)
-            expect(entity[this.authentication]).to.equal('authenticated')
+            const {entity} = this.entityFactory.create(this.entityManager)
+            
+            expect(entity.components).to.equal(this.components)
+            expect(entity[this.componentOne]).property('x').to.equal(4.0)
+            expect(entity[this.componentTwo]).property('y').to.equal(5.0)
+            expect(entity[this.componentThree]).to.equal(this.componentThreeInitializer())
+            expect(entity[this.componentFour]).to.equal(this.componentFourInitializer())
         })
         
         it('does not change a components value if there is no initializer for that component', () => {
-            this.entityFactory.configuration.set(this.position, undefined)
-            this.entityFactory.configuration.set(this.velocity, undefined)
-            this.entityFactory.configuration.set(this.stats, undefined)
-            this.entityFactory.configuration.set(this.authentication, undefined)
+            this.entityFactory.configuration.set(this.componentOne, undefined)
+            this.entityFactory.configuration.set(this.componentTwo, undefined)
+            this.entityFactory.configuration.set(this.componentThree, undefined)
+            this.entityFactory.configuration.set(this.componentFour, undefined)
             
-            let { entity } = this.entityFactory.create(this.entityManager)
+            const {entity} = this.entityFactory.create(this.entityManager)
 
-            expect(entity.components).to.deep.equal(this.components)
-            expect(entity[this.position]).property('x').to.equal(1.0)
-            expect(entity[this.position]).property('y').to.equal(1.0)
-            expect(entity[this.velocity]).to.equal(1.5)
-            expect(entity[this.stats]).property('strength').to.equal(50)
-            expect(entity[this.stats]).property('agility').to.equal(10)
-            expect(entity[this.authentication]).to.equal('not-authenticated')
+            expect(entity.components).to.equal(this.components)
+            expect(entity[this.componentOne]).property('x').to.equal(1.0)
+            expect(entity[this.componentTwo]).property('y').to.equal(2.0)
+            expect(entity[this.componentThree]).to.equal(1)
+            expect(entity[this.componentFour]).to.equal("Name")
         })
         
         it('creates an entity from a [configuration]', () => {
@@ -105,45 +72,36 @@ describe('EntityFactory', function() {
             
             this.entityFactory.configuration = new Map()
             
-            let res = this.entityFactory.create(this.entityManager)
+            let entities = this.entityFactory.create(this.entityManager)
             
-            expect(res.id).to.equal(0)
-            expect(res.entity).property('components').to.be.an.instanceof(Array).and.to.be.empty
+            expect(entities).to.be.an.instanceof(Array)
+            expect(entities).property('length').to.equal(0)
             
-            res = this.entityFactory.create(this.entityManager, 1, configuration)
+            const {entity} = this.entityFactory.create(this.entityManager, 1, configuration)
 
-            expect(res.id).to.equal(0)
+            expect(entity).to.be.an.instanceof(Object)
 
-            expect(res.entity.components).to.deep.equal(this.components)
-            expect(res.entity[this.position]).property('x').to.equal(4.0)
-            expect(res.entity[this.position]).property('y').to.equal(4.0)
-            expect(res.entity[this.velocity]).to.equal(0.5)
-            expect(res.entity[this.stats]).property('strength').to.equal(100)
-            expect(res.entity[this.stats]).property('agility').to.equal(20)
-            expect(res.entity[this.authentication]).to.equal('authenticated')
+            expect(entity.components).to.equal(this.components)
+            expect(entity[this.componentOne]).property('x').to.equal(4.0)
+            expect(entity[this.componentTwo]).property('y').to.equal(5.0)
+            expect(entity[this.componentThree]).to.equal(this.componentThreeInitializer())
+            expect(entity[this.componentFour]).to.equal(this.componentFourInitializer())
         })
         
         it('creates [count] number of entities', () => {
-            let count = Math.floor(Math.random() * 100)
+            const count = Math.floor(Math.random() * 100)
             
             expect(this.entityFactory.create(this.entityManager, count)).property('length').to.equal(count)
         })
         
         it('creates [count] number of entities from [configuration]', () => {
-            let configuration = this.entityFactory.configuration
+            const configuration = this.entityFactory.configuration
             
             this.entityFactory.configuration = new Map()
             
-            let count = Math.floor(Math.random() * 100)
-            expect(this.entityFactory.create(this.entityManager, count, configuration)).property('length').to.equal(count)
-        })
-        
-        it('creates up to [capacity] number of entities, even if [count] exceeds that', () => {
-            for (let i = 0; i < this.entityManager.capacity - 5; ++i) {
-                this.entityManager.entities[i].components = [ this.position, this.velocity ]
-            }
+            const count = Math.floor(Math.random() * 100)
             
-            expect(this.entityFactory.create(this.entityManager, 10)).property('length').to.equal(5)
+            expect(this.entityFactory.create(this.entityManager, count, configuration)).property('length').to.equal(count)
         })
         
         it('returns an empty array if [entityManager] is not an instance of EntityManager', () => {
