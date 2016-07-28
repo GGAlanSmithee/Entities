@@ -1,7 +1,7 @@
 {
   "name": "gg-entities",
   "description": "easy-to-use Entity-Component System in JavaScript",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "author": {
     "name": "alansmithee",
     "email": "ggnore.alan.smithee@gmail.com"
