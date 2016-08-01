@@ -123,8 +123,6 @@ class EntityManager {
         }
         
         if (this.componentLookup.get(name) != null) {
-            console.warn(`component with name ${name} already registered, aborting`)
-            
             return
         }
         
