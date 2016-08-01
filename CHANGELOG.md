@@ -1,4 +1,4 @@
-## v2.0.0-beta2 (2016-08-01)
+## v2.0.0-beta2 / v2.0.0-beta3 (2016-08-01)
 
 Added support for getting / adding / removing a component by name (in addition to by id)
 Added `name` parameter to `EntityManager.registerComponent`
