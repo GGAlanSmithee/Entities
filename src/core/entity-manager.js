@@ -42,7 +42,7 @@ class EntityManager {
 
                 entity[componentId] = this.componentManager.newComponent(componentId)
                 
-                Object.defineProperty(entity, componentName, { get() { return this[componentId] }})
+                Object.defineProperty(entity, componentName, { get() { return this[componentId] }, configurable: true })
             }
         }
     }
@@ -128,7 +128,7 @@ class EntityManager {
         
         for (let entity of this.entities) {
             entity[componentId] = this.componentManager.newComponent(componentId)
-            Object.defineProperty(entity, name, { get() { return this[componentId] }})
+            Object.defineProperty(entity, name, { get() { return this[componentId] }, configurable: true })
         }
         
         let initializer
