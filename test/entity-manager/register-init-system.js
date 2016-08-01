@@ -9,7 +9,13 @@ describe('EntityManager', function() {
             this.entityManager = new EntityManager()
             
             this.position = 1
+            this.positionName = 'position'
+            
             this.velocity = 2
+            this.velocityName = 'velocity'
+            
+            this.entityManager.componentLookup.set(this.positionName, this.position)
+            this.entityManager.componentLookup.set(this.velocityName, this.velocity)
         })
         
         afterEach(() => {
@@ -21,11 +27,11 @@ describe('EntityManager', function() {
         })
         
         it('invokes [systemManager.registerSystem] with [type] = SystemType.Init', () => {
-            let spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
+            const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
             
-            let components = this.position | this.velocity
-            let callback   = (entities) => { 
-                for (let { entity } of entities) {
+            const components = this.position | this.velocity
+            const callback   = (entities) => { 
+                for (const { entity } of entities) {
                     entity.position = { x : 5, y : 5 }
                     entity.velocity = -2
                 }
@@ -38,9 +44,9 @@ describe('EntityManager', function() {
         })
         
         it('returns the registered systems id', () => {
-            let components = this.position | this.velocity
-            let callback   = (entities) => { 
-                for (let { entity } of entities) {
+            const components = this.position | this.velocity
+            const callback   = (entities) => { 
+                for (const { entity } of entities) {
                     entity.position = { x : 5, y : 5 }
                     entity.velocity = -2
                 }
@@ -53,6 +59,25 @@ describe('EntityManager', function() {
             systemId = this.entityManager.registerInitSystem(components, callback)
             
             expect(systemId).to.equal(2)
+        })
+        
+        it('registers a system given an array of component names', () => {
+            const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
+            
+            const components = this.position | this.velocity
+            const componentNames = [ this.positionName, this.velocityName ]
+            const callback   = (entities) => { 
+                for (const { entity } of entities) {
+                    entity.position = { x : 5, y : 5 }
+                    entity.velocity = -2
+                }
+            }
+            
+            const systemId = this.entityManager.registerInitSystem(componentNames, callback)
+            
+            expect(systemId).to.equal(1)
+            expect(spy.calledOnce).to.be.true
+            expect(spy.calledWith(SystemType.Init, components, callback)).to.be.true
         })
     })
 })
