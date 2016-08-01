@@ -122,6 +122,12 @@ class EntityManager {
             throw TypeError('name must be a non-empty string.')
         }
         
+        if (this.componentLookup.get(name) != null) {
+            console.warn(`component with name ${name} already registered, aborting`)
+            
+            return
+        }
+        
         const componentId = this.componentManager.registerComponent(component)
         
         this.componentLookup.set(name, componentId)

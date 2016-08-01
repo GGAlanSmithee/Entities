@@ -140,12 +140,12 @@ describe('EntityManager', function() {
             expect(spy.calledWith(vel)).to.be.true
         })
         
-        it('can re-register a component', () => {
+        it('does not re-register a component if there already is a component with the [name] registered', () => {
             let pos = this.entityManager.registerComponent(this.posName, this.posComponent)
             expect(pos).to.equal(1)
             
             pos = this.entityManager.registerComponent(this.posName, this.posComponent)
-            expect(pos).to.equal(2)
+            expect(pos).to.be.undefined
         })
         
         it('the generated initializers can be used to initialize components through build -> withComponent -> create', () => {
