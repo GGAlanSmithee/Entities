@@ -1,3 +1,16 @@
+## v2.0.0-beta2 (2016-08-01)
+
+Added support for getting / adding / removing a component by name (in addition to by id)
+Added `name` parameter to `EntityManager.registerComponent`
+`component` parameter of `EntityManager.addComponent` can now be either a string (name of component) or an id
+`component` parameter of `EntityManager.removeComponent` can now be either a string (name of component) or an id
+`components` parameter of `EntityManager.registerSystem` can now be either an array of strings (names of components) or an bitmask
+`components` parameter of `EntityManager.registerInitSystem` can now be either an array of strings (names of components) or an bitmask
+`components` parameter of `EntityManager.registerLogicSystem` can now be either an array of strings (names of components) or an bitmask
+`components` parameter of `EntityManager.registerRenderSystem` can now be either an array of strings (names of components) or an bitmask
+`component` parameter of `EntityManager.registerInitializer` can now be either a string (name of component) or an id
+`component` parameter of `EntityManager.withComponent` can now be either a string (name of component) or an id
+
 ## v2.0.0-beta1 (2016-07-23)
 
 Removed all default exports

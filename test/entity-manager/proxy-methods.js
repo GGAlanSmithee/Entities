@@ -9,8 +9,17 @@ describe('EntityManager', function() {
             this.entityManager = new EntityManager()
             
             this.position = 1
+            this.positionName = 'position'
+            
             this.velocity = 2
+            this.velocityName = 'velocity'
+            
             this.stats = 4
+            this.statsName = 'stats'
+            
+            this.entityManager.componentLookup.set(this.positionName, this.position)
+            this.entityManager.componentLookup.set(this.velocityName, this.velocity)
+            this.entityManager.componentLookup.set(this.statsName, this.stats)
         })
         
         afterEach(() => {
@@ -34,6 +43,19 @@ describe('EntityManager', function() {
                 
                 expect(spy.calledOnce).to.be.true
                 expect(spy.calledWith(component, initializer)).to.be.true
+            })
+            
+            it('invokes [entityFactory].registerInitializer with the corrent component id, given a component name', () => {
+                const spy = sinon.spy(this.entityManager.entityFactory, 'registerInitializer')
+                
+                const initializer = function() {
+                    this.x = 10.0
+                }
+                
+                this.entityManager.registerInitializer(this.positionName, initializer)
+                
+                expect(spy.calledOnce).to.be.true
+                expect(spy.calledWith(this.position, initializer)).to.be.true
             })
         })
         
@@ -72,6 +94,17 @@ describe('EntityManager', function() {
                 
                 expect(spy.calledOnce).to.be.true
                 expect(spy.calledWith(component, initializer)).to.be.true
+            })
+            
+            it('invokes [entityFactory].withComponent with the correct component id, given a component name', () => {
+                const initializer = function() { return 2 }
+                
+                const spy = sinon.spy(this.entityManager.entityFactory, 'withComponent')
+                
+                this.entityManager.withComponent(this.positionName, initializer)
+                
+                expect(spy.calledOnce).to.be.true
+                expect(spy.calledWith(this.position, initializer)).to.be.true
             })
             
             it('returns the [entityManager] instance to allow for method chaining', () => {
@@ -143,7 +176,7 @@ describe('EntityManager', function() {
             })
         })
          
-        describe('registerSystem(callback, components = 0, type = SystemType.Logic)', () => {
+        describe('registerSystem(callback, components, type = SystemType.Logic)', () => {
             it('is a function', () => {
                 expect(this.entityManager.registerSystem).to.be.a('function')
             })
@@ -161,6 +194,26 @@ describe('EntityManager', function() {
                 const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
                 
                 const systemId = this.entityManager.registerSystem(type, components, callback)
+
+                expect(spy.calledOnce).to.be.true
+                expect(spy.calledWith(type, components, callback)).to.be.true
+                expect(systemId).to.equal(1)
+            })
+            
+            it('invokes [systemManager.registerSystem] with the correct component ids, given component names', () => {
+                const type           = SystemType.Render
+                const components     = this.position | this.velocity | this.stats
+                const componentNames = [ this.positionName, this.velocityName, this.statsName ]
+                
+                const callback = function(entities, { delta }) { 
+                    for (const { entity } of entities) {
+                        entity.position += entity.velocity * delta
+                    }
+                }
+                
+                const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
+                
+                const systemId = this.entityManager.registerSystem(type, componentNames, callback)
 
                 expect(spy.calledOnce).to.be.true
                 expect(spy.calledWith(type, components, callback)).to.be.true

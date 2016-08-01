@@ -9,6 +9,7 @@ rollup.rollup({
         babel({
             babelrc: false,
             presets: [ 'es2015-rollup' ],
+            plugins: [ 'transform-object-rest-spread' ],
             exclude: 'node_modules/**'
         })
     ]

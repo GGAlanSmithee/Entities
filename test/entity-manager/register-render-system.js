@@ -9,7 +9,13 @@ describe('EntityManager', function() {
             this.entityManager = new EntityManager()
             
             this.position = 1
+            this.positionName = 'position'
+            
             this.velocity = 2
+            this.velocityName = 'velocity'
+            
+            this.entityManager.componentLookup.set(this.positionName, this.position)
+            this.entityManager.componentLookup.set(this.velocityName, this.velocity)
             
             this.draw = entity => entity
         })
@@ -53,6 +59,25 @@ describe('EntityManager', function() {
             systemId = this.entityManager.registerRenderSystem(components, callback)
             
             expect(systemId).to.equal(2)
+        })
+        
+        it('registers a system given an array of component names', () => {
+            const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
+            
+            const components = this.position | this.velocity
+            const componentNames = [ this.positionName, this.velocityName ]
+            const callback   = (entities) => { 
+                for (const { entity } of entities) {
+                    entity.position = { x : 5, y : 5 }
+                    entity.velocity = -2
+                }
+            }
+            
+            const systemId = this.entityManager.registerRenderSystem(componentNames, callback)
+            
+            expect(systemId).to.equal(1)
+            expect(spy.calledOnce).to.be.true
+            expect(spy.calledWith(SystemType.Render, components, callback)).to.be.true
         })
     })
 })

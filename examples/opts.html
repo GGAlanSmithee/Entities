@@ -11,7 +11,7 @@
         
         <script>
             function RendererEngine() {
-                const canvas    = document.getElementById('canvas')
+                const canvas  = document.getElementById('canvas')
                 canvas.width  = 500
                 canvas.height = 500
             
@@ -32,14 +32,14 @@
                 
                 // Components
                 
-                const TRANSFORM_COMPONENT = entityManager.registerComponent(function() {
+                const TRANSFORM_COMPONENT = entityManager.registerComponent('transform', function() {
                     this.x = 250
                     this.y = 250
                     this.w = 100
                     this.h = 100
                 })
                 
-                const APPEARANCE_COMPONENT = entityManager.registerComponent({
+                const APPEARANCE_COMPONENT = entityManager.registerComponent('apperance', {
                     color : 'red'
                 })
                 
@@ -47,11 +47,11 @@
                 
                 const renderSystem = function(entities, { rendererEngine }) {
                     for (var { entity } of entities) {
-                        rendererEngine.render(entity[TRANSFORM_COMPONENT], entity[APPEARANCE_COMPONENT])
+                        rendererEngine.render(entity['transform'], entity[APPEARANCE_COMPONENT])
                     }
                 }
                 
-                entityManager.registerRenderSystem(TRANSFORM_COMPONENT | APPEARANCE_COMPONENT, renderSystem)
+                entityManager.registerRenderSystem(['transform', 'appearance'], renderSystem)
                 
                 entityManager.build()
                              .withComponent(TRANSFORM_COMPONENT)
