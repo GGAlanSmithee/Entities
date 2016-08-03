@@ -122,8 +122,8 @@ class EntityManager {
             throw TypeError('name must be a non-empty string.')
         }
         
-        if (this.componentLookup.get(name) != null) {
-            return
+        if (this.componentLookup.get(name) !== undefined) {
+            this.unregisterComponent(name)
         }
         
         const componentId = this.componentManager.registerComponent(component)
@@ -154,6 +154,52 @@ class EntityManager {
         this.entityFactory.registerInitializer(componentId, initializer)
         
         return componentId
+    }
+    
+    unregisterComponent(component) {
+        const typeofComponent = typeof component
+        
+        if (typeofComponent !== 'string' && typeofComponent !== 'number') {
+            throw TypeError('component must be either an id or name of a registered component.')
+        }
+        
+        let id   = null
+        let name = null
+        
+        if (typeofComponent === 'string') {
+            id   = this.componentLookup.get(component)
+            name = component
+        }
+        
+        if (typeofComponent === 'number') {
+            id = component
+            
+            let kvp = Array.from(this.componentLookup.entries()).find(entry => entry[1] === component)
+            
+            if (kvp) {
+                name = kvp[0]
+            }
+        }
+        
+        if (id === null || name === null) {
+            return false
+        }
+        
+        this.componentManager.unregisterComponent(id)
+        
+        this.componentLookup.delete(name)
+        
+        this.entityFactory.unregisterInitializer(id)
+        
+        for (const entity of this.entities) {
+            if (name !== null) {
+                delete entity[name]
+            }
+            
+            if (id !== null) {
+                delete entity[id]
+            }
+        }
     }
     
     addComponent(entityId, component) {

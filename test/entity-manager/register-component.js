@@ -121,7 +121,7 @@ describe('EntityManager', function() {
             expect(this.entityManager.componentLookup.get(this.velName)).to.equal(this.vel)
         })
         
-        it('invokes [entityFactory].registerInitializer with the [id] of the [component]', () => {
+        it('invokes [EntityFactory.registerInitializer] with the [id] of the [component]', () => {
             const spy = sinon.spy(this.entityManager.entityFactory, 'registerInitializer')
             
             const pos = this.entityManager.registerComponent(this.posName, this.posComponent)
@@ -140,12 +140,23 @@ describe('EntityManager', function() {
             expect(spy.calledWith(vel)).to.be.true
         })
         
-        it('does not re-register a component if there already is a component with the [name] registered', () => {
-            let pos = this.entityManager.registerComponent(this.posName, this.posComponent)
-            expect(pos).to.equal(1)
+        it('invokes [EntityManager.unregisterComponent] with the [name] of hte [component]', () => {
+            this.entityManager.componentLookup.set(this.posName, this.pos)
             
-            pos = this.entityManager.registerComponent(this.posName, this.posComponent)
-            expect(pos).to.be.undefined
+            const spy = sinon.spy(this.entityManager, 'unregisterComponent')
+            
+            this.entityManager.registerComponent(this.posName, this.posComponent)
+            
+            expect(spy.calledOnce).to.be.true
+            expect(spy.calledWith(this.posName)).to.be.true
+        })
+        
+        it('does not invoke [EntityManager.unregisterComponent] if the [component] is not in the [EntityManager.componentLookup]', () => {
+            const spy = sinon.spy(this.entityManager, 'unregisterComponent')
+            
+            this.entityManager.registerComponent(this.posName, this.posComponent)
+            
+            expect(spy.calledOnce).to.be.false
         })
         
         it('the generated initializers can be used to initialize components through build -> withComponent -> create', () => {

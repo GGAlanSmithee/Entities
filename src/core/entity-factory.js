@@ -18,6 +18,14 @@ class EntityFactory {
         this.initializers.set(id, initializer)
     }
     
+    unregisterInitializer(id) {
+        if (!Number.isInteger(id) || id <= 0) {
+            throw TypeError('id must be a number over 0.')
+        }
+        
+        return this.initializers.delete(id)
+    }
+    
     build() {
         this.configuration = new Map()
         
