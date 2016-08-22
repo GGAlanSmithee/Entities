@@ -99,7 +99,7 @@ describe('EntityFactory', function() {
             
             this.entityFactory.configuration = new Map()
             
-            const count = Math.floor(Math.random() * 100)
+            const count = Math.floor(Math.random() * 100 + 1)
             
             expect(this.entityFactory.create(this.entityManager, count, configuration)).property('length').to.equal(count)
         })

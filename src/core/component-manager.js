@@ -41,14 +41,6 @@ class ComponentManager {
         return id
     }
     
-    unregisterComponent(componentId) {
-        if (!Number.isInteger(componentId) || componentId <= 0) {
-            throw TypeError('componentId must be a number over 0.')
-        }
-        
-        return this.components.delete(componentId)
-    }
-    
     getComponents() {
         return this.components
     }

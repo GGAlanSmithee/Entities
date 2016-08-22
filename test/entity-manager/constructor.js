@@ -36,10 +36,6 @@ describe('EntityManager', function() {
             expect(this.entityManager).property('entityConfigurations').to.be.an.instanceof(Map).and.to.be.empty
         })
         
-        it('creates [componentLookup] as an empty Map', () => {
-            expect(this.entityManager).property('componentLookup').to.be.an.instanceof(Map).and.to.be.empty
-        })
-        
         it('sets [currentMaxEntity] to -1', () => {
             expect(this.entityManager.currentMaxEntity).to.equal(-1)
         })

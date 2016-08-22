@@ -14,44 +14,27 @@ class EntityManager {
         this.eventHandler     = new EventHandler()
         
         this.entityConfigurations = new Map()
-        this.componentLookup      = new Map()
         
         this.entities = Array.from({ length : this.capacity }, () => ({ components: 0 }))
     }
     
     increaseCapacity() {
-        let oldCapacity = this.capacity
+        const oldCapacity = this.capacity
         
         this.capacity *= 2
         
         this.entities = [...this.entities, ...Array.from({ length : oldCapacity }, () => ({ components: 0 }))]
 
         for (let i = oldCapacity; i < this.capacity; ++i) {
-            let entity = this.entities[i]
+            const entity = this.entities[i]
             
             for (const componentId of this.componentManager.getComponents().keys()) {
-                let componentName = null
-                
-                for (let [key, value] of this.componentLookup.entries()) {
-                    if (value === componentId) {
-                        componentName = key
-                        
-                        break
-                    }
-                }
-
                 entity[componentId] = this.componentManager.newComponent(componentId)
-                
-                Object.defineProperty(entity, componentName, { get() { return this[componentId] }, configurable: true })
             }
         }
     }
     
     newEntity(components) {
-        if (Array.isArray(components)) {
-            components = Array.from(this.componentLookup).reduce((curr, next) => ['', curr[1] | next[1]], ['', 0])[1]
-        }
-        
         if (!Number.isInteger(components) || components <= 0) {
             return { id : this.capacity, entity : null }
         }
@@ -117,22 +100,11 @@ class EntityManager {
     
     // Component Manager
     
-    registerComponent(name, component) {
-        if (typeof name !== 'string' || name.length === 0) {
-            throw TypeError('name must be a non-empty string.')
-        }
-        
-        if (this.componentLookup.get(name) !== undefined) {
-            this.unregisterComponent(name)
-        }
-        
+    registerComponent(component) {
         const componentId = this.componentManager.registerComponent(component)
         
-        this.componentLookup.set(name, componentId)
-        
-        for (let entity of this.entities) {
+        for (const entity of this.entities) {
             entity[componentId] = this.componentManager.newComponent(componentId)
-            Object.defineProperty(entity, name, { get() { return this[componentId] }, configurable: true })
         }
         
         let initializer
@@ -156,75 +128,17 @@ class EntityManager {
         return componentId
     }
     
-    unregisterComponent(component) {
-        const typeofComponent = typeof component
-        
-        if (typeofComponent !== 'string' && typeofComponent !== 'number') {
-            throw TypeError('component must be either an id or name of a registered component.')
-        }
-        
-        let id   = null
-        let name = null
-        
-        if (typeofComponent === 'string') {
-            id   = this.componentLookup.get(component)
-            name = component
-        }
-        
-        if (typeofComponent === 'number') {
-            id = component
-            
-            let kvp = Array.from(this.componentLookup.entries()).find(entry => entry[1] === component)
-            
-            if (kvp) {
-                name = kvp[0]
-            }
-        }
-        
-        if (id === null || name === null) {
-            return false
-        }
-        
-        this.componentManager.unregisterComponent(id)
-        
-        this.componentLookup.delete(name)
-        
-        this.entityFactory.unregisterInitializer(id)
-        
-        for (const entity of this.entities) {
-            if (name !== null) {
-                delete entity[name]
-            }
-            
-            if (id !== null) {
-                delete entity[id]
-            }
-        }
-    }
-    
     addComponent(entityId, component) {
-        if (typeof component === 'string') {
-            this.entities[entityId].components |= this.componentLookup.get(component)
-        } else {
-            this.entities[entityId].components |= component
-        }
+        this.entities[entityId].components |= component
     }
     
     removeComponent(entityId, component) {
-        if (typeof component === 'string') {
-            this.entities[entityId].components &= ~this.componentLookup.get(component)
-        } else {
-            this.entities[entityId].components &= ~component   
-        }
+        this.entities[entityId].components &= ~component   
     }
     
     // System Manager
     
     registerSystem(type, components, callback) {
-        if (Array.isArray(components)) {
-            components = Array.from(this.componentLookup).reduce((curr, next) => ['', curr[1] | next[1]], ['', 0])[1]
-        }
-        
         return this.systemManager.registerSystem(type, components, callback)
     }
     
@@ -265,11 +179,7 @@ class EntityManager {
     // Entity Factory
     
     registerInitializer(component, initializer) {
-        if (typeof component === 'string') {
-            this.entityFactory.registerInitializer(this.componentLookup.get(component), initializer)
-        } else {
-            this.entityFactory.registerInitializer(component, initializer)
-        }
+        this.entityFactory.registerInitializer(component, initializer)
     }
     
     build() {
@@ -279,11 +189,7 @@ class EntityManager {
     }
     
     withComponent(component, initializer) {
-        if (typeof component === 'string') {
-            this.entityFactory.withComponent(this.componentLookup.get(component), initializer)
-        } else {
-            this.entityFactory.withComponent(component, initializer)
-        }
+        this.entityFactory.withComponent(component, initializer)
         
         return this
     }
