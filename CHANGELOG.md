@@ -1,3 +1,24 @@
+## v2.0.0-beta8 (2016-08-29)
+
+Reverts changes back to v2.0.0-beta4
+
+## v2.0.0-beta7 (2016-08-22)
+
+Removed support for unregistering components and initializers
+Removed `EntityManager.unregisterComponent`
+Removed `ComponentManager.unregisterComponent`
+Removed `EntityFactory.unregisterInitializer`
+
+Removed all usage of named components
+Removed `name` parameter from `EntityManager.registerComponent`
+
+## v2.0.0-beta4 / v2.0.0-beta5 / v2.0.0-beta6 (2016-08-03)
+
+Added support for unregistering a component as well as a component initializer
+Added `EntityManager.unregisterComponent`
+Added `ComponentManager.unregisterComponent`
+Added `EntityFactory.unregisterInitializer`
+
 ## v2.0.0-beta2 / v2.0.0-beta3 (2016-08-01)
 
 Added support for getting / adding / removing a component by name (in addition to by id)
