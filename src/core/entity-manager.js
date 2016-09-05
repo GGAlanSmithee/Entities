@@ -5,6 +5,10 @@ import { EventHandler }              from './event-handler'
 
 class EntityManager {
     constructor(capacity = 1000) {
+        this.init(capacity)
+    }
+    
+    init(capacity) {
         this.capacity         = capacity
         this.currentMaxEntity = -1
         

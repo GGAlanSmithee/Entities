@@ -2,6 +2,10 @@ import { EntityManager } from './entity-manager'
 
 class EntityFactory {
     constructor() {
+        this.init()
+    }
+    
+    init() {
         this.initializers  = new Map()
         this.configuration = new Map()
     }

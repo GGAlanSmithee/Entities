@@ -6,6 +6,10 @@ export const SystemType = {
 
 class SystemManager {
     constructor() {
+        this.init()
+    }
+    
+    init() {
         this.logicSystems  = new Map()
         this.renderSystems = new Map()
         this.initSystems   = new Map()

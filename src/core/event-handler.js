@@ -22,6 +22,10 @@ const promise = (callback, context, args, timeout) => {
     
 class EventHandler {
     constructor() {
+        this.init()
+    }
+    
+    init() {
         this.events = new Map()
     }
     

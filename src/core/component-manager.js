@@ -1,5 +1,9 @@
 class ComponentManager {
     constructor() {
+        this.init()
+    }
+    
+    init() {
         this.components = new Map()
     }
     
