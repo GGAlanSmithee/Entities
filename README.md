@@ -2,14 +2,6 @@
 
 easy-to-use Entity-Component System for browser and node
 
-## Inclusion options
-
-The default (main) distribution is in es6 and requires a es6 compatible browser or node version.
-
-The legacy, es5 compatible, build can be found in `dist/gg-entities.es5.js`.
-
-The `src` main entry point is exposed via `jsnext:main` for bundlers such as [rollup](https://github.com/rollup/rollup) wich can take advantage of that.
-
 ## Usage
 
 ```javascript

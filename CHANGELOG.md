@@ -1,3 +1,11 @@
+## v2.0.0-beta9 (2017-03-09)
+
+Updated dependencies
+Changed bundling to have `gg-entities.js` be es5 compatible
+Added es6 module package `gg-entities.module.js`
+Changed so that `jsnext:main` and `module` entries point to `gg-entities.module.js`
+Updated README.md
+
 ## v2.0.0-beta8 (2016-08-29)
 
 Reverts changes back to v2.0.0-beta4

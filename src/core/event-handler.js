@@ -42,7 +42,7 @@ class EventHandler {
         
         this.events.forEach(event => {
             eventId = Math.max(eventId, ...event.keys())
-        });
+        })
         
         ++eventId
         
