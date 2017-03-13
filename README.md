@@ -38,14 +38,8 @@ entityManager.registerLogicSystem('log', [ pos ], logSystem)
 
 // 3. Run the systems
 
-...
-
-const delta = 0.16
-
-entityManager.onLogic({delta})  // invokes movementSystem
-entityManager.onRender({delta}) // invokes logSystem
-
-...
+entityManager.onLogic({ delta: 16 })  // invokes all logic systems (movementSystem)
+entityManager.onRender({ delta: 16 }) // invokes all render systems (logSystem)
 ```
 
 *See /examples for more usages*
@@ -64,7 +58,7 @@ entityManager.onRender({delta}) // invokes logSystem
 Accessing an entity's components in a system usually looks like this
 
 ```javascript
-function movementSystem(entities) => {
+function movementSystem(entities) {
     for (const { entity } of entities) {
         entity[POS_COMPONENT].x += entity[VEL_COMPONENT].x * delta
         entity[POS_COMPONENT].y += entity[VEL_COMPONENT].y * delta
@@ -72,11 +66,10 @@ function movementSystem(entities) => {
 }
 ```
 
-which can be a bit ugly. Especially if your entity has a lot of components and the are accessed multiple times.
-Using some es6 magic, we can make it look a bit better though;
+which can be a bit ugly, especially if your entity has a lot of components which are accessed multiple times. Using some ES6 (computed property keys) and ES7 (object spread) magic, we can make it a bit more concise:
 
 ```javascript
-function movementSystem(entities) => {
+function movementSystem(entities) {
     for (const { entity: { [POS_COMPONENT]: pos, [VEL_COMPONENT]: vel } } of entities) {
         pos.x += vel.x * delta
         pos.y += vel.y * delta
