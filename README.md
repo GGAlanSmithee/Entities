@@ -9,7 +9,7 @@ import { EntityManager } from 'gg-entities'
 
 const entityManager = new EntityManager()
 
-// Create components
+// 1. Register Components
 
 const pos = entityManager.registerComponent('position', {
     x : 10.0,
@@ -18,36 +18,37 @@ const pos = entityManager.registerComponent('position', {
 
 const vel = entityManager.registerComponent('velocity', 2.0)
 
-// Add a system for the created components
+// 2. Register Systems
 
 function movementSystem(entities, { delta }) => {
-    for (let {entity} of entities) {
+    for (const {entity} of entities) {
         entity[pos].x += entity[vel] * delta
     }
 }
 
-entityManager.registerLogicSystem('movement', [ pos, vel ], movementSystem)
+entityManager.registerRenderSystem('movement', [ pos, vel ], movementSystem)
 
-// Run the systems
+function logSystem(entities) => {
+    for (const {entity} of entities) {
+        console.log(entity[pos].x, entity[pos].y)
+    }
+}
+
+entityManager.registerLogicSystem('log', [ pos ], logSystem)
+
+// 3. Run the systems
 
 ...
 
-let delta = 0.16
+const delta = 0.16
 
-entityManager.onLogic({delta})
-entityManager.onRender({delta})
+entityManager.onLogic({delta})  // invokes movementSystem
+entityManager.onRender({delta}) // invokes logSystem
 
 ...
 ```
 
 *See /examples for more usages*
-
-## Documentation
-
-* EntityManager
-* EntityFactory
-* SystemManager
-* ComponentManager
 
 ## Features
 
@@ -87,24 +88,10 @@ function movementSystem(entities) => {
 
 * Since a system is bound with the `EntityManager` as its context, a system must be a regular function (not a es6 arrow function)
 
-## Contributing / Building
+## Get involved
 
-- **download [nodejs][2]** and install
+- Got questions or want to leave feedback? [create an issue](https://github.com/GGAlanSmithee/Entities/issues/new)
 
-- **fork the repository** and clone it on your local computer
-
-- **install dependencies** by running `npm i` in the repository folder
-
-- **make changes** 
-
-- **run the build script** by typing `npm run build` in the console, eventually genenrating the file `dist/entities.js`
-
-- **add tests** for the added functionality in `/test` and run `npm run test`
-
-- **send a pull request** to the dev branch with an explanation of what it is that you have been done
-
-- **thanks!!** for contributing
-
-[0]: https://github.com/babel/babel
-[1]: https://babeljs.io/docs/usage/polyfill/
-[2]: http://nodejs.org
+- Got improvements? Feel free to send a PR to the `dev` branch (don't forget to add tests)
+    - `npm run build` *builds the project*
+    - `npm run test` *runs the test suite*
