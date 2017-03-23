@@ -1,4 +1,4 @@
-# Entities
+# GG-Entities
 
 easy-to-use Entity-Component System for browser and node
 
