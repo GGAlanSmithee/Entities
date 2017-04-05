@@ -2,7 +2,7 @@
 
 easy-to-use Entity-Component System for browsers and Node.js
 
-_Version 2 is out! See the [migration guide](/docs/migrate) for how you can transfer from a previous version._
+_Version 2 is out! See the [migration guide](/migrate) for how you can transfer from a previous version._
 
 ## Usage
 
@@ -22,7 +22,7 @@ const vel = entityManager.registerComponent('velocity', 2.0)
 
 // 2. Register Systems
 
-function movementSystem(entities, { delta }) => {
+function movementSystem(entities, { delta }) {
     for (const {entity} of entities) {
         entity[pos].x += entity[vel] * delta
     }
@@ -30,7 +30,7 @@ function movementSystem(entities, { delta }) => {
 
 entityManager.registerRenderSystem('movement', [ pos, vel ], movementSystem)
 
-function logSystem(entities) => {
+function logSystem(entities) {
     for (const {entity} of entities) {
         console.log(entity[pos].x, entity[pos].y)
     }
