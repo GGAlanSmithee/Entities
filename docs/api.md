@@ -17,3 +17,22 @@ The entire GG-Entities API surface consists of four key components
 
 While these parts are 100% independant of each other, and you can use them as stand-alone components, the intended way is to access them via a `EntityManager` instance, which aggregates all of their functionality in a cohesive way.
 
+## Component Manager
+
+_TODO_
+
+## Entity Manager
+
+_TODO_
+
+## Entity Factory
+
+_TODO_
+
+## Event Handler
+
+_TODO_
+
+## System Manager
+
+_TODO_

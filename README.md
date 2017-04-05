@@ -1,10 +1,8 @@
 # GG-Entities
 
-easy-to-use Entity-Component System for browser and node
+easy-to-use Entity-Component System for browsers and Node.js
 
-## Version 2
-
-Version 2 is out! See the [migration guide](/MIGRATE.md) for how you can transfer from a previous version.
+_Version 2 is out! See the [migration guide](/docs/migrate) for how you can transfer from a previous version._
 
 ## Usage
 

@@ -1,12 +1,21 @@
 window.self.$config = {
-    home: 'https://raw.githubusercontent.com/ggalansmithee/entities/master/README.md',
-    nav: [
-        {title: 'Home', path: '/', source: 'https://raw.githubusercontent.com/ggalansmithee/entities/master/README.md'},
-        {title: 'API', path: '/api/api', source: 'https://raw.githubusercontent.com/ggalansmithee/entities/master/docs/api/api.md'},
-        {title: 'EntityManager', path: '/api/entity-manager', source: 'https://raw.githubusercontent.com/ggalansmithee/entities/master/docs/api/entity-manager.md'},
-        {title: 'EntityFactory', path: '/api/entity-factory', source: 'https://raw.githubusercontent.com/ggalansmithee/entities/master/docs/api/entity-factory.md'},
-        {title: 'ComponentManager', path: '/api/component-manager', source: 'https://raw.githubusercontent.com/ggalansmithee/entities/master/docs/api/component-manager.md'},
-        {title: 'SystemManager', path: '/api/system-manager', source: 'https://raw.githubusercontent.com/ggalansmithee/entities/master/docs/api/system-manager.md'},
-        {title: 'EventHandler', path: '/api/event-handler', source: 'https://raw.githubusercontent.com/ggalansmithee/entities/master/docs/api/event-handler.md'}
-    ]
+  home: 'https://raw.githubusercontent.com/ggalansmithee/entities/master/README.md',
+  repo: 'ggalansmithee/entities',
+  'edit-link': 'https://github.com/ggalansmithee/entities/blob/master/docs',
+  tocVisibleDepth: 3,
+  nav: {
+    default: [
+      {
+        title: 'Home', path: '/'
+      },
+      {
+        title: 'Api', path: '/api'
+      },
+      {
+        title: 'v1 -> v2 Migration', path: '/migrate'
+      },
+      {
+        title: 'Changelog', path: '/changelog', source: 'https://raw.githubusercontent.com/ggalansmithee/entities/master/CHANGELOG.md'
+      }
+    ]},
 }
