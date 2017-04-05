@@ -1,4 +1,4 @@
-## v2.0.0
+## v2.0.0 (2017-04-05)
 
 Updated README.md
 Added MIGRATE.md

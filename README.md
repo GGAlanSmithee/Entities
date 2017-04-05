@@ -2,7 +2,7 @@
 
 easy-to-use Entity-Component System for browsers and Node.js
 
-_Version 2 is out! See the [migration guide](/migrate) for how you can transfer from a previous version._
+_Version 2 is out! See the [migration guide](http://ggalansmithee.github.io/Entities/#/migrate) for how you can transfer from a previous version._
 
 ## Usage
 
@@ -55,7 +55,7 @@ entityManager.onRender({ delta: 16 }) // invokes all render systems (logSystem)
 
 ## Docs
 
-- We are currently working on documenting the entire public API - comming soon!
+http://ggalansmithee.github.io/Entities/
 
 ## FAQ / Gotchas
 
