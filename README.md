@@ -60,7 +60,7 @@ http://ggalansmithee.github.io/Entities/
 ## FAQ / Gotchas
 
 * Since a system is bound with the `EntityManager` as its context, a system must be a regular function (not a es6 arrow function)
-* 
+
 ## Tips and tricks
 
 * Using [destructuring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#Object_destructuring) and [computed properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#Computed_property_names)
