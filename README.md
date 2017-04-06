@@ -28,7 +28,7 @@ function movementSystem(entities, { delta }) {
     }
 }
 
-entityManager.registerRenderSystem('movement', [ pos, vel ], movementSystem)
+entityManager.registerLogicSystem('movement', [ pos, vel ], movementSystem)
 
 function logSystem(entities) {
     for (const {entity} of entities) {
@@ -36,7 +36,7 @@ function logSystem(entities) {
     }
 }
 
-entityManager.registerLogicSystem('log', [ pos ], logSystem)
+entityManager.registerRenderSystem('log', [ pos ], logSystem)
 
 // 3. Run the systems
 
@@ -44,14 +44,16 @@ entityManager.onLogic({ delta: 16 })  // invokes all logic systems (movementSyst
 entityManager.onRender({ delta: 16 }) // invokes all render systems (logSystem)
 ```
 
-*See /examples for more usages*
-
 ## Features
 
 * Easy to use
 * Configurable
 * 100% code coverage
 * Fast [TODO: add benchmarks and comparisons to back this claim]
+
+## Examples
+
+http://ggalansmithee.github.io/Entities/examples/boxes.html
 
 ## Docs
 
