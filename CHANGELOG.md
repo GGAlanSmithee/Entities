@@ -1,6 +1,10 @@
-## v2.0.1 (2017-04-05)
+## v2.0.3 / v2.0.4 (2017-04-05)
 
-README.md links update
+Updated README.md with correct system registration
+
+## v2.0.1 / v2.0.2 (2017-04-05)
+
+Updated README.md links
 
 ## v2.0.0 (2017-04-05)
 
