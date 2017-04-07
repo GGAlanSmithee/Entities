@@ -53,7 +53,8 @@ entityManager.onRender({ delta: 16 }) // invokes all render systems (logSystem)
 
 ## Examples
 
-http://ggalansmithee.github.io/Entities/examples/boxes.html
+* [boxes](http://ggalansmithee.github.io/Entities/examples/boxes.html)
+* [options](http://ggalansmithee.github.io/Entities/examples/opts.html)
 
 ## Docs
 
