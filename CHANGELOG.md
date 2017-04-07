@@ -1,4 +1,8 @@
-## v2.0.3 / v2.0.4 (2017-04-05)
+## v2.0.4 (2017-04-05)
+
+Updated examples to be usable online
+
+## v2.0.3 (2017-04-05)
 
 Updated README.md with correct system registration
 
