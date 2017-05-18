@@ -26,11 +26,9 @@ Version 2 has seen a lot of internal and external changes, but reading through t
 * v2
 ```javascript
     const sys = entityManager.registerLogicSystem([ compName1, compName2 ], system)
-```
 
-or
+    // or
 
-```javascript
     const sys = entityManager.registerLogicSystem(compId1 | compId2, system)
 ```
 
