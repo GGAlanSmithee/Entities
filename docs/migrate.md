@@ -25,7 +25,13 @@ Version 2 has seen a lot of internal and external changes, but reading through t
 
 * v2
 ```javascript
-    const sys = entityManager.registerLogicSystem('system', [ comp1, comp2 ], system)
+    const sys = entityManager.registerLogicSystem([ compName1, compName2 ], system)
+```
+
+or
+
+```javascript
+    const sys = entityManager.registerLogicSystem(compId1 | compId2, system)
 ```
 
 ### Accessing an entity's components from within a system
