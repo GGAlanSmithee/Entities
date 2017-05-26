@@ -1,7 +1,7 @@
 {
   "name": "gg-entities",
   "description": "easy-to-use Entity-Component System in JavaScript",
-  "version": "2.0.4",
+  "version": "2.1.4",
   "author": {
     "name": "alansmithee",
     "email": "ggnore.alan.smithee@gmail.com"
@@ -24,7 +24,7 @@
   },
   "main": "dist/gg-entities.js",
   "jsnext:main": "src/index.js",
-  "module": "",
+  "module": "src/index.js",
   "scripts": {
     "test": "istanbul cover _mocha test/* -- --recursive --compilers js:babel-register --require babel-polyfill",
     "build": "node build/bundle && node build/bundle.module",
