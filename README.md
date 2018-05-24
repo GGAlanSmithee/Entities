@@ -2,8 +2,6 @@
 
 easy-to-use Entity-Component System for browsers and Node.js
 
-_Version 2 is out! See the [migration guide](http://ggalansmithee.github.io/Entities/#/migrate) for how you can transfer from a previous version._
-
 ## Usage
 
 ```javascript
@@ -63,9 +61,10 @@ http://ggalansmithee.github.io/Entities/
 ## Typings
 
 There are no official typings (yet), but @ForsakenHarmony has provided a [gist](https://gist.github.com/ForsakenHarmony/33ef7c4d7cba7a08d5fa2667b5b1b31e) for TypeScript users.
+
 ## FAQ / Gotchas
 
-* Since a system is bound with the `EntityManager` as its context, a system must be a regular function (not a es6 arrow function)
+* Since a system is bound with the `EntityManager` as its context, a system must be a regular function (not an es6 arrow function)
 
 ## Tips and tricks
 
@@ -95,8 +94,8 @@ function movementSystem(entities) {
 
 ## Get involved
 
-- Got questions or want to leave feedback? [create an issue](https://github.com/GGAlanSmithee/Entities/issues/new)
+* Got questions or want to leave feedback? [create an issue](https://github.com/GGAlanSmithee/Entities/issues/new)
 
-- Got improvements? Feel free to send a PR to the `dev` branch (don't forget to add tests)
-    - `npm run build` *builds the project*
-    - `npm run test` *runs the test suite*
+* Got improvements? Feel free to send a PR to the `dev` branch (don't forget to add tests)
+    1. `npm run build` *builds the project*
+    2. `npm run test` *runs the test suite*
