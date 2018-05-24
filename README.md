@@ -26,7 +26,7 @@ function movementSystem(entities, { delta }) {
     }
 }
 
-entityManager.registerLogicSystem('movement', [ pos, vel ], movementSystem)
+entityManager.registerLogicSystem([ pos, vel ], movementSystem)
 
 function logSystem(entities) {
     for (const {entity} of entities) {
@@ -34,9 +34,17 @@ function logSystem(entities) {
     }
 }
 
-entityManager.registerRenderSystem('log', [ pos ], logSystem)
+entityManager.registerRenderSystem([ pos ], logSystem)
 
-// 3. Run the systems
+// 3. Add an entity
+
+entityManager
+    .build()
+    .withComponent(pos)
+    .withComponent(vel)
+    .create(1)
+
+// 4. Run the systems
 
 entityManager.onLogic({ delta: 16 })  // invokes all logic systems (movementSystem)
 entityManager.onRender({ delta: 16 }) // invokes all render systems (logSystem)
