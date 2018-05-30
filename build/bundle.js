@@ -19,7 +19,7 @@ rollup.rollup({
     format: 'umd',
     moduleId: 'GGEntities',
     moduleName: 'GGEntities'
-})).then((c) => {
+})).then(() => {
     const entitiesPath = path.join(__dirname, '../dist/gg-entities.js')
     
     const polyfill = fs.readFileSync(path.join(__dirname, '../node_modules/babel-polyfill/dist/polyfill.js'), 'utf8')
@@ -27,9 +27,8 @@ rollup.rollup({
     
     fs.writeFile(entitiesPath, `${polyfill}\n\n${entities}`, error => {
         if (error) {
-            console.error(error)
-        }      
+
+            console.error(error) // eslint-disable-line no-console
+        }
     })
-}).catch(error => {
-    console.error(error)
-})
+}).catch(console.error) // eslint-disable-line no-console
