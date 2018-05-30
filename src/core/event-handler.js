@@ -1,23 +1,17 @@
 import { EntityManager } from './entity-manager'
 
-const emptyPromise = () => {
-    return new Promise(resolve => {
-        resolve()
-    })
-}
+const emptyPromise = () => Promise.resolve()
 
 const promise = (callback, context, args, timeout) => {
     if (timeout) {
         return new Promise(resolve => {
-            setTimeout(function(){
-                resolve(typeof context ===  'object' ? callback.call(context, ...args) : callback.apply(context, ...args))
+            setTimeout(function() {
+                resolve(callback.call(context, ...args))
             }, timeout)
         })
     }
     
-    return new Promise(resolve => {
-        resolve(typeof context === 'object' ? callback.call(context, ...args) : callback.apply(context, ...args))
-    })
+    return Promise.resolve(callback.call(context, ...args))
 }
     
 class EventHandler {
