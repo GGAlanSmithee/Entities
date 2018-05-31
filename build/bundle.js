@@ -27,7 +27,6 @@ rollup.rollup({
     
     fs.writeFile(entitiesPath, `${polyfill}\n\n${entities}`, error => {
         if (error) {
-
             console.error(error) // eslint-disable-line no-console
         }
     })
