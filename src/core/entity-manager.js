@@ -22,6 +22,14 @@ class EntityManager {
         
         this.entities = Array.from({ length : this.capacity }, () => ({ components: 0 }))
     }
+
+    componentNamesToId(components) {
+        return Array
+            .from(this.componentLookup)
+            .filter(cl => components.some(c => c === cl[0]))
+            .map(cl => cl[1])
+            .reduce((curr, next) => curr | next, 0)
+    }
     
     increaseCapacity() {
         let oldCapacity = this.capacity
@@ -53,7 +61,7 @@ class EntityManager {
     
     newEntity(components) {
         if (Array.isArray(components)) {
-            components = Array.from(this.componentLookup).reduce((curr, next) => ['', curr[1] | next[1]], ['', 0])[1]
+            components = this.componentNamesToId(components)
         }
         
         if (!Number.isInteger(components) || components <= 0) {
@@ -180,11 +188,7 @@ class EntityManager {
     
     registerSystem(type, components, callback) {
         if (Array.isArray(components)) {
-            components = Array
-                .from(this.componentLookup)
-                .filter(cl => components.some(c => c === cl[0]))
-                .map(cl => cl[1])
-                .reduce((curr, next) => curr | next, 0)
+            components = this.componentNamesToId(components)
         }
         
         return this.systemManager.registerSystem(type, components, callback)
