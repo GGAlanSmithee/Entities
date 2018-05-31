@@ -49,7 +49,7 @@ describe('EntityManager', function() {
             expect(res.entity).to.deep.equal(this.entityManager.entities[res.id])
         })
         
-        test('correctly creates an entity given an array of component names (as define in the [componentLookup])', () => {
+        test('correctly creates an entity given an array of component names (as defined in the [componentLookup])', () => {
             let res = this.entityManager.newEntity(this.componentNames)
             
             expect(res.id).to.equal(0)
@@ -59,6 +59,21 @@ describe('EntityManager', function() {
             
             expect(res.id).to.equal(1)
             expect(res.entity).to.deep.equal(this.entityManager.entities[res.id])
+        })
+
+        test('correctly creates an entity given an array of not all registered component names', () => {
+            const componentNames = [ this.positionName, this.statsName ]
+
+            let res = this.entityManager.newEntity(componentNames)
+            
+            expect(res.id).to.equal(0)
+            expect(res.entity).to.deep.equal(this.entityManager.entities[res.id])
+            
+            res = this.entityManager.newEntity(componentNames)
+            
+            expect(res.id).to.equal(1)
+            expect(res.entity).to.deep.equal(this.entityManager.entities[res.id])
+            expect(res.entity.components).to.equal(this.position | this.stats)
         })
         
         test('does not add an entity and returns [capacity], given wrong [components] input', () => {
