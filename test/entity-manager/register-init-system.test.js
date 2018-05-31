@@ -4,7 +4,7 @@ import { EntityManager } from '../../src/core/entity-manager'
 import { SystemType }    from '../../src/core/system-manager'
 
 describe('EntityManager', function() {
-    describe('registerInitSystem(selectorType, components, callback)', () => {
+    describe('registerInitSystem(components, callback)', () => {
         beforeEach(() => {
             this.entityManager = new EntityManager()
             

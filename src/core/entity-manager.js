@@ -180,7 +180,11 @@ class EntityManager {
     
     registerSystem(type, components, callback) {
         if (Array.isArray(components)) {
-            components = Array.from(this.componentLookup).reduce((curr, next) => ['', curr[1] | next[1]], ['', 0])[1]
+            components = Array
+                .from(this.componentLookup)
+                .filter(cl => components.some(c => c === cl[0]))
+                .map(cl => cl[1])
+                .reduce((curr, next) => curr | next, 0)
         }
         
         return this.systemManager.registerSystem(type, components, callback)
