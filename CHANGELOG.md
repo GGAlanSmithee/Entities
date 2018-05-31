@@ -1,6 +1,10 @@
 # Changelog
 
-## v2.1.0 (2018-05-31)
+## v2.3.0 (2018-05-31)
+
+`EntityManager.newEntity` now properly registers a system using only the `components` array passed in
+
+## v2.2.0 (2018-05-31)
 
 `EntityManager.registerSystem` now properly registers a system using only the `components` array passed in
 
