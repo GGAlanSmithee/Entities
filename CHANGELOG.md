@@ -1,3 +1,9 @@
+# Changelog
+
+## v2.1.0 (2018-05-31)
+
+`EntityManager.registerSystem` now properly registers a system using only the `components` array passed in
+
 ## v2.0.4 (2017-04-05)
 
 Updated examples to be usable online
@@ -14,7 +20,7 @@ Updated README.md links
 
 Updated README.md
 Added MIGRATE.md
-Added start of docs
+Added start of **docs**
 Updated package.json
 
 ## v2.0.0-beta9 (2017-03-09)
