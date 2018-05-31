@@ -20,7 +20,7 @@ Updated README.md links
 
 Updated README.md
 Added MIGRATE.md
-Added start of **docs**
+Added start of docs
 Updated package.json
 
 ## v2.0.0-beta9 (2017-03-09)
