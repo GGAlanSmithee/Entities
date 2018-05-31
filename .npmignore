@@ -3,6 +3,7 @@
 .gitignore
 .eslintrc
 .babelrc
+yarn.lock
 build
 coverage
 examples

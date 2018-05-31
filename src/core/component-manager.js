@@ -1,8 +1,3 @@
-/**
- * This function adds one to its input.
- * @param {number} input any number
- * @returns {number} that number, plus one.
- */
 class ComponentManager {
     constructor() {
         this.init()
@@ -42,8 +37,8 @@ class ComponentManager {
         }
         
         const max = Math.max(...this.components.keys())
-        
-        const id = max === undefined || max === null || max === -Infinity ? 1 : max === 0 ? 1 : max * 2
+
+        const id = max === null || max === undefined || max === -Infinity || max === 0 ? 1 : max * 2
 
         this.components.set(id, component)
 
