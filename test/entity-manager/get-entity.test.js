@@ -64,5 +64,23 @@ describe('EntityManager', function() {
             expect(this.entityManager.getEntity({ id: 1, })).to.be.undefined
             expect(this.entityManager.getEntity([ 1, ])).to.be.undefined
         })
+
+        test('retrieved entity includes correct components', () => {
+            const entity1 = this.entityManager.getEntity(this.entityId1)
+            const entity2 = this.entityManager.getEntity(this.entityId2)
+            const entity3 = this.entityManager.getEntity(this.entityId3)
+            const maxCurrentEntity = this.entityManager.getEntity(this.entityManager.currentMaxEntity)
+            const overMaxCurrentEntity = this.entityManager.getEntity(this.entityManager.currentMaxEntity + 1)
+
+            
+            expect(entity1).property('components').to.be.a.number
+            expect(entity1).property('components').to.equal(this.components)
+
+            expect(entity2).property('components').to.be.a.number
+            expect(entity2).property('components').to.equal(this.position | this.velocity)
+            
+            expect(entity3).property('components').to.be.a.number
+            expect(entity3).property('components').to.equal(0)
+        })
     })
 })
