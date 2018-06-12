@@ -23,14 +23,14 @@ class EntityManager {
         this.entities = Array.from({ length : this.capacity }, () => ({ components: 0 }))
     }
 
-    componentNamesToId(components) {
+    _componentNamesToId(components) {
         return Array
             .from(this.componentLookup)
             .filter(cl => components.some(c => c === cl[0]))
             .map(cl => cl[1])
             .reduce((curr, next) => curr | next, 0)
     }
-    
+
     increaseCapacity() {
         let oldCapacity = this.capacity
         
@@ -61,7 +61,7 @@ class EntityManager {
     
     newEntity(components) {
         if (Array.isArray(components)) {
-            components = this.componentNamesToId(components)
+            components = this._componentNamesToId(components)
         }
         
         if (!Number.isInteger(components) || components <= 0) {
@@ -70,6 +70,7 @@ class EntityManager {
         
         let id = 0
         
+        //todo if re-using an old entity, should we reset components?
         for (; id < this.capacity; ++id) {
             if (this.entities[id].components === 0) {
                 break
@@ -107,6 +108,14 @@ class EntityManager {
         }
 
         this.currentMaxEntity = 0
+    }
+
+    getEntity(id) {
+        if (!Number.isInteger(id) || id < 0) {
+            return undefined
+        }
+
+        return this.entities[id]
     }
 
     // Does not allow components to be anything other than a bitmask for performance reasons
@@ -188,7 +197,7 @@ class EntityManager {
     
     registerSystem(type, components, callback) {
         if (Array.isArray(components)) {
-            components = this.componentNamesToId(components)
+            components = this._componentNamesToId(components)
         }
         
         return this.systemManager.registerSystem(type, components, callback)
