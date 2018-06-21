@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.4.0 ()
+
+Added `EntityManager.getEntity`
+Added `EntityManager.hasComponent`
+Use Jest instead of Mocha + Istanbul
+
 ## v2.3.0 (2018-05-31)
 
 `EntityManager.newEntity` now properly registers a system using only the `components` array passed in
@@ -45,7 +51,6 @@ Removed support for unregistering components and initializers
 Removed `EntityManager.unregisterComponent`
 Removed `ComponentManager.unregisterComponent`
 Removed `EntityFactory.unregisterInitializer`
-
 Removed all usage of named components
 Removed `name` parameter from `EntityManager.registerComponent`
 
