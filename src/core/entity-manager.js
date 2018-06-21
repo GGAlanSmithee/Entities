@@ -118,6 +118,24 @@ class EntityManager {
         return this.entities[id]
     }
 
+    hasComponent(id, component) {
+        if (typeof component === 'string') {
+            component = this._componentNamesToId([ component, ])
+        }
+        
+        if (!Number.isInteger(component) || component <= 0) {
+            return false
+        }
+
+        const entity = this.getEntity(id)
+
+        if (!entity) {
+            return false
+        }
+
+        return (entity.components & component) === component
+    }
+
     // Does not allow components to be anything other than a bitmask for performance reasons
     // This method will be called for every system for every loop (which might be as high as 60 / second)
     *getEntities(components = 0) {
