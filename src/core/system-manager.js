@@ -14,14 +14,66 @@ class SystemManager {
         this.renderSystems = new Map()
         this.initSystems   = new Map()
     }
+
+    addEntity(entityId, entityComponents) {
+        if (!entityId) {
+            return
+        }
+
+        for (const { components, entities, } of this.logicSystems.values()) {
+            if ((entityComponents & components) === components) {
+                entities.push(entityId)
+            }
+        }
+
+        for (const { components, entities, } of this.renderSystems.values()) {
+            if ((entityComponents & components) === components) {
+                entities.push(entityId)
+            }
+        }
+
+        for (const { components, entities, } of this.initSystems.values()) {
+            if ((entityComponents & components) === components) {
+                entities.push(entityId)
+            }
+        }
+    }
+
+    removeEntity(entityId) {
+        if (!entityId) {
+            return
+        }
+
+        for (let { entities, } of this.logicSystems.values()) {
+            if (entities.some(e => e === entityId)) {
+                entities = entities.filter(e => e !== entityId)
+            }
+        }
+
+        for (let { entities, } of this.renderSystems.values()) {
+            if (entities.some(e => e === entityId)) {
+                entities = entities.filter(e => e !== entityId)
+            }
+        }
+
+        for (let { entities, } of this.initSystems.values()) {
+            if (entities.some(e => e === entityId)) {
+                entities = entities.filter(e => e !== entityId)
+            }
+        }
+    }
     
-    registerSystem(type, components, callback) {
+    registerSystem(type, components, entities, callback) {
         if (type !== SystemType.Logic && type !== SystemType.Render && type !== SystemType.Init) {
             throw TypeError('type must be a valid SystemType.')
         }
-        
+
         if (typeof components !== 'number')  {
             throw TypeError('components must be a number.')
+        }
+        
+        if (!Array.isArray(entities))  {
+            throw TypeError('entities must be an array.')
         }
         
         if (typeof callback !== 'function') {
@@ -30,6 +82,7 @@ class SystemManager {
         
         const system = {
             components,
+            entities,
             callback
         }
         

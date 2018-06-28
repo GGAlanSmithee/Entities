@@ -87,14 +87,19 @@ class EntityManager {
         }
         
         this.entities[id].components = components
-        
+
+        this.systemManager.addEntity(id, components)
+
         return { id, entity : this.entities[id] }
     }
     
     deleteEntity(id) {
-        //todo add sanity check
-        this.entities[id].components = 0
+        // todo add sanity check
+
+        this.systemManager.removeEntity(id)
         
+        this.entities[id].components = 0
+
         if (id < this.currentMaxEntity) {
             return
         }
@@ -138,11 +143,17 @@ class EntityManager {
 
     // Does not allow components to be anything other than a bitmask for performance reasons
     // This method will be called for every system for every loop (which might be as high as 60 / second)
-    *getEntities(components = 0) {
+    *getEntitiesByComponents(components = 0) {
         for (let id = 0; id <= this.currentMaxEntity; ++id) {
             if (components === 0 || (this.entities[id].components & components) === components) {
                 yield { id, entity : this.entities[id] }
             }
+        }
+    }
+
+    *getEntitiesByIds(ids) {
+        for (const id of ids) {
+            yield { id, entity: this.entities[id], }
         }
     }
     
@@ -218,7 +229,13 @@ class EntityManager {
             components = this._componentNamesToId(components)
         }
         
-        return this.systemManager.registerSystem(type, components, callback)
+        const entities = []
+        
+        for (const { id, } of this.getEntitiesByComponents(components)) {
+            entities.push(id)
+        }
+
+        return this.systemManager.registerSystem(type, components, entities, callback)
     }
     
     registerLogicSystem(components, callback) {
@@ -239,19 +256,19 @@ class EntityManager {
     
     onLogic(opts) {
         for (let system of this.systemManager.logicSystems.values()) {
-            system.callback.call(this, this.getEntities(system.components), opts)
+            system.callback.call(this, this.getEntitiesByIds(system.entities), opts)
         }
     }
     
     onRender(opts) {
         for (let system of this.systemManager.renderSystems.values()) {
-            system.callback.call(this, this.getEntities(system.components), opts)
+            system.callback.call(this, this.getEntitiesByIds(system.entities), opts)
         }
     }
 
     onInit(opts) {
         for (let system of this.systemManager.initSystems.values()) {
-            system.callback.call(this, this.getEntities(system.components), opts)
+            system.callback.call(this, this.getEntitiesByIds(system.entities), opts)
         }
     }
     
