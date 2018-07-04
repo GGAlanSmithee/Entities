@@ -21,9 +21,9 @@ describe('SystemManager', function() {
             expect(this.systemManager.renderSystems).property('size').to.equal(0)
             expect(this.systemManager.initSystems).property('size').to.equal(0)
             
-            this.systemManager.registerSystem(SystemType.Logic, 1 | 2, () => { })
-            this.systemManager.registerSystem(SystemType.Render, 1 | 2, () => { })
-            this.systemManager.registerSystem(SystemType.Init, 1 | 2, () => { })
+            this.systemManager.registerSystem(SystemType.Logic, 1 | 2, [], () => { })
+            this.systemManager.registerSystem(SystemType.Render, 1 | 2, [], () => { })
+            this.systemManager.registerSystem(SystemType.Init, 1 | 2, [], () => { })
             
             expect(this.systemManager.logicSystems).property('size').to.equal(1)
             expect(this.systemManager.renderSystems).property('size').to.equal(1)
@@ -61,7 +61,7 @@ describe('SystemManager', function() {
             const components = 1 | 2 
             const entities = [ 1, 2, 3, ]
             
-            const systemId = this.sys.registerSystem(SystemType.Logic, components, entities, spy)
+            const systemId = this.systemManager.registerSystem(SystemType.Logic, components, entities, spy)
             
             const system = this.systemManager.logicSystems.get(systemId)
             

@@ -177,6 +177,42 @@ describe('EntityManager', function() {
         })
          
         describe('registerSystem(callback, components, type = SystemType.Logic)', () => {
+            beforeEach(() => {
+                this.entityId1 = 0
+                this.entity1 = {
+                    components: this.position | this.velocity | this.stats,
+                }
+
+                this.entityId2 = 1
+                this.entity2 = {
+                    components: this.position | this.stats,
+                }
+
+                this.entityId3 = 2
+                this.entity3 = {
+                    components: this.position | this.velocity | this.stats,
+                }
+
+                this.entityId4 = 3
+                this.entity4 = {
+                    components: this.position,
+                }
+
+                this.entityId5 = 4
+                this.entity5 = {
+                    components: 0,
+                }
+
+
+                this.entityManager.entities[this.entityId1] = this.entity1
+                this.entityManager.entities[this.entityId2] = this.entity2
+                this.entityManager.entities[this.entityId3] = this.entity3
+                this.entityManager.entities[this.entityId4] = this.entity4
+                this.entityManager.entities[this.entityId5] = this.entity5
+
+                this.entityManager.currentMaxEntity = 5
+            })
+
             test('is a function', () => {
                 expect(this.entityManager.registerSystem).to.be.a('function')
             })
@@ -194,9 +230,11 @@ describe('EntityManager', function() {
                 const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
                 
                 const systemId = this.entityManager.registerSystem(type, components, callback)
+                
+                const entityIds = [this.entityId1, this.entityId3]
 
                 expect(spy.calledOnce).to.be.true
-                expect(spy.calledWith(type, components, callback)).to.be.true
+                expect(spy.calledWith(type, components, entityIds, callback)).to.be.true
                 expect(systemId).to.equal(1)
             })
             
@@ -215,8 +253,10 @@ describe('EntityManager', function() {
                 
                 const systemId = this.entityManager.registerSystem(type, componentNames, callback)
 
+                const entityIds = [this.entityId1, this.entityId3]
+
                 expect(spy.calledOnce).to.be.true
-                expect(spy.calledWith(type, components, callback)).to.be.true
+                expect(spy.calledWith(type, components, entityIds, callback)).to.be.true
                 expect(systemId).to.equal(1)
             })
         })
