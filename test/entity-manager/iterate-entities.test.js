@@ -2,7 +2,7 @@ import { expect }        from 'chai'
 import { EntityManager } from '../../src/core/entity-manager'
 
 describe('EntityManager', function() {
-    describe('getEntities(components = 0)', () => {
+    describe('_iterateEntities(components = 0)', () => {
         beforeEach(() => {
             this.entityManager = new EntityManager(100)
             this.entityManager.currentMaxEntity = 20
@@ -31,13 +31,13 @@ describe('EntityManager', function() {
         })
         
         test('is a generator function', () => {
-            expect(this.entityManager.getEntities).to.be.a('generatorFunction')
+            expect(this.entityManager._iterateEntities).to.be.a('generatorFunction')
         })
         
         test('returns an iterable of all entities up to [currentMaxEntity]', () => {
             this.entityManager.currentMaxEntity = 20
             
-            let it = this.entityManager.getEntities()
+            let it = this.entityManager._iterateEntities()
             
             let res = {}
             let next = {}
@@ -56,7 +56,7 @@ describe('EntityManager', function() {
             
             let last = 0
             let i = 0
-            for (let { id, entity } of this.entityManager.getEntities()) {
+            for (let { id, entity } of this.entityManager._iterateEntities()) {
                 expect(id).to.equal(i)
                 expect(entity).to.deep.equal(this.entityManager.entities[i])
                 last = id
@@ -67,7 +67,7 @@ describe('EntityManager', function() {
             
             last = 0
             i = 0
-            for (let { id, entity } of this.entityManager.getEntities()) {
+            for (let { id, entity } of this.entityManager._iterateEntities()) {
                 expect(id).to.equal(i)
                 expect(entity).to.deep.equal(this.entityManager.entities[i])
                 last = id
@@ -80,7 +80,7 @@ describe('EntityManager', function() {
         test('when called with [components], only returns entities that has [components]', () => {
             let visited = []
             
-            for (let { id } of this.entityManager.getEntities(this.position | this.stats)) {
+            for (let { id } of this.entityManager._iterateEntities(this.position | this.stats)) {
                 visited.push(id)
             }
             
@@ -90,7 +90,7 @@ describe('EntityManager', function() {
             
             visited = []
             
-            for (let { id } of this.entityManager.getEntities(this.position | this.stats)) {
+            for (let { id } of this.entityManager._iterateEntities(this.position | this.stats)) {
                 visited.push(id)
             }
             
@@ -100,7 +100,7 @@ describe('EntityManager', function() {
             
             visited = []
             
-            for (let { id } of this.entityManager.getEntities(this.position | this.stats)) {
+            for (let { id } of this.entityManager._iterateEntities(this.position | this.stats)) {
                 visited.push(id)
             }
             
@@ -110,7 +110,7 @@ describe('EntityManager', function() {
             
             visited = []
             
-            for (let { id } of this.entityManager.getEntities(this.position | this.stats)) {
+            for (let { id } of this.entityManager._iterateEntities(this.position | this.stats)) {
                 visited.push(id)
             }
             
