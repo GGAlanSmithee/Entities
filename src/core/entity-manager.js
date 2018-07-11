@@ -151,9 +151,15 @@ class EntityManager {
         }
     }
 
-    *getEntitiesByIds(ids) {
+    *getEntitiesByIds(ids = []) {
+        if (!Array.isArray(ids)) {
+            return
+        }
+
         for (const id of ids) {
-            yield { id, entity: this.entities[id], }
+            if (Number.isInteger(id) && id >= 0 && id < this.entities.length) {
+                yield { id, entity: this.entities[id], }
+            }
         }
     }
     
