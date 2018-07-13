@@ -16,25 +16,35 @@ class SystemManager {
     }
 
     addEntity(entityId, entityComponents) {
-        if (!entityId) {
+        if (!Number.isInteger(entityId) || entityId < 0) {
+            return
+        }
+        
+        if (!Number.isInteger(entityComponents) || entityComponents < 0) {
             return
         }
 
         for (const { components, entities, } of this.logicSystems.values()) {
             if ((entityComponents & components) === components) {
-                entities.push(entityId)
+                if (!entities.some(e => e === entityId)) {
+                    entities.push(entityId)
+                }
             }
         }
 
         for (const { components, entities, } of this.renderSystems.values()) {
             if ((entityComponents & components) === components) {
-                entities.push(entityId)
+                if (!entities.some(e => e === entityId)) {
+                    entities.push(entityId)
+                }
             }
         }
 
         for (const { components, entities, } of this.initSystems.values()) {
             if ((entityComponents & components) === components) {
-                entities.push(entityId)
+                if (!entities.some(e => e === entityId)) {
+                    entities.push(entityId)
+                }
             }
         }
     }
