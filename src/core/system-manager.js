@@ -50,25 +50,25 @@ class SystemManager {
     }
 
     removeEntity(entityId) {
-        if (!entityId) {
+        if (!Number.isInteger(entityId) || entityId < 0) {
             return
         }
 
-        for (let { entities, } of this.logicSystems.values()) {
-            if (entities.some(e => e === entityId)) {
-                entities = entities.filter(e => e !== entityId)
+        for (let system of this.logicSystems.values()) {
+            if (system.entities.some(e => e === entityId)) {
+                system.entities = system.entities.filter(e => e !== entityId)
             }
         }
 
-        for (let { entities, } of this.renderSystems.values()) {
-            if (entities.some(e => e === entityId)) {
-                entities = entities.filter(e => e !== entityId)
+        for (let system of this.renderSystems.values()) {
+            if (system.entities.some(e => e === entityId)) {
+                system.entities = system.entities.filter(e => e !== entityId)
             }
         }
 
-        for (let { entities, } of this.initSystems.values()) {
-            if (entities.some(e => e === entityId)) {
-                entities = entities.filter(e => e !== entityId)
+        for (let system of this.initSystems.values()) {
+            if (system.entities.some(e => e === entityId)) {
+                system.entities = system.entities.filter(e => e !== entityId)
             }
         }
     }
