@@ -11,6 +11,8 @@ describe('SystemManager', function() {
             const compThree = 4
             const compFour = 8
 
+            this.badEntityId = 3
+
             this.entityOneId = 1
             this.entityOneComponents = compOne | compThree | compFour
 
@@ -66,18 +68,82 @@ describe('SystemManager', function() {
 
         test('removes an entity from all systems which it is registered on', () => {
             expect(this.systemManager.initSystems.get(this.initSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.logicSystems.get(this.logicSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemOneKey)).property('entities').to.contain(this.entityTwoId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityTwoId)
 
             this.systemManager.removeEntity(this.entityOneId)
 
             expect(this.systemManager.initSystems.get(this.initSystemKey)).property('entities').to.not.contain(this.entityOneId)
+            expect(this.systemManager.logicSystems.get(this.logicSystemKey)).property('entities').to.not.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemOneKey)).property('entities').to.contain(this.entityTwoId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.not.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityTwoId)
+
+            this.systemManager.removeEntity(this.entityTwoId)
+
+            expect(this.systemManager.initSystems.get(this.initSystemKey)).property('entities').to.not.contain(this.entityOneId)
+            expect(this.systemManager.logicSystems.get(this.logicSystemKey)).property('entities').to.not.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemOneKey)).property('entities').to.not.contain(this.entityTwoId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.not.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.not.contain(this.entityTwoId)
         })
 
-        test('does not faulty remove entities', () => {
+        test('does not remove entities when a bad [entityId] is passed in', () => {
             expect(this.systemManager.initSystems.get(this.initSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.logicSystems.get(this.logicSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemOneKey)).property('entities').to.contain(this.entityTwoId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityTwoId)
 
-            this.systemManager.removeEntity(this.entityTWoId)
+            this.systemManager.removeEntity(this.badEntityId)
 
             expect(this.systemManager.initSystems.get(this.initSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.logicSystems.get(this.logicSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemOneKey)).property('entities').to.contain(this.entityTwoId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityTwoId)
+
+            this.systemManager.removeEntity(-1)
+
+            expect(this.systemManager.initSystems.get(this.initSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.logicSystems.get(this.logicSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemOneKey)).property('entities').to.contain(this.entityTwoId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityTwoId)
+
+            this.systemManager.removeEntity('1')
+
+            expect(this.systemManager.initSystems.get(this.initSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.logicSystems.get(this.logicSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemOneKey)).property('entities').to.contain(this.entityTwoId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityTwoId)
+
+            this.systemManager.removeEntity([])
+
+            expect(this.systemManager.initSystems.get(this.initSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.logicSystems.get(this.logicSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemOneKey)).property('entities').to.contain(this.entityTwoId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityTwoId)
+
+            this.systemManager.removeEntity({})
+
+            expect(this.systemManager.initSystems.get(this.initSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.logicSystems.get(this.logicSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemOneKey)).property('entities').to.contain(this.entityTwoId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityTwoId)
+
+            this.systemManager.removeEntity(1.1)
+
+            expect(this.systemManager.initSystems.get(this.initSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.logicSystems.get(this.logicSystemKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemOneKey)).property('entities').to.contain(this.entityTwoId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityOneId)
+            expect(this.systemManager.renderSystems.get(this.renderSystemTwoKey)).property('entities').to.contain(this.entityTwoId)
         })
     })
 })
