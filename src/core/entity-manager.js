@@ -143,7 +143,7 @@ class EntityManager {
 
     // Does not allow components to be anything other than a bitmask for performance reasons
     // This method will be called for every system for every loop (which might be as high as 60 / second)
-    *_iterateEntities(components = 0) {
+    *iterateEntities(components = 0) {
         for (let id = 0; id <= this.currentMaxEntity; ++id) {
             if (components === 0 || (this.entities[id].components & components) === components) {
                 yield { id, entity : this.entities[id] }
@@ -237,7 +237,7 @@ class EntityManager {
         
         const entities = []
         
-        for (const { id, } of this._iterateEntities(components)) {
+        for (const { id, } of this.iterateEntities(components)) {
             entities.push(id)
         }
 
