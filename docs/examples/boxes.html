@@ -154,7 +154,7 @@
                 })
                 
                 entityManager.listen(CLICK_EVENT, function(x, y) {
-                    for (const { id, entity } of this.getEntities(CLICKABLE_COMPONENT | TRANSFORM_COMPONENT | APPEARANCE_COMPONENT)) {
+                    for (const { id, entity } of this.iterateEntities(CLICKABLE_COMPONENT | TRANSFORM_COMPONENT | APPEARANCE_COMPONENT)) {
                         const tra = entity[TRANSFORM_COMPONENT]
                         const cli = entity[CLICKABLE_COMPONENT]
                         

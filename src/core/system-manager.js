@@ -14,14 +14,76 @@ class SystemManager {
         this.renderSystems = new Map()
         this.initSystems   = new Map()
     }
+
+    addEntity(entityId, entityComponents) {
+        if (!Number.isInteger(entityId) || entityId < 0) {
+            return
+        }
+        
+        if (!Number.isInteger(entityComponents) || entityComponents < 0) {
+            return
+        }
+
+        for (const { components, entities, } of this.logicSystems.values()) {
+            if ((entityComponents & components) === components) {
+                if (!entities.some(e => e === entityId)) {
+                    entities.push(entityId)
+                }
+            }
+        }
+
+        for (const { components, entities, } of this.renderSystems.values()) {
+            if ((entityComponents & components) === components) {
+                if (!entities.some(e => e === entityId)) {
+                    entities.push(entityId)
+                }
+            }
+        }
+
+        for (const { components, entities, } of this.initSystems.values()) {
+            if ((entityComponents & components) === components) {
+                if (!entities.some(e => e === entityId)) {
+                    entities.push(entityId)
+                }
+            }
+        }
+    }
+
+    removeEntity(entityId) {
+        if (!Number.isInteger(entityId) || entityId < 0) {
+            return
+        }
+
+        for (let system of this.logicSystems.values()) {
+            if (system.entities.some(e => e === entityId)) {
+                system.entities = system.entities.filter(e => e !== entityId)
+            }
+        }
+
+        for (let system of this.renderSystems.values()) {
+            if (system.entities.some(e => e === entityId)) {
+                system.entities = system.entities.filter(e => e !== entityId)
+            }
+        }
+
+        for (let system of this.initSystems.values()) {
+            if (system.entities.some(e => e === entityId)) {
+                system.entities = system.entities.filter(e => e !== entityId)
+            }
+        }
+    }
     
-    registerSystem(type, components, callback) {
+    registerSystem(type, components, entities, callback) {
         if (type !== SystemType.Logic && type !== SystemType.Render && type !== SystemType.Init) {
             throw TypeError('type must be a valid SystemType.')
         }
-        
+
         if (typeof components !== 'number')  {
             throw TypeError('components must be a number.')
+        }
+        
+        if (!Array.isArray(entities))  {
+            throw TypeError('entities must be an array.')
         }
         
         if (typeof callback !== 'function') {
@@ -30,6 +92,7 @@ class SystemManager {
         
         const system = {
             components,
+            entities,
             callback
         }
         

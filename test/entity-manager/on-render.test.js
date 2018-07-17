@@ -18,7 +18,7 @@ describe('EntityManager', function() {
             this.entities.push({ id: 1, entity: { components: this.position | this.velocity | this.clickable } })
             this.entities.push({ id: 2, entity: { components: this.position | this.velocity | this.spawnable } })
             
-            this.entityManager.getEntities = sinon.stub().returns(this.entities)
+            this.entityManager.getEntitiesByIds = sinon.stub().returns(this.entities)
             
             this.logicSpy1 = sinon.spy()
             this.entityManager.systemManager.logicSystems.set(1, {
@@ -74,16 +74,16 @@ describe('EntityManager', function() {
             expect(this.logicSpy2.calledOnce).to.be.false
         })
         
-        test('invokes [entityManager.getEntities()] with the correct paramters', () => {
+        test('invokes [entityManager.getEntitiesByIds()] with the correct paramters', () => {
             this.entityManager.onRender(this.opts)
             
-            expect(this.entityManager.getEntities.calledTwice).to.be.true
+            expect(this.entityManager.getEntitiesByIds.calledTwice).to.be.true
             
             let renderSystem1 = this.entityManager.systemManager.renderSystems.get(3)
             let renderSystem2 = this.entityManager.systemManager.renderSystems.get(4)
             
-            expect(this.entityManager.getEntities.calledWith(renderSystem1.components)).to.be.true
-            expect(this.entityManager.getEntities.calledWith(renderSystem2.components)).to.be.true
+            expect(this.entityManager.getEntitiesByIds.calledWith(renderSystem1.entities)).to.be.true
+            expect(this.entityManager.getEntitiesByIds.calledWith(renderSystem2.entities)).to.be.true
         })
     })
 })

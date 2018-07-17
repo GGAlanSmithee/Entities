@@ -175,51 +175,6 @@ describe('EntityManager', function() {
                 expect(() => this.entityManager.create(1)).to.not.throw(Error, msg)
             })
         })
-         
-        describe('registerSystem(callback, components, type = SystemType.Logic)', () => {
-            test('is a function', () => {
-                expect(this.entityManager.registerSystem).to.be.a('function')
-            })
-            
-            test('invokes [systemManager.registerSystem] with the correct parameters', () => {
-                const type       = SystemType.Render
-                const components = this.position | this.velocity | this.stats
-                
-                const callback = function(entities, { delta }) { 
-                    for (const { entity } of entities) {
-                        entity.position += entity.velocity * delta
-                    }
-                }
-                
-                const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
-                
-                const systemId = this.entityManager.registerSystem(type, components, callback)
-
-                expect(spy.calledOnce).to.be.true
-                expect(spy.calledWith(type, components, callback)).to.be.true
-                expect(systemId).to.equal(1)
-            })
-            
-            test('invokes [systemManager.registerSystem] with the correct component ids, given component names', () => {
-                const type           = SystemType.Render
-                const components     = this.position | this.velocity | this.stats
-                const componentNames = [ this.positionName, this.velocityName, this.statsName ]
-                
-                const callback = function(entities, { delta }) { 
-                    for (const { entity } of entities) {
-                        entity.position += entity.velocity * delta
-                    }
-                }
-                
-                const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
-                
-                const systemId = this.entityManager.registerSystem(type, componentNames, callback)
-
-                expect(spy.calledOnce).to.be.true
-                expect(spy.calledWith(type, components, callback)).to.be.true
-                expect(systemId).to.equal(1)
-            })
-        })
         
         describe('removeSystem(systemId)', () => {
             test('is a function', () => {
