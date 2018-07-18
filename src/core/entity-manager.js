@@ -94,7 +94,9 @@ class EntityManager {
     }
     
     deleteEntity(id) {
-        // todo add sanity check
+        if (!Number.isInteger(id) || id < 0) {
+            return
+        }
 
         this.systemManager.removeEntity(id)
         
@@ -313,6 +315,10 @@ class EntityManager {
             if (configuration === undefined) {
                 throw Error('Could not find entity configuration. If you wish to create entities without a configuration, do not pass a configurationId.')
             }
+        }
+
+        if (configurationId !== null && configurationId !== undefined && !Number.isInteger(configurationId)) {
+            throw Error('configurationId should be an integer if using a save configuration, or undefined if not.')
         }
         
         return this.entityFactory.create(this, count, configuration)

@@ -7,7 +7,8 @@
     <body>
         <canvas id='canvas'></canvas>
         
-        <script language="javascript" type="text/javascript" src="https://unpkg.com/gg-entities@2.0.3/dist/gg-entities.min.js"></script>
+        <!-- <script language="javascript" type="text/javascript" src="https://unpkg.com/gg-entities@2.0.3/dist/gg-entities.min.js"></script> -->
+        <script language="javascript" type="text/javascript" src="/gg-entities.js"></script>
         
         <script>
             window.onload = function() {
@@ -191,21 +192,22 @@
                 })
                 
                 // Create a configuration which we can use with entityManager.create() later
-                const configuration = 'entity'
-                
-                entityManager.build()
-                             .withComponent(TRANSFORM_COMPONENT)
-                             // second param is a initializer function
-                             .withComponent(VELOCITY_COMPONENT, function() { return Math.random() * 0.075 + 0.025 })
-                             .withComponent(CLICKABLE_COMPONENT)
-                             .withComponent(APPEARANCE_COMPONENT)
-                             .registerConfiguration(configuration)
+                const configuration = entityManager
+                    .build()
+                    .withComponent(TRANSFORM_COMPONENT)
+                    // second param is a initializer function
+                    .withComponent(VELOCITY_COMPONENT, function() { return Math.random() * 0.075 + 0.025 })
+                    .withComponent(CLICKABLE_COMPONENT)
+                    .withComponent(APPEARANCE_COMPONENT)
+                    .registerConfiguration()
                 
                 // spawn a new object (cube) every .5 secs (if there are less then 15 spawned objects)
                 // timed systems (or coroutines) will probably be added to the library sometime post v. 1.0.0
                 setInterval(function() {
                     if (numbSpawnedObjects < 15) {
-                        cubes.push(entityManager.create(1, configuration).id)
+                        const entity = entityManager.create(1, configuration)
+
+                        cubes.push(entity.id)
                         numbSpawnedObjects++
                     }
                 }, 500)

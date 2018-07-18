@@ -31,7 +31,7 @@ describe('EntityManager', function() {
         })
         
         test('is a generator function', () => {
-            expect(this.entityManager.getEntitiesByIds).to.be.a('generatorFunction')
+            expect(this.entityManager.getEntitiesByIds).to.be.a('function')
         })
         
         test('returns an iterable of all entities in with id in [ids]', () => {

@@ -1,10 +1,26 @@
 # Changelog
 
-## v2.4.0 ()
+## v3.0.0 ()
 
 Added `EntityManager.getEntity`
 Added `EntityManager.hasComponent`
-Use Jest instead of Mocha + Istanbul
+Added `isEntityManager` helper function to detect if variable is an instance of `EntityManager`
+Added variable sanitation in many places
+
+Added a per-system entity cache for improved performance
+
+Removed `Mocha` + `Istanbul` in favor of `Jest`
+
+Removed circular dependencies (do not include `EntityManager` in other files)
+
+Added additional tests for edgecases
+Updated and fixed examples
+Updated documentation
+
+Updated all dependencies and simplified build / bundle
+Removed minified bundle, users will now have to handle this
+
+Added `engines` in `package.json` - this is set to `>= 8.0.0`
 
 ## v2.3.0 (2018-05-31)
 

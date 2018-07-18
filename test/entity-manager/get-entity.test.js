@@ -70,13 +70,13 @@ describe('EntityManager', function() {
             const entity2 = this.entityManager.getEntity(this.entityId2)
             const entity3 = this.entityManager.getEntity(this.entityId3)
             
-            expect(entity1).property('components').to.be.a.number
+            expect(entity1).property('components').to.be.a('number')
             expect(entity1).property('components').to.equal(this.components)
 
-            expect(entity2).property('components').to.be.a.number
+            expect(entity2).property('components').to.be.a('number')
             expect(entity2).property('components').to.equal(this.position | this.velocity)
             
-            expect(entity3).property('components').to.be.a.number
+            expect(entity3).property('components').to.be.a('number')
             expect(entity3).property('components').to.equal(0)
         })
     })

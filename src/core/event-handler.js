@@ -1,4 +1,4 @@
-import { EntityManager } from './entity-manager'
+import { isEntityManager } from '../helpers/is-entity-manager'
 
 const emptyPromise = () => Promise.resolve()
 
@@ -58,7 +58,7 @@ class EventHandler {
     }
     
     trigger() {
-        let self = this instanceof EntityManager ? this.eventHandler : this
+        let self = isEntityManager(this) ? this.eventHandler : this
         
         let args = Array.from(arguments)
         
@@ -78,7 +78,7 @@ class EventHandler {
     }
     
     triggerDelayed() {
-        let self = this instanceof EntityManager ? this.eventHandler : this
+        let self = isEntityManager(this) ? this.eventHandler : this
         
         let args = Array.from(arguments)
         

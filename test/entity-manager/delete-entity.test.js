@@ -92,6 +92,21 @@ describe('EntityManager', function() {
             
             expect(this.entityManager.entities).property('length').to.equal(oldLength)
         })
+
+        test('exits early when [entity] isn´t a positive integer', () => {
+            let oldLength = this.entityManager.entities.length
+            
+            this.entityManager.deleteEntity(-1)
+            this.entityManager.deleteEntity('')
+            this.entityManager.deleteEntity(undefined)
+            this.entityManager.deleteEntity(null)
+            this.entityManager.deleteEntity()
+            this.entityManager.deleteEntity([])
+            this.entityManager.deleteEntity({})
+            
+            expect(this.entityManager.entities).property('length').to.equal(oldLength)
+        })
+
     })
     
     describe('deleteEntity(entityId)', () => {
@@ -131,4 +146,5 @@ describe('EntityManager', function() {
             expect(this.entityManager.currentMaxEntity).to.equal(0)
         })
     })
+
 })

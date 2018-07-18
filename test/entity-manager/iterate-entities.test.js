@@ -31,7 +31,7 @@ describe('EntityManager', function() {
         })
         
         test('is a generator function', () => {
-            expect(this.entityManager.iterateEntities).to.be.a('generatorFunction')
+            expect(this.entityManager.iterateEntities).to.be.a('function')
         })
         
         test('returns an iterable of all entities up to [currentMaxEntity]', () => {

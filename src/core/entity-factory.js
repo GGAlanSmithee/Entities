@@ -1,4 +1,4 @@
-import { EntityManager } from './entity-manager'
+import { isEntityManager } from '../helpers/is-entity-manager'
 
 class EntityFactory {
     constructor() {
@@ -47,7 +47,7 @@ class EntityFactory {
     }
     
     create(entityManager, count = 1, configuration = undefined) {
-        if (!(entityManager instanceof EntityManager)) {
+        if (!isEntityManager(entityManager)) {
             return []
         }
     

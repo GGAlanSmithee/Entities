@@ -1,7 +1,6 @@
 import { expect }        from 'chai'
 import sinon             from 'sinon'
 import { EntityManager } from '../../src/core/entity-manager'
-import { SystemType }    from '../../src/core/system-manager'
 
 describe('EntityManager', function() {
     describe('proxy methods', () => {
@@ -113,69 +112,7 @@ describe('EntityManager', function() {
                 expect(entityManager).to.equal(this.entityManager)
             })
         })
-        
-        describe('create(count, configurationId)', () => {
-            test('is a function', () => {
-                expect(this.entityManager.create).to.be.a('function')
-            })
-            
-            test('invokes [entityFactory].create', () => {
-                const spy = sinon.spy(this.entityManager.entityFactory, 'create')
-                
-                this.entityManager.create()
-                
-                expect(spy.calledOnce).to.be.true
-            })
-            
-            test('invokes [entityFactory].create with [entityManager] (this), [count] and the configuration corresponding to [id]', () => {
-                const component   = this.position
-                const initializer = function() { return 2 }
-                
-                const id = 1
-                
-                const configuration = new Map()
-                configuration.set(component, initializer)
-                
-                this.entityManager.entityConfigurations.set(id, configuration)
-                
-                const spy = sinon.spy(this.entityManager.entityFactory, 'create')
-                
-                const count = 3
-                
-                this.entityManager.create(count, id)
-                
-                expect(spy.calledOnce).to.be.true
-                expect(spy.calledWith(this.entityManager, count, configuration)).to.be.true
-            })
-            
-            test('returns the created entities as an object containing { id, entity }', () => {
-                const component   = this.position
-                const initializer = function() { return 2 }
-                
-                const id = 1
-                const configuration = new Map()
-                configuration.set(component, initializer)
-                
-                this.entityManager.entityConfigurations.set(id, configuration)
-                
-                const count = 2
-                
-                const entities = this.entityManager.create(count, id)
-                
-                expect(entities).to.be.an.instanceof(Array)
-                expect(entities).property('length').to.equal(2)
-                expect(entities[0].entity.components).to.deep.equal(component)
-                expect(entities[1].entity.components).to.deep.equal(component)
-            })
-            
-            test('throws exception if a [configurationId] is supplied that doesn\'t correspond to a configuration [entityConfigurations]', () => {
-                const msg = 'Could not find entity configuration. If you wish to create entities without a configuration, do not pass a configurationId.'
-                
-                expect(() => this.entityManager.create(1, 1)).to.throw(Error, msg)
-                expect(() => this.entityManager.create(1)).to.not.throw(Error, msg)
-            })
-        })
-        
+
         describe('removeSystem(systemId)', () => {
             test('is a function', () => {
                 expect(this.entityManager.removeSystem).to.be.a('function')

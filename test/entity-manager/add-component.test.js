@@ -40,7 +40,7 @@ describe('EntityManager', function() {
         test('adds a component to an entity by adding it to the entity\'s component mask', () => {
             let entity = this.entityManager.entities[this.entityId]
             
-            expect(entity).property('components').to.be.a.number
+            expect(entity).property('components').to.be.a('number')
             
             expect((entity.components & this.position) === this.position).to.be.false
             expect((entity.components & this.velocity) === this.velocity).to.be.false
@@ -68,7 +68,7 @@ describe('EntityManager', function() {
         test('adds a component to an entity by name', () => {
             let entity = this.entityManager.entities[this.entityId]
             
-            expect(entity).property('components').to.be.a.number
+            expect(entity).property('components').to.be.a('number')
             
             expect((entity.components & this.position) === this.position).to.be.false
             expect((entity.components & this.velocity) === this.velocity).to.be.false
