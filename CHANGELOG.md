@@ -1,6 +1,6 @@
 # Changelog
 
-## v3.0.0 ()
+## v3.0.0-beta1 ()
 
 Added `EntityManager.getEntity`
 Added `EntityManager.hasComponent`
@@ -9,7 +9,8 @@ Added variable sanitation in many places
 
 Added a per-system entity cache for improved performance
 
-Removed `Mocha` + `Istanbul` in favor of `Jest`
+Exchanged `Mocha` + `Istanbul` to `Jest`
+Fixed code coverage to 100%
 
 Removed circular dependencies (do not include `EntityManager` in other files)
 
