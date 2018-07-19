@@ -2,7 +2,23 @@
 
 ## Migrating from v2 to v3
 
-Version 2 has seen a lot of internal and external changes, but reading through these points, upgrading should be pretty straight-forward. The code is built to fail in such a way that it should be appearant what action you as a user need to take to fix it. If you find this to not be the case, please let me know!
+The public API has not changed since version 2, but it has been extended with a few utility methods:
+
+* `EntityManager.getEntity`
+
+Returns a entity by its id
+
+```javascript
+    entityManager.getEntity(entityId)
+```
+
+* `EntityManager.hasComponent`
+
+Returns a boolean value indicating if a entity has a component
+
+```javascript
+    entityManager.hasComponent(entityId, componentId)
+```
 
 ## Migrating from v1 to v2
 
