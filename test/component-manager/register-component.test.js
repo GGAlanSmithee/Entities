@@ -15,75 +15,96 @@ describe('ComponentManager', function() {
             expect(this.componentManager.registerComponent).to.be.a('function')
         })
         
-        test('returns the components id', () => {
-            let component = {
-                x : 20
-            }
-            
-            let registeredComponent = this.componentManager.registerComponent(component)
-            expect(registeredComponent).to.be.a('number')
-            expect(registeredComponent).to.equal(1)
+        test('succesfully registers components of different types, given valid input', () => {
+            const compKey1 = 'comp1'
+            const comp1 = 1
+
+            const compKey2 = 'comp2'
+            const comp2 = 'hello'
+
+            const compKey3 = 'comp3'
+            const comp3 = { x: 1, y: 2, }
+
+            const compKey4 = 'comp4'
+            const comp4 = 1.6
+
+            expect(this.componentManager.components).to.be.empty
+            expect(this.componentManager.components.has(compKey1)).to.be.false
+            expect(this.componentManager.components.has(compKey2)).to.be.false
+            expect(this.componentManager.components.has(compKey3)).to.be.false
+            expect(this.componentManager.components.has(compKey4)).to.be.false
+
+            this.componentManager.registerComponent(compKey1, comp1)
+
+            expect(this.componentManager.components).to.not.be.empty
+            expect(this.componentManager.components.has(compKey1)).to.be.true
+            expect(this.componentManager.components.has(compKey2)).to.be.false
+            expect(this.componentManager.components.has(compKey3)).to.be.false
+            expect(this.componentManager.components.has(compKey4)).to.be.false
+            expect(this.componentManager.components.get(compKey1)).to.deep.equal(comp1)
+
+            this.componentManager.registerComponent(compKey2, comp2)
+
+            expect(this.componentManager.components).to.not.be.empty
+            expect(this.componentManager.components.has(compKey1)).to.be.true
+            expect(this.componentManager.components.has(compKey2)).to.be.true
+            expect(this.componentManager.components.has(compKey3)).to.be.false
+            expect(this.componentManager.components.has(compKey4)).to.be.false
+            expect(this.componentManager.components.get(compKey2)).to.deep.equal(comp2)
+
+            this.componentManager.registerComponent(compKey3, comp3)
+
+            expect(this.componentManager.components).to.not.be.empty
+            expect(this.componentManager.components.has(compKey1)).to.be.true
+            expect(this.componentManager.components.has(compKey2)).to.be.true
+            expect(this.componentManager.components.has(compKey3)).to.be.true
+            expect(this.componentManager.components.has(compKey4)).to.be.false
+            expect(this.componentManager.components.get(compKey3)).to.deep.equal(comp3)
+
+            this.componentManager.registerComponent(compKey4, comp4)
+
+            expect(this.componentManager.components).to.not.be.empty
+            expect(this.componentManager.components.has(compKey1)).to.be.true
+            expect(this.componentManager.components.has(compKey2)).to.be.true
+            expect(this.componentManager.components.has(compKey3)).to.be.true
+            expect(this.componentManager.components.has(compKey4)).to.be.true
+            expect(this.componentManager.components.get(compKey4)).to.deep.equal(comp4)
+        })
+
+        test('gives an error when [key] isn´t a string or empty', () => {
+            const msg = 'key must be a non-empty string.'
+
+            expect(() => this.componentManager.registerComponent(undefined, 1)).to.throw(TypeError, msg)
+            expect(() => this.componentManager.registerComponent(null, 1)).to.throw(TypeError, msg)
+            expect(() => this.componentManager.registerComponent('', 1)).to.throw(TypeError, msg)
+            expect(() => this.componentManager.registerComponent(1, 1)).to.throw(TypeError, msg)
+            expect(() => this.componentManager.registerComponent(1.1, 1)).to.throw(TypeError, msg)
+            expect(() => this.componentManager.registerComponent([], 1)).to.throw(TypeError, msg)
+            expect(() => this.componentManager.registerComponent({}, 1)).to.throw(TypeError, msg)
+            expect(() => this.componentManager.registerComponent(new Map(), 1)).to.throw(TypeError, msg)
+        })
+
+        test('gives an error when [component] = null or omitted', () => {
+            const msg = 'component cannot be null or undefined.'
+
+            expect(() => this.componentManager.registerComponent('comp')).to.throw(TypeError, msg)
+            expect(() => this.componentManager.registerComponent('comp', null)).to.throw(TypeError, msg)
+            expect(() => this.componentManager.registerComponent('comp', undefined)).to.throw(TypeError, msg)
         })
         
-        test('gives an error (exception) when [component] = null or omitted', () => {
-            expect(() => this.componentManager.registerComponent()).to.throw(TypeError, 'component cannot be null or undefined.')
-            expect(() => this.componentManager.registerComponent(null)).to.throw(TypeError, 'component cannot be null or undefined.')
-        })
-        
-        test('increments component ids as bits [1, 2, 4, 8, 16, ...] when components are registered', () => {
-            let component = {
-                x : 20
-            }
+        test('gives an error when a component with [key] is already registed', () => {
+            const msg = (key) => `component with ${key} already registered.`
+
+            this.componentManager.registerComponent('comp', 1)
+            this.componentManager.registerComponent('comp1', 2.5)
             
-            let componentId = this.componentManager.registerComponent(component)
-            expect(componentId).to.equal(1)
+            expect(() => this.componentManager.registerComponent('comp', 2)).to.throw(Error, msg('comp'))
+            expect(() => this.componentManager.registerComponent('comp', {})).to.throw(Error, msg('comp'))
             
-            componentId = this.componentManager.registerComponent(component)
-            expect(componentId).to.equal(2)
-            
-            componentId = this.componentManager.registerComponent(component)
-            expect(componentId).to.equal(4)
-            
-            componentId = this.componentManager.registerComponent(component)
-            expect(componentId).to.equal(8)
-            
-            componentId = this.componentManager.registerComponent(component)
-            expect(componentId).to.equal(16)
-            
-            componentId = this.componentManager.registerComponent(component)
-            expect(componentId).to.equal(32)
-            
-            let components = this.componentManager.components
-            
-            expect(components).to.be.a('map')
-            expect(components.has(0)).to.be.false
-            expect(components.has(1)).to.be.true
-            expect(components.has(2)).to.be.true
-            expect(components.has(3)).to.be.false
-            expect(components.has(4)).to.be.true
-            expect(components.has(5)).to.be.false
-            expect(components.has(6)).to.be.false
-            expect(components.has(7)).to.be.false
-            expect(components.has(8)).to.be.true
-            expect(components.has(9)).to.be.false
-            expect(components.has(10)).to.be.false
-            expect(components.has(11)).to.be.false
-            expect(components.has(12)).to.be.false
-            expect(components.has(13)).to.be.false
-            expect(components.has(14)).to.be.false
-            expect(components.has(15)).to.be.false
-            expect(components.has(16)).to.be.true
-            expect(components.has(17)).to.be.false
-            expect(components.has(31)).to.be.false
-            expect(components.has(32)).to.be.true
-            expect(components.has(33)).to.be.false
-            expect(components.has(64)).to.be.false
-            
-            for (let i of components.keys()) {
-                if (i !== 1) {
-                    expect(i % 2).to.equal(0)
-                }
-            }
+            this.componentManager.registerComponent('comp2', {})
+
+            expect(() => this.componentManager.registerComponent('comp2', 1)).to.throw(Error, msg('comp2'))
+            expect(() => this.componentManager.registerComponent('comp1', {})).to.throw(Error, msg('comp1'))
         })
     })
 })

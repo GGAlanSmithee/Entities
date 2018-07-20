@@ -2,7 +2,7 @@ import { expect }          from 'chai'
 import { ComponentManager} from '../../src/core/component-manager'
 
 describe('ComponentManager', function() {
-    describe('getComponents()', () => {
+    describe('components', () => {
         beforeEach(() => {
             this.componentManager = new ComponentManager()
         })
@@ -10,28 +10,24 @@ describe('ComponentManager', function() {
         afterEach(() => {
             delete this.componentManager
         })
-        
-        test('is a function', () => {
-            expect(this.componentManager.getComponents).to.be.a('function')
-        })
-        
-        test('returns [components]', () => {
-            let components = this.componentManager.getComponents()
+
+        test('returns [_components]', () => {
+            let components = this.componentManager.components
             
             expect(components).to.be.an.instanceof(Map)
             expect(components).property('size').to.equal(0)
-            expect(components).to.equal(this.componentManager.components)
+            expect(components).to.equal(this.componentManager._components)
             
-            const id = 1
+            const key = 'comp'
             
-            this.componentManager.components.set(id, 10)
+            this.componentManager.components.set(key, 10)
             
-            components = this.componentManager.getComponents()
+            components = this.componentManager.components
             
             expect(components).to.be.an.instanceof(Map)
             expect(components).property('size').to.equal(1)
-            expect(components.get(id)).to.equal(10)
-            expect(components).to.equal(this.componentManager.components)
+            expect(components.get(key)).to.equal(10)
+            expect(components).to.equal(this.componentManager._components)
         })
     })
 })

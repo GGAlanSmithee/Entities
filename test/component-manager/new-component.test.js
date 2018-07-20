@@ -16,14 +16,14 @@ describe('ComponentManager', function() {
         })
         
         test('creates a new component from a function', () => {
-            const id = 1
+            const key = 'comp'
             
-            this.componentManager.components.set(id, function() { 
+            this.componentManager._components.set(key, function() { 
                 this.x = 10.0
                 this.y = 10.0
             })
             
-            const component = this.componentManager.newComponent(id)
+            const component = this.componentManager.newComponent(key)
             
             expect(component).to.be.an('object')
             expect(component).to.have.property('x')
@@ -34,14 +34,14 @@ describe('ComponentManager', function() {
         })
         
         test('creates a new component from an object', () => {
-            const id = 1
+            const key = 'comp'
             
-            this.componentManager.components.set(id, { 
+            this.componentManager._components.set(key, { 
                 x : 10.0,
                 y : 10.0
             })
             
-            const component = this.componentManager.newComponent(id)
+            const component = this.componentManager.newComponent(key)
             
             expect(component).to.be.an('object')
             expect(component).to.have.property('x')
@@ -52,38 +52,38 @@ describe('ComponentManager', function() {
         })
         
         test('creates a new component from an int', () => {
-            const id = 1
+            const key = 'comp'
             
-            this.componentManager.components.set(id, 5)
+            this.componentManager._components.set(key, 5)
             
-            let component = this.componentManager.newComponent(id)
+            let component = this.componentManager.newComponent(key)
             
             expect(component).to.be.a('number')
             expect(component).to.equal(5)
             
-            this.componentManager.components.set(id, -10)
+            this.componentManager._components.set(key, -10)
             
-            component = this.componentManager.newComponent(id)
+            component = this.componentManager.newComponent(key)
             
             expect(component).to.be.a('number')
             expect(component).to.equal(-10)
         })
         
         test('creates a new component from a float', () => {
-            const id = 1
+            const key = 'comp'
             
-            this.componentManager.components.set(id, 5.5)
+            this.componentManager._components.set(key, 5.5)
             
-            let component = this.componentManager.newComponent(id)
+            let component = this.componentManager.newComponent(key)
             
             expect(component).to.be.a('number')
             expect(Number.isInteger(component)).to.be.false
             expect(component).to.equal(5.5)
             expect(component).to.not.equal(5)
             
-            this.componentManager.components.set(id, -20.5)
+            this.componentManager._components.set(key, -20.5)
             
-            component = this.componentManager.newComponent(id)
+            component = this.componentManager.newComponent(key)
             
             expect(component).to.be.a('number')
             expect(Number.isInteger(component)).to.be.false
@@ -92,44 +92,42 @@ describe('ComponentManager', function() {
         })
         
         test('creates a new component from a string', () => {
-            let id = 1
+            let key = 'comp'
             
-            this.componentManager.components.set(id, 'test')
+            this.componentManager._components.set(key, 'test')
             
-            let component = this.componentManager.newComponent(id)
+            let component = this.componentManager.newComponent(key)
             
             expect(component).to.be.a('string')
             expect(component).to.equal('test')
             
-            this.componentManager.components.set(id, '')
+            this.componentManager._components.set(key, '')
             
-            component = this.componentManager.newComponent(id)
+            component = this.componentManager.newComponent(key)
             
             expect(component).to.be.a('string')
             expect(component).to.equal('')
         })
         
         test('returns null if a component has not been registered for the passed in [id]', () => {
-            const id            = 1
-            const nonExistingId = 2
+            const key            = 'comp'
+            const nonExistingKey = 'non-comp'
             
-            this.componentManager.components.set(id, 'test')
+            this.componentManager._components.set(key, 'test')
             
-            expect(this.componentManager.newComponent(nonExistingId)).to.be.null
+            expect(this.componentManager.newComponent(nonExistingKey)).to.be.null
         })
             
         test('returns null on bad input', () => {
-            let component = this.componentManager.newComponent()
-            
-            expect(component).to.be.null
-            
-            component = this.componentManager.newComponent(null)
-            
-            expect(component).to.be.null
-            
-            component = this.componentManager.newComponent(undefined)
-            
-            expect(component).to.be.null
+            expect(this.componentManager.newComponent()).to.be.null
+            expect(this.componentManager.newComponent(null)).to.be.null
+            expect(this.componentManager.newComponent(undefined)).to.be.null
+            expect(this.componentManager.newComponent(1)).to.be.null
+            expect(this.componentManager.newComponent(1.1)).to.be.null
+            expect(this.componentManager.newComponent('')).to.be.null
+            expect(this.componentManager.newComponent([])).to.be.null
+            expect(this.componentManager.newComponent({})).to.be.null
+            expect(this.componentManager.newComponent(new Map())).to.be.null
         })
     })
 })

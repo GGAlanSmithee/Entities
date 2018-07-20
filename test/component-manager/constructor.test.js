@@ -13,11 +13,11 @@ describe('ComponentManager', function() {
             expect(componentManager).to.be.an.instanceof(ComponentManager)
         })
         
-        test('initializes [components] to an empty Map', () => {
+        test('initializes [_components] to an empty Map', () => {
             let componentManager = new ComponentManager()
             
-            expect(componentManager.components).to.be.an.instanceof(Map)
-            expect(componentManager.components).property('size').to.equal(0)
+            expect(componentManager._components).to.be.an.instanceof(Map)
+            expect(componentManager._components).property('size').to.equal(0)
         })
     })
 })
