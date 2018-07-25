@@ -18,18 +18,18 @@ describe('EntityFactory', function() {
             expect(this.entityFactory.build).to.be.a('function')
         })
         
-        test('clears [configuration]', () => {
-            this.entityFactory.configuration.set(this.position, () => { })
-            this.entityFactory.configuration.set(this.velocity, () => { })
+        test('clears [_configuration]', () => {
+            this.entityFactory._configuration.set(this.position, () => { })
+            this.entityFactory._configuration.set(this.velocity, () => { })
             
-            expect(this.entityFactory).property('configuration').property('size').to.equal(2)
+            expect(this.entityFactory).property('_configuration').property('size').to.equal(2)
             
             this.entityFactory.build()
             
-            expect(this.entityFactory).property('configuration').property('size').to.equal(0)
+            expect(this.entityFactory).property('_configuration').property('size').to.equal(0)
         })
         
-        test('returns this (the entityFactory instance)', () => {
+        test('returns this (the EntityFactory instance)', () => {
             expect(this.entityFactory.build()).to.equal(this.entityFactory)
         })
     })

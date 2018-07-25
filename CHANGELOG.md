@@ -2,6 +2,7 @@
 
 ## v2.4.0-beta1 (2018-07-18) / v3.0.0 ()
 
+Normalized hte return value of `EntityManager.create(...)` and `EntityFactory.create(...)`, now always returns an array of entities, even if only one was created
 Added `EntityManager.getEntity`
 Added `EntityManager.hasComponent`
 Added `isEntityManager` helper function to detect if variable is an instance of `EntityManager`

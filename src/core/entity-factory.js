@@ -1,87 +1,90 @@
-import { isEntityManager } from '../helpers/is-entity-manager'
+import { validateAndThrow, } from '../validate'
+import { isNonEmptyString, } from '../validate/is-non-empty-string'
+import { isEntityManager, } from '../validate/is-entity-manager'
+import { isFunction, } from '../validate/is-function'
+import { isObject, } from '../validate/is-object'
+import { isDefined } from '../validate/is-defined'
 
 class EntityFactory {
     constructor() {
-        this.init()
+        this._initializers  = new Map()
+        this._configuration = new Map()
     }
     
-    init() {
-        this.initializers  = new Map()
-        this.configuration = new Map()
-    }
-    
-    registerInitializer(id, initializer) {
-        if (!Number.isInteger(id) || id <= 0) {
-            throw TypeError('id must be a posetive integer.')
-        }
-        
-        if (typeof initializer !== 'function') {
-            throw TypeError('initializer must be a function.')
-        }
-        
-        this.initializers.set(id, initializer)
+    registerInitializer(key, initializer) {
+        validateAndThrow(
+            TypeError,
+            isNonEmptyString(key, 'key'),
+            isFunction(initializer, 'initializer')
+        )
+
+        this._initializers.set(key, initializer)
     }
     
     build() {
-        this.configuration = new Map()
+        this._configuration = new Map()
         
         return this
     }
     
-    withComponent(componentId, initializer) {
-        if (!Number.isInteger(componentId) || componentId <= 0) {
+    withComponent(key, initializer) {
+        if (!isNonEmptyString(key)) {
             return this
         }
-        
-        if (typeof initializer !== 'function') {
-            initializer = this.initializers.get(componentId)
+
+        if (!isFunction(initializer)) {
+            initializer = this._initializers.get(key)
         }
         
-        this.configuration.set(componentId, initializer)
+        this._configuration.set(key, initializer)
         
         return this
     }
     
     createConfiguration() {
-        return this.configuration
+        return this._configuration
     }
     
-    create(entityManager, count = 1, configuration = undefined) {
+    create(entityManager, length = 1, configuration = undefined) {
         if (!isEntityManager(entityManager)) {
             return []
         }
     
         if (configuration == null) {
-            configuration = this.configuration
+            configuration = this._configuration
+        }
+
+        if (configuration == null) {
+            console.warn('no configuration supplied - could not create entity.') // eslint-disable-line no-console
+
+            return []
         }
         
-        const components = Array.from(configuration.keys()).reduce((curr, next) => curr |= next, 0)
+        const components = Array.from(configuration.keys())
         
-        let entities = []
-        
-        for (let i = 0; i < count; ++i) {
-            let { id, entity } = entityManager.newEntity(components)
-            
-            if (id >= entityManager.capacity) {
-                break
-            }
-            
-            for (let [component, initializer] of configuration) {
-                if (typeof initializer !== 'function') {
-                    continue
+        return Array
+            .from({ length, }, () => {
+                const entity = entityManager.newEntity(components)
+                
+                if (entity === null) {
+                    return null
                 }
 
-                let result = initializer.call(entity[component])
-                
-                if (typeof entity[component] !== 'object' && result !== undefined) {
-                    entity[component] = result
+                for (const [component, initializer] of configuration) {
+                    if (!isFunction(initializer)) {
+                        continue
+                    }
+
+                    const result = initializer.call(entity[component])
+                    
+                    if (!isObject(entity[component]) && isDefined(result)) {
+                        entity[component] = result
+                    }
                 }
-            }
-            
-            entities.push({ id, entity })
-        }
-        
-        return entities.length === 1 ? entities[0] : entities
+                
+                return entity
+            })
+            .filter(e => e !== null)
     }
 }
 

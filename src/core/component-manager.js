@@ -1,4 +1,7 @@
-import { validateKey, } from "../utils/validate"
+import { validateAndThrow, } from '../validate'
+import { isNonEmptyString, } from '../validate/is-non-empty-string'
+import { isDefined, } from '../validate/is-defined'
+import { doesNotContain, } from '../validate/does-not-contain'
 
 class ComponentManager {
     constructor() {
@@ -8,7 +11,7 @@ class ComponentManager {
     newComponent(key) {
         let component = this._components.get(key)
         
-        if (component === null || component === undefined) {
+        if (!isDefined(component)) {
             return null
         }
         
@@ -30,15 +33,11 @@ class ComponentManager {
     }
     
     registerComponent(key, component) {
-        validateKey(key)
-
-        if (component === null || component === undefined) {
-            throw TypeError('component cannot be null or undefined.')
-        }
-
-        if (this._components.has(key)) {
-            throw Error(`component with ${key} already registered.`)
-        }
+        validateAndThrow(
+            isNonEmptyString(key, 'key'),
+            isDefined(component, 'component'),
+            doesNotContain(this._components, key, `component with ${key} already registered.`)
+        )
 
         this._components.set(key, component)
     }

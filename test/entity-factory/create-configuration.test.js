@@ -8,6 +8,7 @@ describe('EntityFactory', function() {
             
             this.position = 1
             this.velocity = 2
+            this.stats = 3
         })
         
         afterEach(() => {
@@ -18,26 +19,34 @@ describe('EntityFactory', function() {
             expect(this.entityFactory.createConfiguration).to.be.a('function')
         })
         
-        test('returns the current configuration', () => {
-            function initializerOne() {
-                this.a = "A"
+        test('returns the current [_configuration]', () => {
+            class initializerOne {
+                constructor() {
+                    this.a = "A"
+                }
             }
             
             function initializerTwo() {
                 this.b = "B"
             }
+
+            class initializerThree {
+                a = "A"
+            }
             
-            this.entityFactory.configuration.set(this.position, initializerOne)
-            this.entityFactory.configuration.set(this.velocity, initializerTwo)
+            this.entityFactory._configuration.set(this.position, initializerOne)
+            this.entityFactory._configuration.set(this.velocity, initializerTwo)
+            this.entityFactory._configuration.set(this.stats, initializerThree)
             
-            let configuration = this.entityFactory.createConfiguration()
+            const configuration = this.entityFactory.createConfiguration()
             
-            expect(configuration).to.equal(this.entityFactory.configuration)
+            expect(configuration).to.equal(this.entityFactory._configuration)
             
-            expect(configuration).property('size').to.equal(2)
+            expect(configuration).property('size').to.equal(3)
             
             expect(configuration.get(this.position)).to.equal(initializerOne)
             expect(configuration.get(this.velocity)).to.equal(initializerTwo)
+            expect(configuration.get(this.stats)).to.equal(initializerThree)
         })
     })
 })

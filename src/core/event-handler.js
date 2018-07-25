@@ -1,4 +1,4 @@
-import { isEntityManager } from '../helpers/is-entity-manager'
+import { isEntityManager, } from '../validate/is-entity-manager'
 
 const emptyPromise = () => Promise.resolve()
 
@@ -16,11 +16,7 @@ const promise = (callback, context, args, timeout) => {
     
 class EventHandler {
     constructor() {
-        this.init()
-    }
-    
-    init() {
-        this.events = new Map()
+        this._events = new Map()
     }
     
     listen(event, callback) {
@@ -28,25 +24,25 @@ class EventHandler {
             return
         }
         
-        if (!this.events.has(event)) {
-            this.events.set(event, new Map())
+        if (!this._events.has(event)) {
+            this._events.set(event, new Map())
         }
         
         let eventId = -1
         
-        this.events.forEach(event => {
+        this._events.forEach(event => {
             eventId = Math.max(eventId, ...event.keys())
         })
         
         ++eventId
         
-        this.events.get(event).set(eventId, callback)
+        this._events.get(event).set(eventId, callback)
         
         return eventId
     }
     
     stopListen(eventId) {
-        for (let events of this.events.values()) {
+        for (let events of this._events.values()) {
             for (let id of events.keys()) {
                 if (id === eventId) {
                     return events.delete(eventId)

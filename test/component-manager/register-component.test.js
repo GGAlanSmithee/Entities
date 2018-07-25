@@ -1,4 +1,5 @@
-import { expect }           from 'chai'
+import { expect } from 'chai'
+import { isNonEmptyStringMsg } from '../../src/validate/is-non-empty-string'
 import { ComponentManager } from '../../src/core/component-manager'
 
 describe('ComponentManager', function() {
@@ -72,7 +73,7 @@ describe('ComponentManager', function() {
         })
 
         test('gives an error when [key] isn´t a string or empty', () => {
-            const msg = 'key must be a non-empty string.'
+            const msg = isNonEmptyStringMsg('key')
 
             expect(() => this.componentManager.registerComponent(undefined, 1)).to.throw(TypeError, msg)
             expect(() => this.componentManager.registerComponent(null, 1)).to.throw(TypeError, msg)

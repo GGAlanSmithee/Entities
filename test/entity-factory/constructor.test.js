@@ -19,12 +19,12 @@ describe('EntityFactory', function() {
             expect(this.entityFactory).to.be.an.instanceof(EntityFactory)
         })
         
-        test('instantiates [configuration] as a Map', () => {
-            expect(this.entityFactory.configuration).to.be.an.instanceof(Map)
+        test('instantiates [_configuration] as a Map', () => {
+            expect(this.entityFactory._configuration).to.be.an.instanceof(Map)
         })
         
-        test('instantiates [initializers] as a Map', () => {
-            expect(this.entityFactory.initializers).to.be.an.instanceof(Map)
+        test('instantiates [_initializers] as a Map', () => {
+            expect(this.entityFactory._initializers).to.be.an.instanceof(Map)
         })
     })
 })
