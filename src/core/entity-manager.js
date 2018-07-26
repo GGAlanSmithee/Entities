@@ -1,3 +1,4 @@
+import { containsAll }               from '../util/contains-all'
 import { EntityFactory }             from './entity-factory'
 import { ComponentManager }          from './component-manager'
 import { SystemManager, SystemType } from './system-manager'
@@ -88,7 +89,7 @@ class EntityManager {
             return false
         }
 
-        return entity.components.some(c => c === component)
+        return entity.components.includes(component)
     }
 
     *iterateEntities(components = []) {
@@ -96,7 +97,7 @@ class EntityManager {
             return components
         }
 
-        for (const entity of this.entities.filter(e => components.every(c => e.components.include(c)))) {
+        for (const entity of this.entities.filter(e => containsAll(components, e.components))) {
             yield entity
         }
     }
