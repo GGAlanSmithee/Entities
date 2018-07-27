@@ -1,18 +1,9 @@
 import { isEntityManager, } from '../validate/is-entity-manager'
-
-const emptyPromise = () => Promise.resolve()
-
-const promise = (callback, context, args, timeout) => {
-    if (timeout) {
-        return new Promise(resolve => {
-            setTimeout(function() {
-                resolve(callback.call(context, ...args))
-            }, timeout)
-        })
-    }
-    
-    return Promise.resolve(callback.call(context, ...args))
-}
+import { isNonEmptyString, } from '../validate/is-non-empty-string'
+import { contains, } from '../validate/contains'
+import { isFunction, } from '../validate/is-function'
+import { isPositiveInteger, } from '../validate/is-positive-integer'
+import { promise, emptyPromise } from '../util/promise'
     
 class EventHandler {
     constructor() {
@@ -20,11 +11,11 @@ class EventHandler {
     }
     
     listen(event, callback) {
-        if (typeof event !== 'string' || typeof callback !== 'function') {
+        if (!isNonEmptyString(event) || !isFunction(callback)) {
             return
         }
         
-        if (!this._events.has(event)) {
+        if (!contains(this._events, event)) {
             this._events.set(event, new Map())
         }
         
@@ -42,8 +33,8 @@ class EventHandler {
     }
     
     stopListen(eventId) {
-        for (let events of this._events.values()) {
-            for (let id of events.keys()) {
+        for (const events of this._events.values()) {
+            for (const id of events.keys()) {
                 if (id === eventId) {
                     return events.delete(eventId)
                 }
@@ -54,42 +45,42 @@ class EventHandler {
     }
     
     trigger() {
-        let self = isEntityManager(this) ? this.eventHandler : this
+        const self = isEntityManager(this) ? this.eventHandler : this
         
-        let args = Array.from(arguments)
+        const args = Array.from(arguments)
         
-        let [ event ] = args.splice(0, 1)
-        
-        if (typeof event !== 'string' || !self.events.has(event)) {
+        const [ event ] = args.splice(0, 1)
+
+        if (!isNonEmptyString(event) || !contains(self._events, event)) {
             return emptyPromise()
         }
+
+        const promises = []
         
-        let promises = []
-        
-        for (let callback of self.events.get(event).values()) {
+        for (let callback of self._events.get(event).values()) {
             promises.push(promise(callback, this, args))
         }
-        
+
         return Promise.all(promises)
     }
     
     triggerDelayed() {
-        let self = isEntityManager(this) ? this.eventHandler : this
+        const self = isEntityManager(this) ? this.eventHandler : this
         
-        let args = Array.from(arguments)
+        const args = Array.from(arguments)
         
-        let [ event, timeout ] = args.splice(0, 2)
+        const [ event, timeout ] = args.splice(0, 2)
         
-        if (typeof event !== 'string' || !Number.isInteger(timeout) || !self.events.has(event)) {
+        if (!isNonEmptyString(event) || !isPositiveInteger(timeout) || !contains(self._events, event)) {
             return emptyPromise()
         }
+
+        const promises = []
         
-        let promises = []
-        
-        for (let callback of self.events.get(event).values()) {
+        for (let callback of self._events.get(event).values()) {
             promises.push(promise(callback, this, args, timeout))
         }
-        
+
         return Promise.all(promises)
     }
 }

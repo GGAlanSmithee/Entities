@@ -1,5 +1,5 @@
 import { expect }      from 'chai'
-import { containsAll } from '../../../src/util/contains-all'
+import { containsAll } from '../../src/util/contains-all'
 
 describe('util', function() {
     describe('containsAll(arr1, arr2)', () => {

@@ -20,8 +20,8 @@ describe('EventHandler', function() {
         test('[callback] for the [event] is called with [args]', () => {
             let spy = sinon.spy()
             
-            this.eventHandler.events.set('onEvent', new Map())
-            this.eventHandler.events.get('onEvent').set(1, spy)
+            this.eventHandler._events.set('onEvent', new Map())
+            this.eventHandler._events.get('onEvent').set(1, spy)
             
             let paramOne = 'hello'
             let paramTwo = [ 1, 2, 3 ]
@@ -36,15 +36,15 @@ describe('EventHandler', function() {
         test('[callback] is called with an EntityManager as [context]', () => {
             let spy = sinon.spy()
             
-            this.eventHandler.events.set('onEvent', new Map())
-            this.eventHandler.events.get('onEvent').set(1, spy)
+            this.eventHandler._events.set('onEvent', new Map())
+            this.eventHandler._events.get('onEvent').set(1, spy)
             
             let paramOne = 'hello'
             let paramTwo = [ 1, 2, 3 ]
             let paramThree = { a : 'A' }
             
             let entityManager = new EntityManager()
-            entityManager.eventHandler = this.eventHandler
+            entityManager._eventHandler = this.eventHandler
             
             return this.eventHandler.trigger.call(entityManager, 'onEvent', paramOne, paramTwo, paramThree).then(() => {
                 expect(spy.calledWith(paramOne, paramTwo, paramThree)).to.be.true
@@ -55,8 +55,8 @@ describe('EventHandler', function() {
         test('returns an empty promise when [event] is not a string', () => {
             let spy = sinon.spy()
             
-            this.eventHandler.events.set('onEvent', new Map())
-            this.eventHandler.events.get('onEvent').set(1, spy)
+            this.eventHandler._events.set('onEvent', new Map())
+            this.eventHandler._events.get('onEvent').set(1, spy)
             
             let paramOne = 'hello'
             let paramTwo = [ 1, 2, 3 ]
@@ -70,15 +70,15 @@ describe('EventHandler', function() {
         test('returns an empty promise when [event] is not a string and [context] is an EntityManager', () => {
             let spy = sinon.spy()
             
-            this.eventHandler.events.set('onEvent', new Map())
-            this.eventHandler.events.get('onEvent').set(1, spy)
+            this.eventHandler._events.set('onEvent', new Map())
+            this.eventHandler._events.get('onEvent').set(1, spy)
             
             let paramOne = 'hello'
             let paramTwo = [ 1, 2, 3 ]
             let paramThree = { a : 'A' }
             
             let entityManager = new EntityManager()
-            entityManager.eventHandler = this.eventHandler
+            entityManager._eventHandler = this.eventHandler
             
             return this.eventHandler.trigger.call(entityManager, 1, paramOne, paramTwo, paramThree).then(() => {
                 expect(spy.calledWith(paramOne, paramTwo, paramThree)).to.be.false

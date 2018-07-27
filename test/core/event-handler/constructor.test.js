@@ -20,7 +20,7 @@ describe('EventHandler', function() {
         })
         
         test('instantiates [events] as a Map', () => {
-            expect(this.eventHandler.events).to.be.an.instanceof(Map)
+            expect(this.eventHandler._events).to.be.an.instanceof(Map)
         })
     })
 })

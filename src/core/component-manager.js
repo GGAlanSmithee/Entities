@@ -1,7 +1,7 @@
 import { validateAndThrow, } from '../validate'
 import { isNonEmptyString, } from '../validate/is-non-empty-string'
 import { isDefined, } from '../validate/is-defined'
-import { alreadyContains, } from '../validate/already-contains'
+import { doesNotContain, } from '../validate/does-not-contain'
 
 class ComponentManager {
     constructor() {
@@ -37,7 +37,7 @@ class ComponentManager {
             TypeError,
             isNonEmptyString(key, 'key'),
             isDefined(component, 'component'),
-            alreadyContains(this._components, key, 'components')
+            doesNotContain(this._components, key, 'components')
         )
 
         this._components.set(key, component)

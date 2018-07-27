@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { isNonEmptyStringMsg } from '../../../src/validate/is-non-empty-string'
-import { alreadyContainsMsg } from '../../../src/validate/already-contains'
+import { doesNotContainMsg } from '../../../src/validate/does-not-contain'
 import { isDefinedMsg } from '../../../src/validate/is-defined'
 import { ComponentManager } from '../../../src/core/component-manager'
 
@@ -96,7 +96,7 @@ describe('ComponentManager', function() {
         })
         
         test('gives an error when a component with [key] is already registed', () => {
-            const msg = (key = '') => alreadyContainsMsg(key, 'components')
+            const msg = (key = '') => doesNotContainMsg(key, 'components')
 
             this.componentManager.registerComponent('comp', 1)
             this.componentManager.registerComponent('comp1', 2.5)
