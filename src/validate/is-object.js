@@ -1,4 +1,5 @@
-const isObjectMsg = (name = '') => `${name} must be an object.`.trim()
+const isObjectMsg = (name = '', value = '') =>
+    `${name} must be an object. Got "${typeof value}".`.trim()
 
 const isObject = (value, name = undefined) => {
     const success = typeof value === 'object'
@@ -9,7 +10,7 @@ const isObject = (value, name = undefined) => {
 
     return {
         success,
-        message: isObjectMsg(name),  
+        message: isObjectMsg(name, value),  
     }
 }
 

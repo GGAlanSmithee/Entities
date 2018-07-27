@@ -1,4 +1,5 @@
-const isEntityManagerMsg = (name) => `${name} must be an instance of EntityManager.`.trim()
+const isEntityManagerMsg = (name = '', value = '') =>
+    `${name} must be an instance of EntityManager. Got "${typeof value}".`.trim()
 
 const isEntityManager = (value, name = undefined) => {
     const success = (
@@ -13,7 +14,7 @@ const isEntityManager = (value, name = undefined) => {
     
     return {
         success,
-        message: isEntityManagerMsg(name),  
+        message: isEntityManagerMsg(name, value),  
     }
 }
 

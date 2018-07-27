@@ -1,4 +1,5 @@
-const isArrayMsg = (name = '') => `${name} must be an array.`.trim()
+const isArrayMsg = (name = '', value = '') =>
+    `"${name}" must be an array. Got "${typeof value}".`.trim()
 
 const isArray = (value, name = undefined) => {
     const success = Array.isArray(value)
@@ -9,7 +10,7 @@ const isArray = (value, name = undefined) => {
 
     return {
         success,
-        message: isArrayMsg(name),  
+        message: isArrayMsg(name, value),
     }
 }
 

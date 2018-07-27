@@ -1,4 +1,5 @@
-const isPositiveIntegerMsg = (name) => `${name} must be a positive integer.`.trim()
+const isPositiveIntegerMsg = (name = '', value = '') =>
+    `${name} must be a positive integer. Got "${value}".`.trim()
 
 const isPositiveInteger = (value, name = undefined) => {
     const success = Number.isInteger(value) && value >= 0
@@ -9,7 +10,7 @@ const isPositiveInteger = (value, name = undefined) => {
 
     return {
         success,
-        message: isPositiveIntegerMsg(name)
+        message: isPositiveIntegerMsg(name, value)
     }
 }
 

@@ -85,7 +85,7 @@ class SystemManager {
             isFunction(callback, 'callback')
         )
         
-        // todo doesNotContain check for system
+        // todo alreadyContains check for system
 
         const system = {
             components,

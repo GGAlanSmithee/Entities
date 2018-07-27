@@ -1,4 +1,5 @@
-const isOfTypeMsg = (values = '', name = '', value = '') => `${name} must be one of ${values}. Got ${value}.`.trim()
+const isOfTypeMsg = (values = '', name = '', value = '') =>
+    `"${name}" must be one of ${values}. Got "${value}".`.trim()
 
 const isOfType = (Type, value, name = undefined) => {
     const values = Object.keys(Type).map(k => Type[k])

@@ -1,4 +1,5 @@
-const isNonEmptyStringMsg = (name) => `${name} must be a non-empty string.`.trim()
+const isNonEmptyStringMsg = (name = '', value = '') =>
+    `"${name}" must be a non-empty string. Got "${value}".`.trim()
 
 const isNonEmptyString = (value, name = undefined) => {
     const success = (
@@ -14,7 +15,7 @@ const isNonEmptyString = (value, name = undefined) => {
 
     return {
         success,
-        message: isNonEmptyStringMsg(name)
+        message: isNonEmptyStringMsg(name, value)
     }
 }
 

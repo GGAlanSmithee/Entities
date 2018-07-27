@@ -42,82 +42,82 @@ describe('EntityFactory', function() {
         })
         
         test('throws error if [key] is not a non-empty string', () => {
-            const msg = isNonEmptyStringMsg('key')
+            const msg = (value = '') => isNonEmptyStringMsg('key', value)
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(undefined, () => { })).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer(undefined, () => { })).to.throw(TypeError, msg(undefined))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(null, () => { })).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer(null, () => { })).to.throw(TypeError, msg(null))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(1, () => { })).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer(1, () => { })).to.throw(TypeError, msg(1))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(1.2, () => { })).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer(1.2, () => { })).to.throw(TypeError, msg(1.2))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer([], () => { })).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer([], () => { })).to.throw(TypeError, msg([]))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer({}, () => { })).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer({}, () => { })).to.throw(TypeError, msg({}))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer('', () => { })).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer('', () => { })).to.throw(TypeError, msg(''))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(0, () => { })).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer(0, () => { })).to.throw(TypeError, msg(0))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(-1, () => { })).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer(-1, () => { })).to.throw(TypeError, msg(-1))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
         })
         
         test('throws error if [initializer] is not a function', () => {
 
-            const msg = isFunctionMsg('initializer')
+            const msg = (value = '') => isFunctionMsg('initializer', value)
 
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(this.position)).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer(this.position)).to.throw(TypeError, msg())
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(this.position, undefined)).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer(this.position, undefined)).to.throw(TypeError, msg(undefined))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(this.position, null)).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer(this.position, null)).to.throw(TypeError, msg(null))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(this.position, [])).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer(this.position, [])).to.throw(TypeError, msg([]))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(this.position, {})).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer(this.position, {})).to.throw(TypeError, msg({}))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(this.position, 'not a function')).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer(this.position, 'not a function')).to.throw(TypeError, msg('not a function'))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(this.position, 1)).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer(this.position, 1)).to.throw(TypeError, msg(1))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
             
-            expect(() => this.entityFactory.registerInitializer(this.position, 1.2)).to.throw(TypeError, msg)
+            expect(() => this.entityFactory.registerInitializer(this.position, 1.2)).to.throw(TypeError, msg(1.2))
             
             expect(this.entityFactory._initializers.size).to.equal(0)
         })

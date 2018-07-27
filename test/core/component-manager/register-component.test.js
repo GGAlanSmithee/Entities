@@ -1,5 +1,7 @@
 import { expect } from 'chai'
 import { isNonEmptyStringMsg } from '../../../src/validate/is-non-empty-string'
+import { alreadyContainsMsg } from '../../../src/validate/already-contains'
+import { isDefinedMsg } from '../../../src/validate/is-defined'
 import { ComponentManager } from '../../../src/core/component-manager'
 
 describe('ComponentManager', function() {
@@ -73,28 +75,28 @@ describe('ComponentManager', function() {
         })
 
         test('gives an error when [key] isn´t a string or empty', () => {
-            const msg = isNonEmptyStringMsg('key')
+            const msg = (value = '') => isNonEmptyStringMsg('key', value)
 
-            expect(() => this.componentManager.registerComponent(undefined, 1)).to.throw(TypeError, msg)
-            expect(() => this.componentManager.registerComponent(null, 1)).to.throw(TypeError, msg)
-            expect(() => this.componentManager.registerComponent('', 1)).to.throw(TypeError, msg)
-            expect(() => this.componentManager.registerComponent(1, 1)).to.throw(TypeError, msg)
-            expect(() => this.componentManager.registerComponent(1.1, 1)).to.throw(TypeError, msg)
-            expect(() => this.componentManager.registerComponent([], 1)).to.throw(TypeError, msg)
-            expect(() => this.componentManager.registerComponent({}, 1)).to.throw(TypeError, msg)
-            expect(() => this.componentManager.registerComponent(new Map(), 1)).to.throw(TypeError, msg)
+            expect(() => this.componentManager.registerComponent(undefined, 1)).to.throw(TypeError, msg(undefined))
+            expect(() => this.componentManager.registerComponent(null, 1)).to.throw(TypeError, msg(null))
+            expect(() => this.componentManager.registerComponent('', 1)).to.throw(TypeError, msg(''))
+            expect(() => this.componentManager.registerComponent(1, 1)).to.throw(TypeError, msg(1))
+            expect(() => this.componentManager.registerComponent(1.1, 1)).to.throw(TypeError, msg(1.1))
+            expect(() => this.componentManager.registerComponent([], 1)).to.throw(TypeError, msg([]))
+            expect(() => this.componentManager.registerComponent({}, 1)).to.throw(TypeError, msg({}))
+            expect(() => this.componentManager.registerComponent(new Map(), 1)).to.throw(TypeError, msg(new Map()))
         })
 
         test('gives an error when [component] = null or omitted', () => {
-            const msg = 'component cannot be null or undefined.'
+            const msg = (value = '') => isDefinedMsg('component', value)
 
-            expect(() => this.componentManager.registerComponent('comp')).to.throw(TypeError, msg)
-            expect(() => this.componentManager.registerComponent('comp', null)).to.throw(TypeError, msg)
-            expect(() => this.componentManager.registerComponent('comp', undefined)).to.throw(TypeError, msg)
+            expect(() => this.componentManager.registerComponent('comp')).to.throw(TypeError, msg())
+            expect(() => this.componentManager.registerComponent('comp', null)).to.throw(TypeError, msg(null))
+            expect(() => this.componentManager.registerComponent('comp', undefined)).to.throw(TypeError, msg(undefined))
         })
         
         test('gives an error when a component with [key] is already registed', () => {
-            const msg = (key) => `component with ${key} already registered.`
+            const msg = (key = '') => alreadyContainsMsg(key, 'components')
 
             this.componentManager.registerComponent('comp', 1)
             this.componentManager.registerComponent('comp1', 2.5)

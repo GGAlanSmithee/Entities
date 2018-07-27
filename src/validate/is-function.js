@@ -1,4 +1,5 @@
-const isFunctionMsg = (name = '') => `${name} must be a function.`.trim()
+const isFunctionMsg = (name = '', value = '') =>
+    `"${name}" must be a function. Got "${typeof value}".`.trim()
 
 const isFunction = (value, name = undefined) => {
     const success = typeof value === 'function'
@@ -9,7 +10,7 @@ const isFunction = (value, name = undefined) => {
 
     return {
         success,
-        message: isFunctionMsg(name),  
+        message: isFunctionMsg(name, value),  
     }
 }
 
