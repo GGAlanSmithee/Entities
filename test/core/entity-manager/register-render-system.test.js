@@ -25,7 +25,6 @@ describe('EntityManager', function() {
             Object.defineProperty(this.entity, this.velocityName, { get() { return this[this.velocity] }, configurable: true })
 
             this.entityManager.entities[this.entityId] = this.entity
-            this.entityManager.currentMaxEntity = 1
             
             this.entityManager.componentLookup.set(this.positionName, this.position)
             this.entityManager.componentLookup.set(this.velocityName, this.velocity)

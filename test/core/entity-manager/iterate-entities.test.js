@@ -4,8 +4,8 @@ import { EntityManager } from '../../../src/core/entity-manager'
 describe('EntityManager', function() {
     describe('iterateEntities(components = 0)', () => {
         beforeEach(() => {
-            this.entityManager = new EntityManager(100)
-            this.entityManager.currentMaxEntity = 20
+            this.maxEntityCount = 100
+            this.entityManager = new EntityManager(this.maxEntityCount)
             
             this.entityId = 5
             
@@ -34,9 +34,7 @@ describe('EntityManager', function() {
             expect(this.entityManager.iterateEntities).to.be.a('function')
         })
         
-        test('returns an iterable of all entities up to [currentMaxEntity]', () => {
-            this.entityManager.currentMaxEntity = 20
-            
+        test('returns an iterable of all entities', () => {
             let it = this.entityManager.iterateEntities()
             
             let res = {}
@@ -46,14 +44,12 @@ describe('EntityManager', function() {
                 res = next
             }
             
-            expect(res.value.id).to.equal(this.entityManager.currentMaxEntity).and.to.equal(20)
+            expect(res.value.id).to.equal(this.maxEntityCount)
             
             expect(it.next()).property('value').to.be.undefined
         })
             
         test('for each iteration, returns an object containing the [entity] and its [id]', () => {
-            this.entityManager.currentMaxEntity = 20
-            
             let last = 0
             let i = 0
             for (let { id, entity } of this.entityManager.iterateEntities()) {
@@ -63,8 +59,6 @@ describe('EntityManager', function() {
                 ++i
             }
             
-            expect(last).to.equal(this.entityManager.currentMaxEntity)
-            
             last = 0
             i = 0
             for (let { id, entity } of this.entityManager.iterateEntities()) {
@@ -73,8 +67,6 @@ describe('EntityManager', function() {
                 last = id
                 ++i
             }
-            
-            expect(last).to.equal(this.entityManager.currentMaxEntity)
         })
         
         test('when called with [components], only returns entities that has [components]', () => {

@@ -6,7 +6,6 @@ describe('EntityManager', function() {
         beforeEach(() => {
             this.maxEntityCount = 100
             this.entityManager = new EntityManager(this.maxEntityCount)
-            this.entityManager.currentMaxEntity = 5
 
             this.entityId1 = 1
             this.entityId2 = 2
@@ -42,16 +41,12 @@ describe('EntityManager', function() {
             const entity1 = this.entityManager.getEntity(this.entityId1)
             const entity2 = this.entityManager.getEntity(this.entityId2)
             const entity3 = this.entityManager.getEntity(this.entityId3)
-            const maxCurrentEntity = this.entityManager.getEntity(this.entityManager.currentMaxEntity)
-            const overMaxCurrentEntity = this.entityManager.getEntity(this.entityManager.currentMaxEntity + 1)
             const maxEntity = this.entityManager.getEntity(this.maxEntityCount)
             const overMaxEntity = this.entityManager.getEntity(this.maxEntityCount + 1)
 
             expect(entity1).to.not.be.undefined
             expect(entity2).to.not.be.undefined
             expect(entity3).to.not.be.undefined
-            expect(maxCurrentEntity).to.not.be.undefined
-            expect(overMaxCurrentEntity).to.not.be.undefined
             expect(maxEntity).to.be.undefined
             expect(overMaxEntity).to.be.undefined
         })

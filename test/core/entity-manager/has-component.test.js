@@ -6,7 +6,6 @@ describe('EntityManager', function() {
         beforeEach(() => {
             this.maxEntityCount = 100
             this.entityManager = new EntityManager(this.maxEntityCount)
-            this.entityManager.currentMaxEntity = 5
 
             this.entityId1 = 1
             this.entityId2 = 2

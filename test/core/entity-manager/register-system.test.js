@@ -67,8 +67,6 @@ describe('EntityManager', function() {
             this.entityManager.entities[this.entityId5] = this.entity5
             this.entityManager.entities[this.entityId6] = this.entity6
             this.entityManager.entities[this.entityId7] = this.entity7
-
-            this.entityManager.currentMaxEntity = 5
         })
         
         afterEach(() => {

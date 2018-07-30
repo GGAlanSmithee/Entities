@@ -1,4 +1,6 @@
 import { containsAll }               from '../util/contains-all'
+import { isPositiveInteger }         from '../validate/is-positive-integer'
+import { isDefined }                 from '../validate/is-defined'
 import { EntityFactory }             from './entity-factory'
 import { ComponentManager }          from './component-manager'
 import { SystemManager, SystemType } from './system-manager'
@@ -69,7 +71,7 @@ class EntityManager {
     }
     
     deleteEntity(id) {
-        if (!Number.isInteger(id) || id < 0) {
+        if (!isPositiveInteger(id)) {
             return
         }
 
@@ -167,7 +169,7 @@ class EntityManager {
             return
         }
 
-        if (!this._entities[entityId].components.include(component)) {
+        if (!this._entities[entityId].components.includes(component)) {
             this._entities[entityId].components.push(component)
         }
     }
@@ -178,7 +180,7 @@ class EntityManager {
     
     // System Manager
     
-    registerSystem(type, components, callback) {
+    registerSystem(type, name, components, callback) {
         if (!Array.isArray(components)) {
             throw TypeError('components must be an array of components')
         }
@@ -189,19 +191,19 @@ class EntityManager {
             entities.push(id)
         }
 
-        return this._systemManager.registerSystem(type, components, entities, callback)
+        this._systemManager.registerSystem(type, name, components, entities, callback)
     }
     
     registerLogicSystem(components, callback) {
-        return this.registerSystem(SystemType.Logic, components, callback)
+        this.registerSystem(SystemType.Logic, components, callback)
     }
     
     registerRenderSystem(components, callback) {
-        return this.registerSystem(SystemType.Render, components, callback)
+        this.registerSystem(SystemType.Render, components, callback)
     }
     
     registerInitSystem(components, callback) {
-        return this.registerSystem(SystemType.Init, components, callback)
+        this.registerSystem(SystemType.Init, components, callback)
     }
     
     removeSystem(systemId) {
@@ -247,15 +249,15 @@ class EntityManager {
     create(count, configurationId) {
         let configuration = undefined
         
-        if (Number.isInteger(configurationId) && configurationId > 0) {
+        if (isPositiveInteger(configurationId)) {
             configuration = this._entityConfigurations.get(configurationId)
             
-            if (configuration === undefined) {
+            if (!isDefined(configuration)) {
                 throw Error('Could not find entity configuration. If you wish to create entities without a configuration, do not pass a configurationId.')
             }
         }
 
-        if (configurationId !== null && configurationId !== undefined && !Number.isInteger(configurationId)) {
+        if (isDefined(configurationId) && !isPositiveInteger(configurationId)) {
             throw Error('configurationId should be an integer if using a save configuration, or undefined if not.')
         }
         

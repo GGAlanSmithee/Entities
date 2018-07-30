@@ -148,31 +148,5 @@ describe('EntityManager', function() {
             expect(res.id).to.equal(this.entityManager.capacity)
             expect(res.entity).to.be.null
         })
-        
-        test('increases [currentMaxEntity] if [entityId] is larger than [currentMaxEntity]', () => {
-            this.entityManager.currentMaxEntity = 0
-            
-            let res = this.entityManager.newEntity(this.components)
-            
-            expect(res.id).to.equal(0)
-            expect(this.entityManager.currentMaxEntity).to.equal(0)
-            
-            res = this.entityManager.newEntity(this.components)
-            
-            expect(res.id).to.equal(1)
-            expect(this.entityManager.currentMaxEntity).to.equal(1)
-            
-            res = this.entityManager.newEntity(this.components)
-            
-            expect(res.id).to.equal(2)
-            expect(this.entityManager.currentMaxEntity).to.equal(2)
-            
-            this.entityManager.entities[1].components = 0
-            
-            res = this.entityManager.newEntity(this.components)
-            
-            expect(res.id).to.equal(1)
-            expect(this.entityManager.currentMaxEntity).to.equal(2)
-        })
     })
 })

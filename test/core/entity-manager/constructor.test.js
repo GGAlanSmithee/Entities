@@ -35,15 +35,7 @@ describe('EntityManager', function() {
         test('creates [entityConfigurations] as an empty Map', () => {
             expect(this.entityManager).property('entityConfigurations').to.be.an.instanceof(Map).and.to.be.empty
         })
-        
-        test('creates [componentLookup] as an empty Map', () => {
-            expect(this.entityManager).property('componentLookup').to.be.an.instanceof(Map).and.to.be.empty
-        })
-        
-        test('sets [currentMaxEntity] to -1', () => {
-            expect(this.entityManager.currentMaxEntity).to.equal(-1)
-        })
-        
+
         test('instantiates [entityFactory] as an instance of [EntityFactory]', () => {
             expect(this.entityManager).property('entityFactory').to.be.an.instanceof(EntityFactory)
         })
@@ -81,12 +73,8 @@ describe('EntityManager', function() {
             
             for (let entity of this.entityManager.entities) {
                 expect(entity).to.be.an.instanceof(Object)
-                expect(entity).property('components').to.equal(0)
+                expect(entity).property('components').to.deep.equal([])
             }
-        })
-        
-        test('sets [currentMaxEntity] to -1', () => {
-            expect(this.entityManager.currentMaxEntity).to.equal(-1)
         })
     })
 })
