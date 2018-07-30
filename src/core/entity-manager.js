@@ -35,7 +35,13 @@ class EntityManager {
         
         this._capacity *= 2
         
-        this._entities = [...this._entities, ...Array.from({ length : oldCapacity }, (_e, i) => ({ id: oldCapacity + i, components: 0 }))]
+        this._entities = [
+            ...this._entities,
+            ...Array.from({ length : oldCapacity }, (_e, i) => ({
+                id: oldCapacity + i,
+                components: [],
+            })),
+        ]
 
         for (let i = oldCapacity; i < this._capacity; ++i) {
             let entity = this._entities[i]

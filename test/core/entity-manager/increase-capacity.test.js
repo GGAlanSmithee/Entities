@@ -53,7 +53,7 @@ describe('EntityManager', function() {
             
             for (let i = 0; i < this.entityManager.capacity; ++i) {
                 expect(this.entityManager.entities[i]).to.be.any.instanceof(Object)
-                expect(this.entityManager.entities[i]).property('components').to.equal(0)
+                expect(this.entityManager.entities[i]).property('components').to.deep.equal([])
             }
             
             this.entityManager.increaseCapacity()
@@ -62,10 +62,46 @@ describe('EntityManager', function() {
             
             for (let i = 0; i < this.entityManager.capacity; ++i) {
                 expect(this.entityManager.entities[i]).to.be.any.instanceof(Object)
-                expect(this.entityManager.entities[i]).property('components').to.equal(0)
+                expect(this.entityManager.entities[i]).property('components').to.deep.equal([])
             }
         })
         
+        test('adds ids to the newly created entities as the capacity is increased', () => {
+            let count = 0
+
+            for (let i = 0; i < this.entityManager.capacity; ++i) {
+                expect(this.entityManager.entities[i].id).to.equal(i)
+
+                count = i
+            }
+
+            expect(count).to.equal(99)
+
+            this.entityManager.increaseCapacity()
+            
+            count = 0
+
+            for (let i = 0; i < this.entityManager.capacity; ++i) {
+                expect(this.entityManager.entities[i].id).to.equal(i)
+
+                count = i
+            }
+
+            expect(count).to.equal(199)
+            
+            this.entityManager.increaseCapacity()
+
+            count = 0
+            
+            for (let i = 0; i < this.entityManager.capacity; ++i) {
+                expect(this.entityManager.entities[i].id).to.equal(i)
+                
+                count = i
+            }
+
+            expect(count).to.equal(399)
+        })
+
         test('adds components to the newly created entities as the capacity is increased', () => {
             this.entityManager.increaseCapacity()
             
@@ -81,24 +117,6 @@ describe('EntityManager', function() {
                 expect(this.entityManager.entities[i][this.position]).to.deep.equal(this.positionComponent)
                 expect(this.entityManager.entities[i][this.velocity]).to.deep.equal(this.velocityComponent)
                 expect(this.entityManager.entities[i][this.stats]).to.deep.equal(this.statsComponent)
-            }
-        })
-        
-        test('adds component getters (by name) to the newly created entities as the capacity is increased', () => {
-            this.entityManager.increaseCapacity()
-            
-            for (let i = 100; i < this.entityManager.capacity; ++i) {
-                expect(this.entityManager.entities[i][this.positionName]).to.deep.equal(this.positionComponent)
-                expect(this.entityManager.entities[i][this.velocityName]).to.deep.equal(this.velocityComponent)
-                expect(this.entityManager.entities[i][this.statsName]).to.deep.equal(this.statsComponent)
-            }
-            
-            this.entityManager.increaseCapacity()
-            
-            for (let i = 200; i < this.entityManager.capacity; ++i) {
-                expect(this.entityManager.entities[i][this.positionName]).to.deep.equal(this.positionComponent)
-                expect(this.entityManager.entities[i][this.velocityName]).to.deep.equal(this.velocityComponent)
-                expect(this.entityManager.entities[i][this.statsName]).to.deep.equal(this.statsComponent)
             }
         })
     })
