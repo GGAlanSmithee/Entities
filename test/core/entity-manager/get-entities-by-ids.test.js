@@ -7,22 +7,22 @@ describe('EntityManager', function() {
             this.entityManager = new EntityManager(100)
             
             this.entityId = 5
-            
-            this.position = 1
+             
+            this.position = 'pos'
             this.positionComponent = { x : 1, y : 1, z : -2 }
             
-            this.velocity = 2
+            this.velocity = 'velocity'
             this.velocityComponent = 0.25
             
-            this.stats = 4
+            this.stats = 'stats'
             this.statsComponent = { xp : 10000, level : 20 }
             
-            this.components = this.position | this.velocity | this.stats
+            this.components = [ this.position, this.velocity, this.stats, ]
             this.entityManager.componentManager.components.set(this.position, this.positionComponent)
             this.entityManager.componentManager.components.set(this.velocity, this.velocityComponent)
             this.entityManager.componentManager.components.set(this.stats, this.statsComponent)
             
-            this.entityManager.entities[this.entityId].components = this.components
+            this.entityManager.entities[this.entityId].components = [ ...this.components, ]
         })
         
         afterEach(() => {
@@ -38,14 +38,11 @@ describe('EntityManager', function() {
 
             const it = this.entityManager.getEntitiesByIds(ids)
 
-            let res = {}
+            let i = 0
             let next = {}
             
-            let i = 0
             while ((next = it.next()).done !== true) {
-                res = next
-
-                expect(res.value.id).to.equal(ids[i])
+                expect(next.value.id).to.equal(ids[i])
 
                 ++i
             }
@@ -84,10 +81,10 @@ describe('EntityManager', function() {
 
             let last = 0
             let i = 0
-            for (let { id, entity } of this.entityManager.getEntitiesByIds(ids)) {
-                expect(id).to.equal(ids[i])
+            for (let entity of this.entityManager.getEntitiesByIds(ids)) {
+                expect(entity.id).to.equal(ids[i])
                 expect(entity).to.deep.equal(this.entityManager.entities[ids[i]])
-                last = id
+                last = entity.id
                 ++i
             }
             
@@ -95,10 +92,10 @@ describe('EntityManager', function() {
             
             last = 0
             i = 0
-            for (let { id, entity } of this.entityManager.getEntitiesByIds(ids)) {
-                expect(id).to.equal(ids[i])
+            for (let entity of this.entityManager.getEntitiesByIds(ids)) {
+                expect(entity.id).to.equal(ids[i])
                 expect(entity).to.deep.equal(this.entityManager.entities[ids[i]])
-                last = id
+                last = entity.id
                 ++i
             }
             
@@ -108,10 +105,10 @@ describe('EntityManager', function() {
 
             last = 0
             i = 0
-            for (let { id, entity } of this.entityManager.getEntitiesByIds(ids)) {
-                expect(id).to.equal(ids[i])
+            for (let entity of this.entityManager.getEntitiesByIds(ids)) {
+                expect(entity.id).to.equal(ids[i])
                 expect(entity).to.deep.equal(this.entityManager.entities[ids[i]])
-                last = id
+                last = entity.id
                 ++i
             }
             

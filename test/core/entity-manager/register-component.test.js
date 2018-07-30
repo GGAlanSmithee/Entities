@@ -9,16 +9,13 @@ describe('EntityManager', function() {
             
             this.entityId = 0
             
-            this.pos = 1
-            this.posName = 'pos'
+            this.pos = 'pos'
             this.posComponent = function() { this.x = 10; this.y = 20 }
             
-            this.info = 2
-            this.infoName = 'info'
+            this.info = 'info'
             this.infoComponent = { name : 'Tester', age : 99 }
             
-            this.vel = 4
-            this.velName = 'vel'
+            this.vel = 'vel'
             this.velComponent = 5.5
         })
         
@@ -105,20 +102,6 @@ describe('EntityManager', function() {
             
             expect(spy.calledOnce).to.be.true
             expect(spy.calledWith(this.posComponent)).to.be.true
-        })
-        
-        test('adds [componentNAme] and [componentId] key-value pair in the [componentLookup]', () => {
-            expect(this.entityManager.componentLookup.get(this.posName)).to.be.undefined
-            this.entityManager.registerComponent(this.posName, this.posComponent)
-            expect(this.entityManager.componentLookup.get(this.posName)).to.equal(this.pos)
-            
-            expect(this.entityManager.componentLookup.get(this.infoName)).to.be.undefined
-            this.entityManager.registerComponent(this.infoName, this.infoComponent)
-            expect(this.entityManager.componentLookup.get(this.infoName)).to.equal(this.info)
-            
-            expect(this.entityManager.componentLookup.get(this.velName)).to.be.undefined
-            this.entityManager.registerComponent(this.velName, this.velComponent)
-            expect(this.entityManager.componentLookup.get(this.velName)).to.equal(this.vel)
         })
         
         test('invokes [entityFactory].registerInitializer with the [id] of the [component]', () => {

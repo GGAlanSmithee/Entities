@@ -6,25 +6,18 @@ describe('EntityManager', function() {
         beforeEach(() => {
             this.entityManager = new EntityManager(100)
             
-            this.position = 1
-            this.positionName = 'position'
+            this.position = 'position'
             this.positionComponent = { x : 1, y : 1, z : -2 }
             
-            this.velocity = 2
-            this.velocityName = 'velocity'
+            this.velocity = 'velocity'
             this.velocityComponent = 0.25
             
-            this.stats = 4
-            this.statsName = 'stats'
+            this.stats = 'stats'
             this.statsComponent = { xp : 10000, level : 20 }
             
             this.entityManager.componentManager.components.set(this.position, this.positionComponent)
             this.entityManager.componentManager.components.set(this.velocity, this.velocityComponent)
             this.entityManager.componentManager.components.set(this.stats, this.statsComponent)
-            
-            this.entityManager.componentLookup.set(this.positionName, this.position)
-            this.entityManager.componentLookup.set(this.velocityName, this.velocity)
-            this.entityManager.componentLookup.set(this.statsName, this.stats)
         })
         
         afterEach(() => {

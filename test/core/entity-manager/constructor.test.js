@@ -67,11 +67,15 @@ describe('EntityManager', function() {
             expect(this.entityManager).property('capacity').to.equal(this.capacity)
         })
         
-        test('creates [capacity] number of empty entities', () => {
+        test('creates [capacity] number of entities, with no components and an id', () => {
             expect(this.entityManager).property('entities').to.be.an.instanceof(Array)
             expect(this.entityManager).property('entities').property('length').to.equal(this.capacity)
             
-            for (let entity of this.entityManager.entities) {
+
+            for (let i = 0; i < this.entityManager.entities.length; ++i) {
+                const entity = this.entityManager.entities[i]
+
+                expect(entity.id).to.be.equal(i)
                 expect(entity).to.be.an.instanceof(Object)
                 expect(entity).property('components').to.deep.equal([])
             }

@@ -6,27 +6,19 @@ describe('EntityManager', function() {
         beforeEach(() => {
             this.entityManager = new EntityManager(100)
             
-            this.position = 1
-            this.positionName = 'position'
+            this.position = 'position'
             this.positionComponent = { x : 1, y : 1, z : -2 }
             
-            this.velocity = 2
-            this.velocityName = 'velocity'
+            this.velocity = 'velocity'
             this.velocityComponent = 0.25
             
-            this.stats = 4
-            this.statsName = 'stats'
+            this.stats = 'stats'
             this.statsComponent = { xp : 10000, level : 20 }
             
-            this.components = this.position | this.velocity | this.stats
+            this.components = [ this.position, this.velocity, this.stats ]
             this.entityManager.componentManager.components.set(this.position, this.positionComponent)
             this.entityManager.componentManager.components.set(this.velocity, this.velocityComponent)
             this.entityManager.componentManager.components.set(this.stats, this.statsComponent)
-            
-            this.componentNames = [ this.positionName, this.velocityName, this.statsName ]
-            this.entityManager.componentLookup.set(this.positionName, this.position)
-            this.entityManager.componentLookup.set(this.velocityName, this.velocity)
-            this.entityManager.componentLookup.set(this.statsName, this.stats)
         })
         
         afterEach(() => {
@@ -44,18 +36,6 @@ describe('EntityManager', function() {
             expect(res.entity).to.deep.equal(this.entityManager.entities[res.id])
             
             res = this.entityManager.newEntity(this.components)
-            
-            expect(res.id).to.equal(1)
-            expect(res.entity).to.deep.equal(this.entityManager.entities[res.id])
-        })
-        
-        test('correctly creates an entity given an array of component names (as defined in the [componentLookup])', () => {
-            let res = this.entityManager.newEntity(this.componentNames)
-            
-            expect(res.id).to.equal(0)
-            expect(res.entity).to.deep.equal(this.entityManager.entities[res.id])
-            
-            res = this.entityManager.newEntity(this.componentNames)
             
             expect(res.id).to.equal(1)
             expect(res.entity).to.deep.equal(this.entityManager.entities[res.id])

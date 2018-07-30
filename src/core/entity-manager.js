@@ -5,6 +5,8 @@ import { EntityFactory }             from './entity-factory'
 import { ComponentManager }          from './component-manager'
 import { SystemManager, SystemType } from './system-manager'
 import { EventHandler }              from './event-handler'
+import { isArray } from '../validate/is-array';
+import { isNonEmptyString } from '../validate/is-non-empty-string';
 
 class EntityManager {
     constructor(capacity = 1000) {        
@@ -17,7 +19,7 @@ class EntityManager {
         
         this._entityConfigurations = new Map()
         
-        this._entities = Array.from({ length : this._capacity }, (id) => ({ id, components: [] }))
+        this._entities = Array.from({ length : this._capacity }, (_e, id) => ({ id, components: [] }))
     }
 
     get capacity() { return this._capacity }
@@ -33,7 +35,7 @@ class EntityManager {
         
         this._capacity *= 2
         
-        this._entities = [...this._entities, ...Array.from({ length : oldCapacity }, (i) => ({ id: oldCapacity + i, components: 0 }))]
+        this._entities = [...this._entities, ...Array.from({ length : oldCapacity }, (_e, i) => ({ id: oldCapacity + i, components: 0 }))]
 
         for (let i = oldCapacity; i < this._capacity; ++i) {
             let entity = this._entities[i]
@@ -81,15 +83,15 @@ class EntityManager {
     }
 
     getEntity(id) {
-        if (!Number.isInteger(id) || id < 0) {
+        if (!isPositiveInteger(id)) {
             return null
         }
 
-        return this._entities[id]
+        return this._entities[id] || null
     }
 
     hasComponent(id, component) {
-        if (typeof component !== 'string') {
+        if (!isNonEmptyString(component)) {
             return false
         }
 
@@ -113,12 +115,12 @@ class EntityManager {
     }
 
     *getEntitiesByIds(ids = []) {
-        if (!Array.isArray(ids)) {
+        if (!isArray(ids)) {
             return
         }
 
         for (const id of ids) {
-            if (Number.isInteger(id) && id >= 0 && id < this._entities.length) {
+            if (isPositiveInteger(id) && id < this._entities.length) {
                 yield this._entities[id]
             }
         }

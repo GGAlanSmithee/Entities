@@ -8,24 +8,17 @@ describe('EntityManager', function() {
             
             this.entityId       = 0
             
-            this.componentOne     = 1
-            this.componentOneName = 'one'
+            this.componentOne     = 'one'
+            this.componentTwo     = 'two'
+            this.componentThree     = 'three'
+            this.componentFour     = 'Four'
             
-            this.componentTwo     = 2
-            this.componentTwoName = 'two'
-            
-            this.componentThree     = 4
-            this.componentThreeName = 'three'
-            
-            this.componentFour     = 8
-            this.componentFourName = 'Four'
-            
-            this.entityManager.componentLookup.set(this.componentOneName, this.componentOne)
-            this.entityManager.componentLookup.set(this.componentTwoName, this.componentTwo)
-            this.entityManager.componentLookup.set(this.componentThreeName, this.componentThree)
-            this.entityManager.componentLookup.set(this.componentFourName, this.componentFour)
-            
-            this.entityManager.entities[this.entityId].components = this.componentOne | this.componentTwo | this.componentThree | this.componentFour
+            this.entityManager.entities[this.entityId].components = [
+                this.componentOne,
+                this.componentTwo,
+                this.componentThree,
+                this.componentFour,
+            ]
         })
         
         afterEach(() => {

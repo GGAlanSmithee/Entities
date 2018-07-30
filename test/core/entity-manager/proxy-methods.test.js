@@ -7,18 +7,11 @@ describe('EntityManager', function() {
         beforeEach(() => {
             this.entityManager = new EntityManager()
             
-            this.position = 1
-            this.positionName = 'position'
+            this.position = 'position'
             
-            this.velocity = 2
-            this.velocityName = 'velocity'
+            this.velocity = 'velocity'
             
-            this.stats = 4
-            this.statsName = 'stats'
-            
-            this.entityManager.componentLookup.set(this.positionName, this.position)
-            this.entityManager.componentLookup.set(this.velocityName, this.velocity)
-            this.entityManager.componentLookup.set(this.statsName, this.stats)
+            this.stats = 'stats'  
         })
         
         afterEach(() => {

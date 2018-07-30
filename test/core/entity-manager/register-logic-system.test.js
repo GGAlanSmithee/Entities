@@ -8,26 +8,18 @@ describe('EntityManager', function() {
         beforeEach(() => {
             this.entityManager = new EntityManager()
             
-            this.position = 1
-            this.positionName = 'position'
+            this.position = 'position'
             
-            this.velocity = 2
-            this.velocityName = 'velocity'
+            this.velocity = 'velocity'
 
             this.entityId = 0
             this.entity = {
-                components: this.position | this.velocity,
+                components: [ this.position, this.velocity, ],
                 [this.position]: { x: 0, y: 0, },
                 [this.velocity]: 2,
             }
 
-            Object.defineProperty(this.entity, this.positionName, { get() { return this[this.position] }, configurable: true })
-            Object.defineProperty(this.entity, this.velocityName, { get() { return this[this.velocity] }, configurable: true })
-
             this.entityManager.entities[this.entityId] = this.entity
-            
-            this.entityManager.componentLookup.set(this.positionName, this.position)
-            this.entityManager.componentLookup.set(this.velocityName, this.velocity)
         })
         
         afterEach(() => {
