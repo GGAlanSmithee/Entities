@@ -28,7 +28,7 @@ describe('EntityManager', function() {
             let component   = 1
             let initializer = function() { return 2 }
             
-            this.entityManager.entityFactory.configuration.set(component, initializer)
+            this.entityManager.entityFactory._configuration.set(component, initializer)
             
             let conf = this.entityManager.registerConfiguration()
             
