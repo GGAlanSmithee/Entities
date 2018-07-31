@@ -10,8 +10,6 @@ import { isNonEmptyString } from '../validate/is-non-empty-string';
 
 class EntityManager {
     constructor(capacity = 1000) {        
-        this._capacity         = capacity
-        
         this._entityFactory    = new EntityFactory()
         this._systemManager    = new SystemManager()
         this._componentManager = new ComponentManager()
@@ -19,10 +17,10 @@ class EntityManager {
         
         this._entityConfigurations = new Map()
         
-        this._entities = Array.from({ length : this._capacity }, (_e, id) => ({ id, components: [] }))
+        this._entities = Array.from({ length: capacity, }, (_e, id) => ({ id, components: [] }))
     }
 
-    get capacity() { return this._capacity }
+    get capacity() { return this._entities.length }
     get entityFactory() { return this._entityFactory }
     get systemManager() { return this._systemManager }
     get componentManager() { return this._componentManager }
@@ -31,19 +29,17 @@ class EntityManager {
     get entities() { return this._entities }
 
     increaseCapacity() {
-        let oldCapacity = this._capacity
-        
-        this._capacity *= 2
+        let oldlength = this._entities.length
         
         this._entities = [
             ...this._entities,
-            ...Array.from({ length : oldCapacity }, (_e, i) => ({
-                id: oldCapacity + i,
+            ...Array.from({ length : oldlength }, (_e, i) => ({
+                id: oldlength + i,
                 components: [],
             })),
         ]
 
-        for (let i = oldCapacity; i < this._capacity; ++i) {
+        for (let i = oldlength; i < this._entities.length; ++i) {
             let entity = this._entities[i]
             
             for (const componentName of this._componentManager.components.keys()) {
@@ -57,25 +53,19 @@ class EntityManager {
             return null
         }
 
-        let id = 0
-        
         // todo: if re-using an old entity, should we reset components?
-        for (; id < this._capacity; ++id) {
-            if (this._entities[id].components.length === 0) {
-                break
+
+        for (const entity of this._entities) {
+            if (entity.components.length === 0) {
+                entity.components = components
+
+                this._systemManager.addEntity(entity.id, components)
+
+                return entity
             }
         }
         
-        if (id >= this._capacity) {
-            // todo: auto increase capacity?
-            return null
-        }
-        
-        this._entities[id].components = components
-
-        this._systemManager.addEntity(id, components)
-
-        return this._entities[id] || null
+        return null
     }
     
     deleteEntity(id) {
@@ -112,10 +102,14 @@ class EntityManager {
 
     *iterateEntities(components = []) {
         if (components.length === 0) {
-            return components
+            for (const entity of this._entities) {
+                yield entity
+            }
+
+            return
         }
 
-        for (const entity of this._entities.filter(e => containsAll(components, e.components))) {
+        for (const entity of this._entities.filter(e => containsAll(e.components, components))) {
             yield entity
         }
     }

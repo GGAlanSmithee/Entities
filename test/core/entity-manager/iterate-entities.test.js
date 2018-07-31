@@ -18,12 +18,12 @@ describe('EntityManager', function() {
             this.stats = 4
             this.statsComponent = { xp : 10000, level : 20 }
             
-            this.components = this.position | this.velocity | this.stats
+            this.components = [ this.position, this.velocity, this.stats, ]
             this.entityManager.componentManager.components.set(this.position, this.positionComponent)
             this.entityManager.componentManager.components.set(this.velocity, this.velocityComponent)
             this.entityManager.componentManager.components.set(this.stats, this.statsComponent)
             
-            this.entityManager.entities[this.entityId].components = this.components
+            this.entityManager.entities[this.entityId].components = [ ...this.components, ]
         })
         
         afterEach(() => {
@@ -37,72 +37,81 @@ describe('EntityManager', function() {
         test('returns an iterable of all entities', () => {
             let it = this.entityManager.iterateEntities()
             
+            let i = 0
             let res = {}
             let next = {}
             
             while ((next = it.next()).done !== true) {
                 res = next
+                ++i
             }
             
-            expect(res.value.id).to.equal(this.maxEntityCount)
+            expect(res.value.id).to.equal(this.maxEntityCount-1)
+            expect(i).to.equal(this.maxEntityCount)
             
             expect(it.next()).property('value').to.be.undefined
         })
             
-        test('for each iteration, returns an object containing the [entity] and its [id]', () => {
+        test('for each iteration, returns an object containing the [entity]', () => {
             let last = 0
             let i = 0
-            for (let { id, entity } of this.entityManager.iterateEntities()) {
-                expect(id).to.equal(i)
+            for (let entity of this.entityManager.iterateEntities()) {
+                expect(entity.id).to.equal(i)
                 expect(entity).to.deep.equal(this.entityManager.entities[i])
-                last = id
+                last = entity.id
                 ++i
             }
             
+            expect(last).to.equal(this.maxEntityCount-1)
+            expect(i).to.equal(this.maxEntityCount)
+
             last = 0
             i = 0
-            for (let { id, entity } of this.entityManager.iterateEntities()) {
-                expect(id).to.equal(i)
+            for (let entity of this.entityManager.iterateEntities()) {
+                expect(entity.id).to.equal(i)
                 expect(entity).to.deep.equal(this.entityManager.entities[i])
-                last = id
+                last = entity.id
                 ++i
             }
+
+            expect(last).to.equal(this.maxEntityCount-1)
+            expect(i).to.equal(this.maxEntityCount)
         })
         
         test('when called with [components], only returns entities that has [components]', () => {
             let visited = []
             
-            for (let { id } of this.entityManager.iterateEntities(this.position | this.stats)) {
+            for (const { id } of this.entityManager.iterateEntities([ this.position, this.stats ])) {
                 visited.push(id)
             }
             
             expect(visited).to.contain(this.entityId).and.property('length').to.equal(1)
             
-            this.entityManager.entities[2].components = this.position | this.velocity
+            this.entityManager.entities[2].components = [ this.position, this.velocity ]
             
             visited = []
             
-            for (let { id } of this.entityManager.iterateEntities(this.position | this.stats)) {
+            for (const { id } of this.entityManager.iterateEntities([ this.position, this.stats ])) {
                 visited.push(id)
             }
             
             expect(visited).to.contain(this.entityId).and.property('length').to.equal(1)
             
-            this.entityManager.entities[2].components = this.position | this.velocity | this.stats
+            this.entityManager.entities[2].components = [ this.position, this.velocity, this.stats ]
             
             visited = []
             
-            for (let { id } of this.entityManager.iterateEntities(this.position | this.stats)) {
+            for (const { id } of this.entityManager.iterateEntities([ this.position, this.stats ])) {
                 visited.push(id)
             }
             
             expect(visited).to.contain(this.entityId).and.to.contain(2).and.property('length').to.equal(2)
             
-            this.entityManager.entities[4].components = this.velocity
+            this.entityManager.entities[4].components = [ this.velocity ]
             
             visited = []
             
-            for (let { id } of this.entityManager.iterateEntities(this.position | this.stats)) {
+            for (const { id } of this.entityManager.iterateEntities([ this.position, this.stats ])) {
                 visited.push(id)
             }
             

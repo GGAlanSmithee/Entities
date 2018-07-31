@@ -29,7 +29,7 @@ describe('EntityManager', function() {
             expect(this.entityManager.newEntity).to.be.a('function')
         })
         
-        test('adds and returns an object containing an id and corresponding entity, given correct [components] input', () => {
+        test('adds and returns an object containing an entity, given correct [components] input', () => {
             let res = this.entityManager.newEntity(this.components)
             
             expect(res.id).to.equal(0)
