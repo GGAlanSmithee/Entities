@@ -1,6 +1,7 @@
-import { expect }        from 'chai'
-import sinon             from 'sinon'
-import { EntityManager } from '../../../src/core/entity-manager'
+import { expect }              from 'chai'
+import sinon                   from 'sinon'
+import { isNonEmptyStringMsg } from '../../../validate/is-non-empty-string'
+import { EntityManager }       from '../../../src/core/entity-manager'
 
 describe('EntityManager', function() {
     describe('registerComponent(key, component)', () => {
@@ -140,14 +141,14 @@ describe('EntityManager', function() {
         })
         
         test('throws error if [key] is not a non-empty string', () => {
-            expect(() => { this.entityManager.registerComponent(undefined, {}) }).to.throw(TypeError, 'key must be a non-empty string.')
-            expect(() => { this.entityManager.registerComponent(null, {}) }).to.throw(TypeError, 'key must be a non-empty string.')
-            expect(() => { this.entityManager.registerComponent('', {}) }).to.throw(TypeError, 'key must be a non-empty string.')
-            expect(() => { this.entityManager.registerComponent(1, {}) }).to.throw(TypeError, 'key must be a non-empty string.')
-            expect(() => { this.entityManager.registerComponent(1.5, {}) }).to.throw(TypeError, 'key must be a non-empty string.')
-            expect(() => { this.entityManager.registerComponent([], {}) }).to.throw(TypeError, 'key must be a non-empty string.')
-            expect(() => { this.entityManager.registerComponent(['a', 'b'], {}) }).to.throw(TypeError, 'key must be a non-empty string.')
-            expect(() => { this.entityManager.registerComponent(new Map(), {}) }).to.throw(TypeError, 'key must be a non-empty string.')
+            expect(() => { this.entityManager.registerComponent(undefined, {}) }).to.throw(TypeError, isNonEmptyStringMsg('key', undefined))
+            expect(() => { this.entityManager.registerComponent(null, {}) }).to.throw(TypeError, isNonEmptyStringMsg('key', null))
+            expect(() => { this.entityManager.registerComponent('', {}) }).to.throw(TypeError, isNonEmptyStringMsg('key', ''))
+            expect(() => { this.entityManager.registerComponent(1, {}) }).to.throw(TypeError, isNonEmptyStringMsg('key', 1))
+            expect(() => { this.entityManager.registerComponent(1.5, {}) }).to.throw(TypeError, isNonEmptyStringMsg('key', 1.5))
+            expect(() => { this.entityManager.registerComponent([], {}) }).to.throw(TypeError, isNonEmptyStringMsg('key', []))
+            expect(() => { this.entityManager.registerComponent(['a', 'b'], {}) }).to.throw(TypeError, isNonEmptyStringMsg('key', [ 'a', 'b']))
+            expect(() => { this.entityManager.registerComponent(new Map(), {}) }).to.throw(TypeError, isNonEmptyStringMsg('key', new Map()))
         })
     })
 })

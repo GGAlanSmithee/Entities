@@ -1,12 +1,13 @@
 import { containsAll }               from '../util/contains-all'
+import { validateAndThrow }          from '../validate'
+import { isArray }                   from '../validate/is-array'
+import { isNonEmptyString }          from '../validate/is-non-empty-string'
 import { isPositiveInteger }         from '../validate/is-positive-integer'
 import { isDefined }                 from '../validate/is-defined'
 import { EntityFactory }             from './entity-factory'
 import { ComponentManager }          from './component-manager'
 import { SystemManager, SystemType } from './system-manager'
 import { EventHandler }              from './event-handler'
-import { isArray } from '../validate/is-array';
-import { isNonEmptyString } from '../validate/is-non-empty-string';
 
 class EntityManager {
     constructor(capacity = 1000) {        
@@ -136,15 +137,13 @@ class EntityManager {
     
     // Component Manager
     
-    registerComponent(name, component) {
-        if (typeof name !== 'string' || name.length === 0) {
-            throw TypeError('name must be a non-empty string.')
-        }
+    registerComponent(key, component) {
+        validateAndThrow(isNonEmptyString(component, 'key'))
 
-        this._componentManager.registerComponent(name, component)
+        this._componentManager.registerComponent(key, component)
         
         for (let entity of this._entities) {
-            entity[name] = this._componentManager.newComponent(name)
+            entity[key] = this._componentManager.newComponent(key)
         }
         
         let initializer
@@ -163,11 +162,11 @@ class EntityManager {
             default: initializer = function() { return component }; break
         }
         
-        this._entityFactory.registerInitializer(name, initializer)
+        this._entityFactory.registerInitializer(key, initializer)
     }
     
     addComponent(entityId, component) {
-        if (typeof component !== 'string') {
+        if (!isNonEmptyString(component)) {
             return
         }
 
