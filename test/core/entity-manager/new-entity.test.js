@@ -30,103 +30,119 @@ describe('EntityManager', function() {
         })
         
         test('adds and returns an object containing an entity, given correct [components] input', () => {
-            let res = this.entityManager.newEntity(this.components)
+            let entity = this.entityManager.newEntity(this.components)
             
-            expect(res.id).to.equal(0)
-            expect(res.entity).to.deep.equal(this.entityManager.entities[res.id])
+            expect(entity.id).to.equal(0)
+            expect(entity).to.deep.equal(this.entityManager.entities[entity.id])
             
-            res = this.entityManager.newEntity(this.components)
+            entity = this.entityManager.newEntity(this.components)
             
-            expect(res.id).to.equal(1)
-            expect(res.entity).to.deep.equal(this.entityManager.entities[res.id])
+            expect(entity.id).to.equal(1)
+            expect(entity).to.deep.equal(this.entityManager.entities[entity.id])
         })
 
-        test('correctly creates an entity given an array of not all registered component names', () => {
-            const componentNames = [ this.positionName, this.statsName ]
+        test('correctly creates an entity given an array not containing all registered components', () => {
+            const components = [ this.position, this.stats ]
 
-            let res = this.entityManager.newEntity(componentNames)
+            let entity = this.entityManager.newEntity(components)
             
-            expect(res.id).to.equal(0)
-            expect(res.entity).to.deep.equal(this.entityManager.entities[res.id])
+            expect(entity.id).to.equal(0)
+            expect(entity).to.deep.equal(this.entityManager.entities[entity.id])
             
-            res = this.entityManager.newEntity(componentNames)
+            entity = this.entityManager.newEntity(components)
             
-            expect(res.id).to.equal(1)
-            expect(res.entity).to.deep.equal(this.entityManager.entities[res.id])
-            expect(res.entity.components).to.equal(this.position | this.stats)
+            expect(entity.id).to.equal(1)
+            expect(entity).to.deep.equal(this.entityManager.entities[entity.id])
+            expect(entity.components).to.deep.equal([ this.position, this.stats, ])
         })
         
-        test('does not add an entity and returns [capacity], given wrong [components] input', () => {
-            const capacity = this.entityManager.capacity
+        test('does not add an entity and returns null, given invalid [components] input', () => {
+            let entity = this.entityManager.newEntity()
+            expect(entity).to.be.null
             
-            let res = this.entityManager.newEntity()
-            expect(res.id).to.equal(capacity)
-            expect(res.entity).to.be.null
+            entity = this.entityManager.newEntity('not an array')
+            expect(entity).to.be.null
             
-            res = this.entityManager.newEntity('not a number')
-            expect(res.id).to.equal(capacity)
-            expect(res.entity).to.be.null
+            entity = this.entityManager.newEntity('')
+            expect(entity).to.be.null
             
-            res = this.entityManager.newEntity('')
-            expect(res.id).to.equal(capacity)
-            expect(res.entity).to.be.null
+            entity = this.entityManager.newEntity(null)
+            expect(entity).to.be.null
             
-            res = this.entityManager.newEntity(null)
-            expect(res.id).to.equal(capacity)
-            expect(res.entity).to.be.null
+            entity = this.entityManager.newEntity(undefined)
+            expect(entity).to.be.null
             
-            res = this.entityManager.newEntity(undefined)
-            expect(res.id).to.equal(capacity)
-            expect(res.entity).to.be.null
+            entity = this.entityManager.newEntity(0)
+            expect(entity).to.be.null
             
-            res = this.entityManager.newEntity(0)
-            expect(res.id).to.equal(capacity)
-            expect(res.entity).to.be.null
+            entity = this.entityManager.newEntity(1)
+            expect(entity).to.be.null
+
+            entity = this.entityManager.newEntity(-1)
+            expect(entity).to.be.null
             
-            res = this.entityManager.newEntity(-1)
-            expect(res.id).to.equal(capacity)
-            expect(res.entity).to.be.null
+            entity = this.entityManager.newEntity('1')
+            expect(entity).to.be.null
             
-            res = this.entityManager.newEntity('1')
-            expect(res.id).to.equal(capacity)
-            expect(res.entity).to.be.null
+            entity = this.entityManager.newEntity(1.5)
+            expect(entity).to.be.null
             
-            res = this.entityManager.newEntity(1.5)
-            expect(res.id).to.equal(capacity)
-            expect(res.entity).to.be.null
-            
-            res = this.entityManager.newEntity({})
-            expect(res.id).to.equal(capacity)
-            expect(res.entity).to.be.null
+            entity = this.entityManager.newEntity({})
+            expect(entity).to.be.null
         })
         
-        test('sets the [components] property of entities[entityId] to passed in [components]', () => {
-            let { id, entity } = this.entityManager.newEntity(this.components)
+        test('sets the [components] property of entities[entityId] to equal the passed in [components]', () => {
+            expect(this.entityManager.entities[0].components).to.deep.equal([])
             
-            expect(this.entityManager.entities[id].components).to.deep.equal(this.components)
+            let entity = this.entityManager.newEntity(this.components)
+            
+            expect(entity.id).to.equal(0)
+            expect(this.entityManager.entities[entity.id].components).to.deep.equal(this.components)
             expect(entity.components).to.deep.equal(this.components)
+
+            entity = this.entityManager.newEntity([ this.stats ])
+            
+            expect(entity.id).to.equal(1)
+            expect(this.entityManager.entities[entity.id].components).to.deep.equal([ this.stats, ])
+            expect(entity.components).to.deep.equal([ this.stats, ])
+
+            entity = this.entityManager.newEntity([ this.position, this.stats ])
+            
+            expect(entity.id).to.equal(2)
+            expect(this.entityManager.entities[entity.id].components).to.deep.equal([ this.position, this.stats ])
+            expect(entity.components).to.deep.equal([ this.position, this.stats ])
+
+            entity = this.entityManager.newEntity(this.components)
+            
+            expect(entity.id).to.equal(3)
+            expect(this.entityManager.entities[entity.id].components).to.deep.equal(this.components)
+            expect(entity.components).to.deep.equal(this.components)
+
+            this.entityManager.entities[2].components = []
+
+            entity = this.entityManager.newEntity([ this.position ])
+            
+            expect(entity.id).to.equal(2)
+            expect(this.entityManager.entities[entity.id].components).to.deep.equal([ this.position ])
+            expect(entity.components).to.deep.equal([ this.position ])
         })
         
-        test('returns capacity and does not add an entity if there is no more space in the entityManager', () => {
+        test('returns null and does not add an entity if there is no more space in the entityManager', () => {
             for (let i = 0; i < this.entityManager.capacity; ++i) {
-                this.entityManager.newEntity(this.position)
+                this.entityManager.newEntity([ this.position ])
             }
             
-            let res = this.entityManager.newEntity(this.position)
-            expect(res.id).to.equal(this.entityManager.capacity)
-            expect(res.entity).to.be.null
+            let entity = this.entityManager.newEntity([ this.position, ])
+            expect(entity).to.be.null
             
-            res = this.entityManager.newEntity(this.position)
-            expect(res.id).to.equal(this.entityManager.capacity)
-            expect(res.entity).to.be.null
+            entity = this.entityManager.newEntity([ this.position, ])
+            expect(entity).to.be.null
             
-            res = this.entityManager.newEntity(this.position, this.stats)
-            expect(res.id).to.equal(this.entityManager.capacity)
-            expect(res.entity).to.be.null
+            entity = this.entityManager.newEntity([ this.position, this.stats, ])
+            expect(entity).to.be.null
             
-            res = this.entityManager.newEntity(this.velocity)
-            expect(res.id).to.equal(this.entityManager.capacity)
-            expect(res.entity).to.be.null
+            entity = this.entityManager.newEntity(this.velocity)
+            expect(entity).to.be.null
         })
     })
 })

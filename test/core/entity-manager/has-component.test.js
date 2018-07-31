@@ -42,7 +42,7 @@ describe('EntityManager', function() {
             expect(this.entityManager.hasComponent).to.be.a('function')
         })
 
-        test('returns [true] if entity with [id] has component with [name]', () => {
+        test('returns [true] if entity with [id] has component with [key]', () => {
             expect(this.entityManager.hasComponent(this.entityId1, this.position)).to.be.true
             expect(this.entityManager.hasComponent(this.entityId1, this.velocity)).to.be.true
             expect(this.entityManager.hasComponent(this.entityId1, this.stats)).to.be.true
@@ -53,7 +53,7 @@ describe('EntityManager', function() {
             expect(this.entityManager.hasComponent(this.entityId3, this.stats)).to.be.true
         })
 
-        test('returns [false] if entity with [id] does not has component with [name]', () => {
+        test('returns [false] if entity with [id] does not has component with [key]', () => {
             expect(this.entityManager.hasComponent(this.entityId1, this.nonExistingComponent)).to.be.false
 
             expect(this.entityManager.hasComponent(this.entityId2, this.stats)).to.be.false
@@ -69,11 +69,6 @@ describe('EntityManager', function() {
             expect(this.entityManager.hasComponent(this.nonExistingEntityId, this.velocity)).to.be.false
             expect(this.entityManager.hasComponent(this.nonExistingEntityId, this.stats)).to.be.false
             expect(this.entityManager.hasComponent(this.nonExistingEntityId, this.nonExistingComponent)).to.be.false
-    
-            expect(this.entityManager.hasComponent(this.nonExistingEntityId, this.positionName)).to.be.false
-            expect(this.entityManager.hasComponent(this.nonExistingEntityId, this.velocityName)).to.be.false
-            expect(this.entityManager.hasComponent(this.nonExistingEntityId, this.statsName)).to.be.false
-            expect(this.entityManager.hasComponent(this.nonExistingEntityId, this.nonExistingComponentName)).to.be.false
         })
 
         test('returns [false] if invalid entity [id]', () => {
@@ -86,7 +81,7 @@ describe('EntityManager', function() {
             expect(this.entityManager.hasComponent(new Map(), this.position)).to.be.false
         })
 
-        test('returns [false] if invalid component [name]', () => {
+        test('returns [false] if invalid component [key]', () => {
             expect(this.entityManager.hasComponent(this.entityId1, '')).to.be.false
             expect(this.entityManager.hasComponent(this.entityId1, null)).to.be.false
             expect(this.entityManager.hasComponent(this.entityId1, undefined)).to.be.false

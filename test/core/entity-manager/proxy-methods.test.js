@@ -36,19 +36,6 @@ describe('EntityManager', function() {
                 expect(spy.calledOnce).to.be.true
                 expect(spy.calledWith(component, initializer)).to.be.true
             })
-            
-            test('invokes [entityFactory].registerInitializer with the corrent component id, given a component name', () => {
-                const spy = sinon.spy(this.entityManager.entityFactory, 'registerInitializer')
-                
-                const initializer = function() {
-                    this.x = 10.0
-                }
-                
-                this.entityManager.registerInitializer(this.positionName, initializer)
-                
-                expect(spy.calledOnce).to.be.true
-                expect(spy.calledWith(this.position, initializer)).to.be.true
-            })
         })
         
         describe('build', () => {
@@ -86,17 +73,6 @@ describe('EntityManager', function() {
                 
                 expect(spy.calledOnce).to.be.true
                 expect(spy.calledWith(component, initializer)).to.be.true
-            })
-            
-            test('invokes [entityFactory].withComponent with the correct component id, given a component name', () => {
-                const initializer = function() { return 2 }
-                
-                const spy = sinon.spy(this.entityManager.entityFactory, 'withComponent')
-                
-                this.entityManager.withComponent(this.positionName, initializer)
-                
-                expect(spy.calledOnce).to.be.true
-                expect(spy.calledWith(this.position, initializer)).to.be.true
             })
             
             test('returns the [entityManager] instance to allow for method chaining', () => {

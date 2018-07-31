@@ -35,7 +35,7 @@ describe('EntityManager', function() {
         test('invokes [systemManager.registerSystem] with [type] = SystemType.Render', () => {
             let spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
 
-            let components = this.position | this.velocity
+            let components = [ this.position, this.velocity, ]
             let callback   = (entities) => { 
                 for (let { entity } of entities) {
                     this.draw(entity)
@@ -51,7 +51,7 @@ describe('EntityManager', function() {
         })
         
         test('returns the registered systems id', () => {
-            let components = this.position | this.velocity
+            let components = [ this.position, this.velocity, ]
             let callback   = (entities) => { 
                 for (let { entity } of entities) {
                     this.draw(entity)
@@ -65,27 +65,6 @@ describe('EntityManager', function() {
             systemId = this.entityManager.registerRenderSystem(components, callback)
             
             expect(systemId).to.equal(2)
-        })
-        
-        test('registers a system given an array of component names', () => {
-            const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
-            
-            const components = this.position | this.velocity
-            const componentNames = [ this.positionName, this.velocityName ]
-            const callback   = (entities) => { 
-                for (const { entity } of entities) {
-                    entity.position = { x : 5, y : 5 }
-                    entity.velocity = -2
-                }
-            }
-
-            const entityIds = [ this.entityId, ]
-            
-            const systemId = this.entityManager.registerRenderSystem(componentNames, callback)
-            
-            expect(systemId).to.equal(1)
-            expect(spy.calledOnce).to.be.true
-            expect(spy.calledWith(SystemType.Render, components, entityIds, callback)).to.be.true
         })
     })
 })

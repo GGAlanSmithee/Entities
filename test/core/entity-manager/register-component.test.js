@@ -3,7 +3,7 @@ import sinon             from 'sinon'
 import { EntityManager } from '../../../src/core/entity-manager'
 
 describe('EntityManager', function() {
-    describe('registerComponent(name, component)', () => {
+    describe('registerComponent(key, component)', () => {
         beforeEach(() => {
             this.entityManager = new EntityManager(100)
             
@@ -27,7 +27,7 @@ describe('EntityManager', function() {
             expect(this.entityManager.registerComponent).to.be.a('function')
         })
         
-        test('registers a [component] as [componentId] on all entities', () => {
+        test('registers a [component] with its [key] on all entities', () => {
             const posObject = new this.posComponent()
             
             for (const entity of this.entityManager.entities) {
@@ -36,7 +36,7 @@ describe('EntityManager', function() {
                 expect(entity).to.not.have.property(this.vel)
             }
             
-            this.entityManager.registerComponent(this.posName, this.posComponent)
+            this.entityManager.registerComponent(this.pos, this.posComponent)
             
             for (const entity of this.entityManager.entities) {
                 expect(entity).property(this.pos).to.deep.equal(posObject)
@@ -44,7 +44,7 @@ describe('EntityManager', function() {
                 expect(entity).to.not.have.property(this.vel)
             }
             
-            this.entityManager.registerComponent(this.infoName, this.infoComponent)
+            this.entityManager.registerComponent(this.info, this.infoComponent)
             
             for (const entity of this.entityManager.entities) {
                 expect(entity).property(this.pos).to.deep.equal(posObject)
@@ -52,7 +52,7 @@ describe('EntityManager', function() {
                 expect(entity).to.not.have.property(this.vel)
             }
             
-            this.entityManager.registerComponent(this.velName, this.velComponent)
+            this.entityManager.registerComponent(this.vel, this.velComponent)
             
             for (const entity of this.entityManager.entities) {
                 expect(entity).property(this.pos).to.deep.equal(posObject)
@@ -60,45 +60,11 @@ describe('EntityManager', function() {
                 expect(entity).property(this.vel).to.deep.equal(this.velComponent)
             }
         })
-        
-        test('adds a getter for the [component] by its name on all entities', () => {
-            const posObject = new this.posComponent()
-            
-            for (const entity of this.entityManager.entities) {
-                expect(entity).to.not.have.property(this.posName)
-                expect(entity).to.not.have.property(this.infoName)
-                expect(entity).to.not.have.property(this.velName)
-            }
-            
-            this.entityManager.registerComponent(this.posName, this.posComponent)
-            
-            for (const entity of this.entityManager.entities) {
-                expect(entity).property(this.posName).to.deep.equal(posObject)
-                expect(entity).to.not.have.property(this.info)
-                expect(entity).to.not.have.property(this.vel)
-            }
-            
-            this.entityManager.registerComponent(this.infoName, this.infoComponent)
-            
-            for (const entity of this.entityManager.entities) {
-                expect(entity).property(this.pos).to.deep.equal(posObject)
-                expect(entity).property(this.infoName).to.deep.equal(this.infoComponent)
-                expect(entity).to.not.have.property(this.vel)
-            }
-            
-            this.entityManager.registerComponent(this.velName, this.velComponent)
-            
-            for (const entity of this.entityManager.entities) {
-                expect(entity).property(this.pos).to.deep.equal(posObject)
-                expect(entity).property(this.info).to.deep.equal(this.infoComponent)
-                expect(entity).property(this.velName).to.deep.equal(this.velComponent)
-            }
-        })
-        
+      
         test('invokes [componentManger].registerComponent with [component]', () => {
             const spy = sinon.spy(this.entityManager.componentManager, 'registerComponent')
             
-            this.entityManager.registerComponent(this.posName, this.posComponent)
+            this.entityManager.registerComponent(this.pos, this.posComponent)
             
             expect(spy.calledOnce).to.be.true
             expect(spy.calledWith(this.posComponent)).to.be.true
@@ -107,34 +73,34 @@ describe('EntityManager', function() {
         test('invokes [entityFactory].registerInitializer with the [id] of the [component]', () => {
             const spy = sinon.spy(this.entityManager.entityFactory, 'registerInitializer')
             
-            const pos = this.entityManager.registerComponent(this.posName, this.posComponent)
+            const pos = this.entityManager.registerComponent(this.pos, this.posComponent)
             
             expect(spy.calledOnce).to.be.true
             expect(spy.calledWith(pos)).to.be.true
             
-            const info = this.entityManager.registerComponent(this.infoName, this.infoComponent)
+            const info = this.entityManager.registerComponent(this.info, this.infoComponent)
             
             expect(spy.calledTwice).to.be.true
             expect(spy.calledWith(info)).to.be.true
             
-            const vel =  this.entityManager.registerComponent(this.velName, this.velComponent)
+            const vel =  this.entityManager.registerComponent(this.vel, this.velComponent)
             
             expect(spy.calledThrice).to.be.true
             expect(spy.calledWith(vel)).to.be.true
         })
         
-        test('does not re-register a component if there already is a component with the [name] registered', () => {
-            let pos = this.entityManager.registerComponent(this.posName, this.posComponent)
+        test('does not re-register a component if there already is a component with the [key] registered', () => {
+            let pos = this.entityManager.registerComponent(this.pos, this.posComponent)
             expect(pos).to.equal(1)
             
-            pos = this.entityManager.registerComponent(this.posName, this.posComponent)
+            pos = this.entityManager.registerComponent(this.pos, this.posComponent)
             expect(pos).to.be.undefined
         })
         
         test('the generated initializers can be used to initialize components through build -> withComponent -> create', () => {
-            const pos = this.entityManager.registerComponent(this.posName, this.posComponent)
-            const info = this.entityManager.registerComponent(this.infoName, this.infoComponent)
-            const vel = this.entityManager.registerComponent(this.velName, this.velComponent)
+            const pos = this.entityManager.registerComponent(this.pos, this.posComponent)
+            const info = this.entityManager.registerComponent(this.info, this.infoComponent)
+            const vel = this.entityManager.registerComponent(this.vel, this.velComponent)
             
             const config = this.entityManager.build()
                                              .withComponent(pos)
@@ -173,15 +139,15 @@ describe('EntityManager', function() {
             expect(this.entityManager.entities[res.id]).property(vel).to.equal(5.5)
         })
         
-        test('throws error if [name] is not a non-empty string', () => {
-            expect(() => { this.entityManager.registerComponent(undefined, {}) }).to.throw(TypeError, 'name must be a non-empty string.')
-            expect(() => { this.entityManager.registerComponent(null, {}) }).to.throw(TypeError, 'name must be a non-empty string.')
-            expect(() => { this.entityManager.registerComponent('', {}) }).to.throw(TypeError, 'name must be a non-empty string.')
-            expect(() => { this.entityManager.registerComponent(1, {}) }).to.throw(TypeError, 'name must be a non-empty string.')
-            expect(() => { this.entityManager.registerComponent(1.5, {}) }).to.throw(TypeError, 'name must be a non-empty string.')
-            expect(() => { this.entityManager.registerComponent([], {}) }).to.throw(TypeError, 'name must be a non-empty string.')
-            expect(() => { this.entityManager.registerComponent(['a', 'b'], {}) }).to.throw(TypeError, 'name must be a non-empty string.')
-            expect(() => { this.entityManager.registerComponent(new Map(), {}) }).to.throw(TypeError, 'name must be a non-empty string.')
+        test('throws error if [key] is not a non-empty string', () => {
+            expect(() => { this.entityManager.registerComponent(undefined, {}) }).to.throw(TypeError, 'key must be a non-empty string.')
+            expect(() => { this.entityManager.registerComponent(null, {}) }).to.throw(TypeError, 'key must be a non-empty string.')
+            expect(() => { this.entityManager.registerComponent('', {}) }).to.throw(TypeError, 'key must be a non-empty string.')
+            expect(() => { this.entityManager.registerComponent(1, {}) }).to.throw(TypeError, 'key must be a non-empty string.')
+            expect(() => { this.entityManager.registerComponent(1.5, {}) }).to.throw(TypeError, 'key must be a non-empty string.')
+            expect(() => { this.entityManager.registerComponent([], {}) }).to.throw(TypeError, 'key must be a non-empty string.')
+            expect(() => { this.entityManager.registerComponent(['a', 'b'], {}) }).to.throw(TypeError, 'key must be a non-empty string.')
+            expect(() => { this.entityManager.registerComponent(new Map(), {}) }).to.throw(TypeError, 'key must be a non-empty string.')
         })
     })
 })

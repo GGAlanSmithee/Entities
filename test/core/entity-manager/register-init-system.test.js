@@ -33,7 +33,7 @@ describe('EntityManager', function() {
         test('invokes [systemManager.registerSystem] with [type] = SystemType.Init', () => {
             const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
             
-            const components = this.position | this.velocity
+            const components = [ this.position, this.velocity ]
             const callback   = (entities) => { 
                 for (const { entity } of entities) {
                     entity.position = { x : 5, y : 5 }
@@ -51,7 +51,7 @@ describe('EntityManager', function() {
         })
         
         test('returns the registered systems id', () => {
-            const components = this.position | this.velocity
+            const components = [ this.position, this.velocity, ]
             const callback   = (entities) => { 
                 for (const { entity } of entities) {
                     entity.position = { x : 5, y : 5 }
@@ -66,27 +66,6 @@ describe('EntityManager', function() {
             systemId = this.entityManager.registerInitSystem(components, callback)
             
             expect(systemId).to.equal(2)
-        })
-        
-        test('registers a system given an array of component names', () => {
-            const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
-
-            const components = this.position | this.velocity
-            const componentNames = [ this.positionName, this.velocityName ]
-            const callback   = (entities) => { 
-                for (const { entity } of entities) {
-                    entity.position = { x : 5, y : 5 }
-                    entity.velocity = -2
-                }
-            }
-
-            const entityIds = [ this.entityId, ]
-            
-            const systemId = this.entityManager.registerInitSystem(componentNames, callback)
-            
-            expect(systemId).to.equal(1)
-            expect(spy.calledOnce).to.be.true
-            expect(spy.calledWith(SystemType.Init, components, entityIds, callback)).to.be.true
         })
     })
 })
