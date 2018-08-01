@@ -18,36 +18,43 @@ describe('EntityManager', function() {
 
             this.entityId1 = 0
             this.entity1 = {
+                id: this.entityId1,
                 components: [ this.position, this.velocity, this.stats, ],
             }
 
             this.entityId2 = 1
             this.entity2 = {
+                id: this.entityId2,
                 components: [ this.position, this.stats, ],
             }
 
             this.entityId3 = 2
             this.entity3 = {
+                id: this.entityId3,
                 components: [ this.position, this.velocity, this.stats, ],
             }
 
             this.entityId4 = 3
             this.entity4 = {
+                id: this.entityId4,
                 components: [ this.position, ],
             }
 
             this.entityId5 = 4
             this.entity5 = {
+                id: this.entityId5,
                 components: [],
             }
 
             this.entityId6 = 5
             this.entity6 = {
+                id: this.entityId6,
                 components: [ this.position, this.velocity, this.appearance, ],
             }
 
             this.entityId7 = 6
             this.entity7 = {
+                id: this.entityId7,
                 components: [ this.position, this.velocity, this.appearance, ],
             }
 
@@ -70,6 +77,7 @@ describe('EntityManager', function() {
         
         test('invokes [systemManager.registerSystem] with the correct parameters', () => {
             const type       = SystemType.Render
+            const name       = 'render'
             const components = [ this.position, this.velocity, this.stats ]
             
             const callback = function(entities, { delta }) { 
@@ -80,16 +88,16 @@ describe('EntityManager', function() {
             
             const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
             
-            const systemId = this.entityManager.registerSystem(type, components, callback)
+            this.entityManager.registerSystem(type, name, components, callback)
             
             const entityIds = [this.entityId1, this.entityId3]
             
             expect(spy.calledOnce).to.be.true
-            expect(spy.calledWith(type, components, entityIds, callback)).to.be.true
-            expect(systemId).to.equal(1)
+            expect(spy.calledWith(type, name, components, entityIds, callback)).to.be.true
         })
         
         test('registers a system with the correct components', () => {
+            const name       = 'init'
             const components =  [ this.position, this.velocity ]
             const callback   = (entities) => { 
                 for (const { entity } of entities) {
@@ -98,54 +106,48 @@ describe('EntityManager', function() {
                 }
             }
             
-            this.entityManager.registerSystem(SystemType.Init, components, callback)
+            this.entityManager.registerSystem(SystemType.Init, name, components, callback)
             
             const { initSystems, } = this.entityManager.systemManager
 
             expect(initSystems.size).to.equal(1)
+            
+            const initSystem = initSystems.get(name)
+
+            expect(initSystem.components).to.deep.equal(components)
         })
 
-        test('registers a system with the correct components', () => {
+        test('registers a system with the correct entities', () => {
             const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
             
-            const components = this.appearance
+            const name       = 'render'
+            const components = [ this.appearance ]
             const callback   = (entities) => { 
                 for (const { entity } of entities) {
                     entity.appearance = 'test.jpg' // makes no sense
                 }
             }
             
-            this.entityManager.registerSystem(SystemType.Render, components, callback)
+            this.entityManager.registerSystem(SystemType.Render, name, components, callback)
             
-            // excludes entity 7 (id=6) since currentMaxEntity is = 5
-            const entityIds = [this.entityId6]
+            const entityIds = [this.entityId6, this.entityId7]
 
             expect(spy.calledOnce).to.be.true
-            expect(spy.calledWith(SystemType.Render, components, entityIds, callback)).to.be.true
+            expect(spy.calledWith(SystemType.Render, name, components, entityIds, callback)).to.be.true
 
-        })
-        
-        test('returns the registered systems id', () => {
-            const components = [ this.position, this.velocity, ]
-            const callback   = (entities) => { 
-                for (const { entity } of entities) {
-                    entity.position = { x : 5, y : 5 }
-                    entity.velocity = -2
-                }
-            }
+            const { renderSystems, } = this.entityManager.systemManager
+
+            expect(renderSystems.size).to.equal(1)
             
-            let systemId = this.entityManager.registerSystem(SystemType.Logic, components, callback)
-            
-            expect(systemId).to.equal(1)
-            
-            systemId = this.entityManager.registerSystem(SystemType.Render, components, callback)
-            
-            expect(systemId).to.equal(2)
+            const renderSystem = renderSystems.get(name)
+
+            expect(renderSystem.entities).to.deep.equal(entityIds)
         })
         
         test('registers a system given an array of components', () => {
             const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
             
+            const name       = 'initialize'
             const components = [ this.position, this.velocity, this.appearance]
             const callback   = (entities) => { 
                 for (const { entity } of entities) {
@@ -154,19 +156,18 @@ describe('EntityManager', function() {
                 }
             }
             
-            const systemId = this.entityManager.registerSystem(SystemType.Init, components, callback)
+            this.entityManager.registerSystem(SystemType.Init, name, components, callback)
             
-            // excludes entity 7 (id=6) since currentMaxEntity is = 5
-            const entityIds = [this.entityId6]
+            const entityIds = [this.entityId6, this.entityId7]
 
-            expect(systemId).to.equal(1)
             expect(spy.calledOnce).to.be.true
-            expect(spy.calledWith(SystemType.Init, components, entityIds, callback)).to.be.true
+            expect(spy.calledWith(SystemType.Init, name, components, entityIds, callback)).to.be.true
         })
 
-        test('registers a system given an array of components, not using all registered components 1', () => {
+        test('registers a render system given an array of components, not using all registered components 1', () => {
             const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
             
+            const name       = 'initInit'
             const components = [ this.position, this.velocity ]
             const callback   = (entities) => { 
                 for (const { entity } of entities) {
@@ -175,19 +176,18 @@ describe('EntityManager', function() {
                 }
             }
             
-            const systemId = this.entityManager.registerSystem(SystemType.Init, components, callback)
-            
-            // excludes entity 7 (id=6) since currentMaxEntity is = 5
-            const entityIds = [this.entityId1, this.entityId3, this.entityId6]
+            this.entityManager.registerSystem(SystemType.Init, name, components, callback)
 
-            expect(systemId).to.equal(1)
+            const entityIds = [this.entityId1, this.entityId3, this.entityId6, this.entityId7]
+
             expect(spy.calledOnce).to.be.true
-            expect(spy.calledWith(SystemType.Init, components, entityIds, callback)).to.be.true
+            expect(spy.calledWith(SystemType.Init, name, components, entityIds, callback)).to.be.true
         })
 
-        test('registers a system given an array of components, not using all registered components 2', () => {
+        test('registers a logic system given an array of components, not using all registered components 2', () => {
             const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
             
+            const name       = 'movement'
             const components = [ this.position ]
             const callback   = (entities) => { 
                 for (const { entity } of entities) {
@@ -196,14 +196,12 @@ describe('EntityManager', function() {
                 }
             }
             
-            const systemId = this.entityManager.registerSystem(SystemType.Logic, components, callback)
+            this.entityManager.registerSystem(SystemType.Logic, name, components, callback)
             
-            // excludes entity 7 (id=6) since currentMaxEntity is = 5
-            const entityIds = [this.entityId1, this.entityId2, this.entityId3, this.entityId4, this.entityId6]
+            const entityIds = [this.entityId1, this.entityId2, this.entityId3, this.entityId4, this.entityId6, this.entityId7]
 
-            expect(systemId).to.equal(1)
             expect(spy.calledOnce).to.be.true
-            expect(spy.calledWith(SystemType.Logic, components, entityIds, callback)).to.be.true
+            expect(spy.calledWith(SystemType.Logic, name, components, entityIds, callback)).to.be.true
         })
     })
 })

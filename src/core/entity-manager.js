@@ -194,16 +194,16 @@ class EntityManager {
         this._systemManager.registerSystem(type, name, components, entities, callback)
     }
     
-    registerLogicSystem(components, callback) {
-        this.registerSystem(SystemType.Logic, components, callback)
+    registerLogicSystem(name, components, callback) {
+        this.registerSystem(SystemType.Logic, name, components, callback)
     }
     
-    registerRenderSystem(components, callback) {
-        this.registerSystem(SystemType.Render, components, callback)
+    registerRenderSystem(name, components, callback) {
+        this.registerSystem(SystemType.Render, name, components, callback)
     }
     
-    registerInitSystem(components, callback) {
-        this.registerSystem(SystemType.Init, components, callback)
+    registerInitSystem(name, components, callback) {
+        this.registerSystem(SystemType.Init, name, components, callback)
     }
     
     removeSystem(systemId) {

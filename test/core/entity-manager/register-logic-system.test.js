@@ -14,6 +14,7 @@ describe('EntityManager', function() {
 
             this.entityId = 0
             this.entity = {
+                id: this.entityId,
                 components: [ this.position, this.velocity, ],
                 [this.position]: { x: 0, y: 0, },
                 [this.velocity]: 2,
@@ -31,10 +32,11 @@ describe('EntityManager', function() {
         })
         
         test('invokes [systemManager.registerSystem] with [type] = SystemType.Logic', () => {
-            let spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
+            const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
             
-            let components = [ this.position, this.velocity, ]
-            let callback   = (entities, { delta }) => { 
+            const name = 'movement'
+            const components = [ this.position, this.velocity, ]
+            const callback   = (entities, { delta }) => { 
                 for (let { entity } of entities) {
                     entity.position += entity.velocity * delta
                 }
@@ -42,27 +44,10 @@ describe('EntityManager', function() {
             
             const entityIds = [ this.entityId, ]
 
-            this.entityManager.registerLogicSystem(components, callback)
+            this.entityManager.registerLogicSystem(name, components, callback)
             
             expect(spy.calledOnce).to.be.true
-            expect(spy.calledWith(SystemType.Logic, components, entityIds, callback)).to.be.true
-        })
-        
-        test('returns the registered systems id', () => {
-            let components = [ this.position, this.velocity, ]
-            let callback   = (entities, { delta }) => { 
-                for (let { entity } of entities) {
-                    entity.position += entity.velocity * delta
-                }
-            }
-            
-            let systemId = this.entityManager.registerLogicSystem(components, callback)
-            
-            expect(systemId).to.equal(1)
-            
-            systemId = this.entityManager.registerLogicSystem(components, callback)
-            
-            expect(systemId).to.equal(2)
+            expect(spy.calledWith(SystemType.Logic, name, components, entityIds, callback)).to.be.true
         })
     })
 })

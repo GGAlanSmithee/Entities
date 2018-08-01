@@ -4,7 +4,7 @@ import { EntityManager } from '../../../src/core/entity-manager'
 import { SystemType }    from '../../../src/core/system-manager'
 
 describe('EntityManager', function() {
-    describe('registerInitSystem(components, callback)', () => {
+    describe('registerInitSystem(name, components, callback)', () => {
         beforeEach(() => {
             this.entityManager = new EntityManager(50)
             
@@ -14,6 +14,7 @@ describe('EntityManager', function() {
 
             this.entityId = 0
             this.entity = {
+                id: this.entityId,
                 components: [ this.position, this.velocity, ],
                 [this.position]: { x: 0, y: 0, },
                 [this.velocity]: 2,
@@ -33,6 +34,7 @@ describe('EntityManager', function() {
         test('invokes [systemManager.registerSystem] with [type] = SystemType.Init', () => {
             const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
             
+            const name       = 'initTestSystem'
             const components = [ this.position, this.velocity ]
             const callback   = (entities) => { 
                 for (const { entity } of entities) {
@@ -43,29 +45,11 @@ describe('EntityManager', function() {
 
             const entityIds = [ this.entityId, ]
 
-            this.entityManager.registerInitSystem(components, callback)
+            this.entityManager.registerInitSystem(name, components, callback)
             
             expect(spy.calledOnce).to.be.true
 
-            expect(spy.calledWith(SystemType.Init, components, entityIds, callback)).to.be.true
-        })
-        
-        test('returns the registered systems id', () => {
-            const components = [ this.position, this.velocity, ]
-            const callback   = (entities) => { 
-                for (const { entity } of entities) {
-                    entity.position = { x : 5, y : 5 }
-                    entity.velocity = -2
-                }
-            }
-            
-            let systemId = this.entityManager.registerInitSystem(components, callback)
-            
-            expect(systemId).to.equal(1)
-            
-            systemId = this.entityManager.registerInitSystem(components, callback)
-            
-            expect(systemId).to.equal(2)
+            expect(spy.calledWith(SystemType.Init, name, components, entityIds, callback)).to.be.true
         })
     })
 })
