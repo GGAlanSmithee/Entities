@@ -138,8 +138,7 @@ class EntityManager {
     // Component Manager
     
     registerComponent(key, component) {
-        validateAndThrow(isNonEmptyString(component, 'key'))
-
+        // Will be validated in _componentManager.registerComponent
         this._componentManager.registerComponent(key, component)
         
         for (let entity of this._entities) {

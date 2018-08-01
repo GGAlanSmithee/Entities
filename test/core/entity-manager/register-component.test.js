@@ -1,6 +1,7 @@
 import { expect }              from 'chai'
 import sinon                   from 'sinon'
 import { isNonEmptyStringMsg } from '../../../src/validate/is-non-empty-string'
+import { doesNotContainMsg } from '../../../src/validate/does-not-contain'
 import { EntityManager }       from '../../../src/core/entity-manager'
 
 describe('EntityManager', function() {
@@ -68,76 +69,78 @@ describe('EntityManager', function() {
             this.entityManager.registerComponent(this.pos, this.posComponent)
             
             expect(spy.calledOnce).to.be.true
-            expect(spy.calledWith(this.posComponent)).to.be.true
+            expect(spy.calledWith(this.pos)).to.be.true
         })
         
-        test('invokes [entityFactory].registerInitializer with the [id] of the [component]', () => {
+        test('invokes [entityFactory].registerInitializer with the [key] of the [component]', () => {
             const spy = sinon.spy(this.entityManager.entityFactory, 'registerInitializer')
             
-            const pos = this.entityManager.registerComponent(this.pos, this.posComponent)
+            this.entityManager.registerComponent(this.pos, this.posComponent)
             
             expect(spy.calledOnce).to.be.true
-            expect(spy.calledWith(pos)).to.be.true
+            expect(spy.calledWith(this.pos)).to.be.true
             
-            const info = this.entityManager.registerComponent(this.info, this.infoComponent)
+            this.entityManager.registerComponent(this.info, this.infoComponent)
             
             expect(spy.calledTwice).to.be.true
-            expect(spy.calledWith(info)).to.be.true
+            expect(spy.calledWith(this.info)).to.be.true
             
-            const vel =  this.entityManager.registerComponent(this.vel, this.velComponent)
+            this.entityManager.registerComponent(this.vel, this.velComponent)
             
             expect(spy.calledThrice).to.be.true
-            expect(spy.calledWith(vel)).to.be.true
+            expect(spy.calledWith(this.vel)).to.be.true
         })
         
-        test('does not re-register a component if there already is a component with the [key] registered', () => {
-            let pos = this.entityManager.registerComponent(this.pos, this.posComponent)
-            expect(pos).to.equal(1)
+        test('throws error if there is a component with [key] already registered', () => {
+            this.entityManager.registerComponent(this.pos, this.posComponent)
+            expect(this.pos).to.equal('pos')
             
-            pos = this.entityManager.registerComponent(this.pos, this.posComponent)
-            expect(pos).to.be.undefined
+            expect(() => { this.entityManager.registerComponent(this.pos, this.posComponent) }).to.throw(
+                TypeError,
+                doesNotContainMsg(this.pos, 'components')
+            )
         })
         
         test('the generated initializers can be used to initialize components through build -> withComponent -> create', () => {
-            const pos = this.entityManager.registerComponent(this.pos, this.posComponent)
-            const info = this.entityManager.registerComponent(this.info, this.infoComponent)
-            const vel = this.entityManager.registerComponent(this.vel, this.velComponent)
+            this.entityManager.registerComponent(this.pos, this.posComponent)
+            this.entityManager.registerComponent(this.info, this.infoComponent)
+            this.entityManager.registerComponent(this.vel, this.velComponent)
             
             const config = this.entityManager.build()
-                                             .withComponent(pos)
-                                             .withComponent(info)
-                                             .withComponent(vel)
+                                             .withComponent(this.pos)
+                                             .withComponent(this.info)
+                                             .withComponent(this.vel)
                                              .registerConfiguration()
                                           
-            let {entity, id} = this.entityManager.create(1, config)
+            let [ entity, ] = this.entityManager.create(1, config)
             
-            expect(entity).property(pos).to.deep.equal({ x : 10, y : 20 })
-            expect(entity).property(info).to.deep.equal({ name : 'Tester', age : 99 })
-            expect(entity).property(vel).to.equal(5.5)
+            expect(entity).property(this.pos).to.deep.equal({ x : 10, y : 20 })
+            expect(entity).property(this.info).to.deep.equal({ name : 'Tester', age : 99 })
+            expect(entity).property(this.vel).to.equal(5.5)
             
-            entity[pos]  = { x: 20, y: 40 }
-            entity[info] = { name: 'New Tester', age: 1 }
-            entity[vel]  = -2.5
+            entity[this.pos]  = { x: 20, y: 40 }
+            entity[this.info] = { name: 'New Tester', age: 1 }
+            entity[this.vel]  = -2.5
             
-            expect(this.entityManager.entities[id]).property(pos).to.deep.equal({ x : 20, y : 40 })
-            expect(this.entityManager.entities[id]).property(info).to.deep.equal({ name : 'New Tester', age : 1 })
-            expect(this.entityManager.entities[id]).property(vel).to.equal(-2.5)
+            expect(this.entityManager.entities[entity.id]).property(this.pos).to.deep.equal({ x : 20, y : 40 })
+            expect(this.entityManager.entities[entity.id]).property(this.info).to.deep.equal({ name : 'New Tester', age : 1 })
+            expect(this.entityManager.entities[entity.id]).property(this.vel).to.equal(-2.5)
 
-            const oldId = id
+            const oldId = entity.id
             
-            this.entityManager.deleteEntity(id)
+            this.entityManager.deleteEntity(entity.id)
             
-            let res = this.entityManager.create(1, config)
+                entity = this.entityManager.create(1, config)[0]
             
-            expect(res.id).to.equal(oldId)
+            expect(entity.id).to.equal(oldId)
             
-            expect(res.entity).property(pos).to.deep.equal({ x : 10, y : 20 })
-            expect(res.entity).property(info).to.deep.equal({ name : 'Tester', age : 99 })
-            expect(res.entity).property(vel).to.equal(5.5)
+            expect(entity).property(this.pos).to.deep.equal({ x : 10, y : 20 })
+            expect(entity).property(this.info).to.deep.equal({ name : 'Tester', age : 99 })
+            expect(entity).property(this.vel).to.equal(5.5)
             
-            expect(this.entityManager.entities[res.id]).property(pos).to.deep.equal({ x : 10, y : 20 })
-            expect(this.entityManager.entities[res.id]).property(info).to.deep.equal({ name : 'Tester', age : 99 })
-            expect(this.entityManager.entities[res.id]).property(vel).to.equal(5.5)
+            expect(this.entityManager.entities[entity.id]).property(this.pos).to.deep.equal({ x : 10, y : 20 })
+            expect(this.entityManager.entities[entity.id]).property(this.info).to.deep.equal({ name : 'Tester', age : 99 })
+            expect(this.entityManager.entities[entity.id]).property(this.vel).to.equal(5.5)
         })
         
         test('throws error if [key] is not a non-empty string', () => {
