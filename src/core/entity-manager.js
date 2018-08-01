@@ -34,27 +34,27 @@ class EntityManager {
         
         this._entities = [
             ...this._entities,
-            ...Array.from({ length : oldlength }, (_e, i) => ({
-                id: oldlength + i,
-                components: [],
-            })),
-        ]
+            ...Array.from({ length : oldlength }, (_e, i) => {
+                const entity = { 
+                    id: oldlength + i,
+                    components: [],
+                }
 
-        for (let i = oldlength; i < this._entities.length; ++i) {
-            let entity = this._entities[i]
-            
-            for (const componentName of this._componentManager.components.keys()) {
-                entity[componentName] = this._componentManager.newComponent(componentName)
-            }
-        }
+                for (const componentName of this._componentManager.components.keys()) {
+                    entity[componentName] = this._componentManager.newComponent(componentName)
+                }
+
+                return entity
+            }),
+        ]
     }
     
     newEntity(components) {
-        if (!Array.isArray(components)) {
+        if (!isArray(components)) {
             return null
         }
 
-        // todo: if re-using an old entity, should we reset components?
+        // todo: if re-using an old entity, we should reset components?
 
         for (const entity of this._entities) {
             if (entity.components.length === 0) {
@@ -182,7 +182,7 @@ class EntityManager {
     // System Manager
     
     registerSystem(type, name, components, callback) {
-        if (!Array.isArray(components)) {
+        if (!isArray(components)) {
             throw TypeError('components must be an array of components')
         }
         
@@ -212,19 +212,19 @@ class EntityManager {
     }
     
     onLogic(opts) {
-        for (let system of this._systemManager.logicSystems.values()) {
+        for (const system of this._systemManager.logicSystems.values()) {
             system.callback.call(this, this.getEntitiesByIds(system.entities), opts)
         }
     }
     
     onRender(opts) {
-        for (let system of this._systemManager.renderSystems.values()) {
+        for (const system of this._systemManager.renderSystems.values()) {
             system.callback.call(this, this.getEntitiesByIds(system.entities), opts)
         }
     }
 
     onInit(opts) {
-        for (let system of this._systemManager.initSystems.values()) {
+        for (const system of this._systemManager.initSystems.values()) {
             system.callback.call(this, this.getEntitiesByIds(system.entities), opts)
         }
     }

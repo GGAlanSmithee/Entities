@@ -7,41 +7,41 @@ describe('EntityManager', function() {
         beforeEach(() => {
             this.entityManager = new EntityManager()
             
-            this.position     = 1
-            this.velocity     = 2
-            this.clickable    = 4
-            this.spawnable    = 8
-            this.interactable = 16
+            this.position     = 'pos'
+            this.velocity     = 'vel'
+            this.clickable    = 'click'
+            this.spawnable    = 'spawn'
+            this.interactable = 'int'
             
             this.entities = []
-            this.entities.push({ id: 0, entity: { components: this.position | this.velocity | this.clickable } })
-            this.entities.push({ id: 1, entity: { components: this.position | this.velocity | this.clickable } })
-            this.entities.push({ id: 2, entity: { components: this.position | this.velocity | this.spawnable } })
+            this.entities.push({ id: 0, entity: { components: [ this.position, this.velocity, this.clickable, ] } })
+            this.entities.push({ id: 1, entity: { components: [ this.position, this.velocity, this.clickable, ] } })
+            this.entities.push({ id: 2, entity: { components: [ this.position, this.velocity, this.spawnable, ] } })
             
             this.entityManager.getEntitiesByIds = sinon.stub().returns(this.entities)
             
             this.logicSpy1 = sinon.spy()
             this.entityManager.systemManager.logicSystems.set(1, {
                     callback   : this.logicSpy1,
-                    components : this.position | this.velocity | this.clickable
+                    components : [ this.position, this.velocity, this.clickable, ]
                 })
             
             this.logicSpy2 = sinon.spy()
             this.entityManager.systemManager.logicSystems.set(2, {
                     callback   : this.logicSpy2,
-                    components : this.position | this.velocity | this.interactable
+                    components : [ this.position, this.velocity, this.interactable, ]
                 })
             
             this.initSpy1 = sinon.spy()
             this.entityManager.systemManager.initSystems.set(3, {
                     callback   : this.initSpy1,
-                    components : this.position | this.velocity | this.clickable
+                    components : [ this.position, this.velocity, this.clickable, ]
                 })
             
             this.initSpy2 = sinon.spy()
             this.entityManager.systemManager.initSystems.set(4, {
                     callback   : this.initSpy2,
-                    components : this.spawnable
+                    components : [ this.spawnable, ]
                 })
             
             this.opts = {
@@ -74,7 +74,7 @@ describe('EntityManager', function() {
             expect(this.logicSpy2.calledOnce).to.be.false
         })
         
-        test('invokes [entityManager.getEntitiesByIds()] with the correct paramters', () => {
+        test('invokes [entityManager.getEntitiesByIds()] with the correct parameters', () => {
             this.entityManager.onInit(this.opts)
             
             expect(this.entityManager.getEntitiesByIds.calledTwice).to.be.true

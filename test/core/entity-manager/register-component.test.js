@@ -1,6 +1,6 @@
 import { expect }              from 'chai'
 import sinon                   from 'sinon'
-import { isNonEmptyStringMsg } from '../../../validate/is-non-empty-string'
+import { isNonEmptyStringMsg } from '../../../src/validate/is-non-empty-string'
 import { EntityManager }       from '../../../src/core/entity-manager'
 
 describe('EntityManager', function() {
