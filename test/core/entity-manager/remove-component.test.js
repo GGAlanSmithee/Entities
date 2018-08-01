@@ -10,8 +10,8 @@ describe('EntityManager', function() {
             
             this.componentOne     = 'one'
             this.componentTwo     = 'two'
-            this.componentThree     = 'three'
-            this.componentFour     = 'Four'
+            this.componentThree   = 'three'
+            this.componentFour    = 'Four'
             
             this.entityManager.entities[this.entityId].components = [
                 this.componentOne,
@@ -30,10 +30,8 @@ describe('EntityManager', function() {
         })
         
         test('removes a component by its [key] by removing it from the entity´s [components] array', () => {
-            let entity = this.entityManager.entities[this.entityId]
-            
-            expect(entity.components).to.equal(15)
-            
+            const entity = this.entityManager.entities[this.entityId]
+
             expect(entity.components).to.include(this.componentFour)
             expect(entity.components).to.include(this.componentThree)
             expect(entity.components).to.include(this.componentTwo)
