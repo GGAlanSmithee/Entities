@@ -181,10 +181,6 @@ class EntityManager {
     // System Manager
     
     registerSystem(type, name, components, callback) {
-        if (!isArray(components)) {
-            throw TypeError('components must be an array of components')
-        }
-        
         const entities = []
         
         for (const { id, } of this.iterateEntities(components)) {

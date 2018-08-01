@@ -94,5 +94,38 @@ describe('EntityManager', function() {
             this.entityManager.addComponent(this.entityId, this.position)
             expect(entity).property('components').property('length').to.equal(3)
         })
+
+        test('does not add components if the [component] is not a non-null string', () => {
+            const entity = this.entityManager.entities[this.entityId]
+            
+            expect(entity).property('components').to.be.an.instanceof(Array).and.to.be.empty
+            
+            this.entityManager.addComponent(this.entityId, 1)
+            expect(entity).property('components').to.be.an.instanceof(Array).and.to.be.empty
+
+            this.entityManager.addComponent(this.entityId, 1.5)
+            expect(entity).property('components').to.be.an.instanceof(Array).and.to.be.empty
+
+            this.entityManager.addComponent(this.entityId, -1)
+            expect(entity).property('components').to.be.an.instanceof(Array).and.to.be.empty
+
+            this.entityManager.addComponent(this.entityId, [])
+            expect(entity).property('components').to.be.an.instanceof(Array).and.to.be.empty
+
+            this.entityManager.addComponent(this.entityId, {})
+            expect(entity).property('components').to.be.an.instanceof(Array).and.to.be.empty
+
+            this.entityManager.addComponent(this.entityId, new Map())
+            expect(entity).property('components').to.be.an.instanceof(Array).and.to.be.empty
+
+            this.entityManager.addComponent(this.entityId, null)
+            expect(entity).property('components').to.be.an.instanceof(Array).and.to.be.empty
+
+            this.entityManager.addComponent(this.entityId, undefined)
+            expect(entity).property('components').to.be.an.instanceof(Array).and.to.be.empty
+
+            this.entityManager.addComponent(this.entityId)
+            expect(entity).property('components').to.be.an.instanceof(Array).and.to.be.empty
+        })
     })
 })
