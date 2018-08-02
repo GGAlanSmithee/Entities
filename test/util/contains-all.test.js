@@ -14,12 +14,21 @@ describe('util', function() {
             const arr4 = [1, 2, 435, 23, 3, 2, 6, 1]
             const arr5 = [3]
             const arr6 = [23, 23, 23, 23, 3, 3]
+            const arr7 = []
 
             expect(containsAll(arr1, arr2)).to.be.true
             expect(containsAll(arr1, arr3)).to.be.true
             expect(containsAll(arr1, arr4)).to.be.true
             expect(containsAll(arr1, arr5)).to.be.true
             expect(containsAll(arr1, arr6)).to.be.true
+            expect(containsAll(arr1, arr7)).to.be.true
+        })
+
+        test('[arr2] default to an empty array, (and returns true)', () => {
+            const arr1 = [1, 2, 3, 6, 435, 1, 23]
+
+            expect(containsAll(arr1, undefined)).to.be.true
+            expect(containsAll(arr1)).to.be.true
         })
 
         test('returns false if [arr1] doesn´t contain all elements of [arr2]', () => {
@@ -37,6 +46,18 @@ describe('util', function() {
             expect(containsAll(arr1, arr5)).to.be.false
             expect(containsAll(arr1, arr6)).to.be.false
             expect(containsAll(arr1, arr7)).to.be.false
+        })
+
+        test('[arr1] default to an empty array, (and returns false, or true if [arr2] is also empty)', () => {
+            const arr2 = [1, 2, 3, 6, 435, 1, 23]
+
+            expect(containsAll(undefined, arr2)).to.be.false
+            expect(containsAll(undefined, [])).to.be.true
+        })
+
+        test('defaults both [arr1] and [arr2] to an empty array, (and returns true)', () => {
+            expect(containsAll()).to.be.true
+            expect(containsAll(undefined, undefined)).to.be.true
         })
     })
 })
