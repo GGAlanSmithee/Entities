@@ -1,5 +1,3 @@
-// todo add tests for all validate functions
-
 import { expect } from 'chai'
 import { isArray, isArrayMsg, } from '../../src/validate/is-array'
 
@@ -83,6 +81,9 @@ describe('validate', function() {
             expect(isArrayMsg(name, null)).to.equal(msg(name, null))
             expect(isArrayMsg(name, '')).to.equal(msg(name, ''))
             expect(isArrayMsg(name, 123)).to.equal(msg(name, 123))
+            
+            expect(isArrayMsg(null, [])).to.equal(msg(null, []))
+            expect(isArrayMsg(undefined, [])).to.equal(msg(undefined, []))
         })
     })
 })

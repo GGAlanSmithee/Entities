@@ -1,5 +1,3 @@
-// todo add tests for all validate functions
-
 import { expect } from 'chai'
 import { isDefined, isDefinedMsg, } from '../../src/validate/is-defined'
 
@@ -86,6 +84,13 @@ describe('validate', function() {
             expect(isDefinedMsg(name, null)).to.equal(msg(name, null))
             expect(isDefinedMsg(name, undefined)).to.equal(msg(name, undefined))
             expect(isDefinedMsg(name)).to.equal(msg(name))
+
+            expect(isDefinedMsg(null)).to.equal(msg(null))
+            expect(isDefinedMsg(null, null)).to.equal(msg(null, null))
+            expect(isDefinedMsg(null, undefined)).to.equal(msg(null, undefined))
+            expect(isDefinedMsg(undefined)).to.equal(msg(undefined))
+            expect(isDefinedMsg(undefined, null)).to.equal(msg(undefined, null))
+            expect(isDefinedMsg(undefined, undefined)).to.equal(msg(undefined, undefined))
         })
     })
 })

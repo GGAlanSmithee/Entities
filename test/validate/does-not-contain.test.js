@@ -1,5 +1,3 @@
-// todo add tests for all validate functions
-
 import { expect } from 'chai'
 import { doesNotContain, doesNotContainMsg, } from '../../src/validate/does-not-contain'
 

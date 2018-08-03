@@ -1,5 +1,3 @@
-// todo add tests for all util functions
-
 import { expect } from 'chai'
 import { emptyPromise } from '../../src/util/promise'
 
