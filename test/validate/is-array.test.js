@@ -74,14 +74,13 @@ describe('validate', function() {
         test('returns an error message',  () => {
             const msg = (name = '', value = '') => `"${name}" must be an array. Got "${typeof value}".`.trim()
             
-            let name = 'testArray'
+            const name = 'testArray'
 
             expect(isArrayMsg(name, {})).to.equal(msg(name, {}))
             expect(isArrayMsg(name, new Map())).to.equal(msg(name, new Map()))
             expect(isArrayMsg(name, null)).to.equal(msg(name, null))
             expect(isArrayMsg(name, '')).to.equal(msg(name, ''))
             expect(isArrayMsg(name, 123)).to.equal(msg(name, 123))
-            
             expect(isArrayMsg(null, [])).to.equal(msg(null, []))
             expect(isArrayMsg(undefined, [])).to.equal(msg(undefined, []))
         })

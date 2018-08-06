@@ -79,7 +79,7 @@ describe('validate', function() {
         test('returns an error message',  () => {
             const msg = (name = '', value = '') => `"${name}" must be defined. Got "${value}".`.trim()
 
-            let name = 'key'
+            const name = 'key'
 
             expect(isDefinedMsg(name, null)).to.equal(msg(name, null))
             expect(isDefinedMsg(name, undefined)).to.equal(msg(name, undefined))

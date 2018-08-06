@@ -6,7 +6,7 @@ const isEntityManager = (value, name = undefined) => {
         value &&
         value.constructor &&
         value.constructor.name === 'EntityManager'
-    )
+    ) ? true : false
 
     if (!name) {
         return success
