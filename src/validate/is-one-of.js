@@ -1,7 +1,7 @@
-const isOfTypeMsg = (values = '', name = '', value = '') =>
+const isOneOfMsg = (values = '', name = '', value = '') =>
     `"${name}" must be one of ${values}. Got "${value}".`.trim()
 
-const isOfType = (Type, value, name = undefined) => {
+const isOneOf = (Type, value, name = undefined) => {
     const values = Object.keys(Type).map(k => Type[k])
     const success = values.includes(value)
 
@@ -11,11 +11,11 @@ const isOfType = (Type, value, name = undefined) => {
 
     return {
         success,
-        message: isOfTypeMsg(values.join(', '), name, value),
+        message: isOneOfMsg(values.join(', '), name, value),
     }
 }
 
 export { 
-    isOfType,
-    isOfTypeMsg,
+    isOneOf,
+    isOneOfMsg,
 }

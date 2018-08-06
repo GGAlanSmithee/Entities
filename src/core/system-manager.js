@@ -2,7 +2,7 @@ import { containsAll } from '../util/contains-all'
 import { validateAndThrow, } from '../validate'
 import { isNonEmptyString } from '../validate/is-non-empty-string'
 import { isPositiveInteger } from '../validate/is-positive-integer'
-import { isOfType } from  '../validate/is-of-type'
+import { isOneOf } from  '../validate/is-one-of'
 import { isArray, } from '../validate/is-array'
 import { isFunction, } from '../validate/is-function'
 
@@ -78,7 +78,7 @@ class SystemManager {
     registerSystem(type, key, components, entities, callback) {
         validateAndThrow(
             TypeError,
-            isOfType(SystemType, type, 'type'),
+            isOneOf(SystemType, type, 'type'),
             isNonEmptyString(key, 'key'),
             isArray(components, 'components'),
             isArray(entities, 'entities'),
