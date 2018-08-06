@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { doesNotContain, doesNotContainMsg, } from '../../src/validate/does-not-contain'
 
 describe('validate', function() {
-    describe('doesNotContain', function() {
+    describe('doesNotContain', () => {
         test('is a function',  () => {
             expect(doesNotContain).to.be.a('function')
         })

@@ -3,7 +3,7 @@ import { isEntityManager, isEntityManagerMsg, } from '../../src/validate/is-enti
 import { EntityManager } from '../../src/core/entity-manager'
 
 describe('validate', function() {
-    describe('isEntityManager', function() {
+    describe('isEntityManager', () => {
         test('is a function',  () => {
             expect(isEntityManager).to.be.a('function')
         })

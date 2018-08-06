@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { isFunction, isFunctionMsg, } from '../../src/validate/is-function'
 
 describe('validate', function() {
-    describe('isFunction', function() {
+    describe('isFunction', () => {
         test('is a function',  () => {
             expect(isFunction).to.be.a('function')
         })
@@ -76,11 +76,11 @@ describe('validate', function() {
             expect(result).property('success').to.be.true
             expect(result).property('message').to.equal(msg('myFunc', func4))
 
-            result = isFunction(new Test(), 'entityManager')
+            result = isFunction(new Test(), 'test')
 
             expect(result).to.be.an('object')
             expect(result).property('success').to.be.false
-            expect(result).property('message').to.equal(msg('entityManager', new Test()))
+            expect(result).property('message').to.equal(msg('test', new Test()))
 
             result = isFunction(new Array(), 'myArray')
 

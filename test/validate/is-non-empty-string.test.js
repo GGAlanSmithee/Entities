@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { isNonEmptyString, isNonEmptyStringMsg, } from '../../src/validate/is-non-empty-string'
 
 describe('validate', function() {
-    describe('isNonEmptyString', function() {
+    describe('isNonEmptyString', () => {
         test('is a function',  () => {
             expect(isNonEmptyString).to.be.a('function')
         })
@@ -67,11 +67,11 @@ describe('validate', function() {
             expect(result).property('success').to.be.false
             expect(result).property('message').to.equal(msg('myFunc', func4))
 
-            result = isNonEmptyString(new Test(), 'entityManager')
+            result = isNonEmptyString(new Test(), 'test')
 
             expect(result).to.be.an('object')
             expect(result).property('success').to.be.false
-            expect(result).property('message').to.equal(msg('entityManager', new Test()))
+            expect(result).property('message').to.equal(msg('test', new Test()))
 
             result = isNonEmptyString(new Array(), 'myArray')
 
