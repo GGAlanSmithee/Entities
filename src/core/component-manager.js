@@ -1,4 +1,4 @@
-import { validateAndThrow, } from '../validate'
+import { validateAndThrow, } from '../validate/index'
 import { isNonEmptyString, } from '../validate/is-non-empty-string'
 import { isDefined, } from '../validate/is-defined'
 import { doesNotContain, } from '../validate/does-not-contain'

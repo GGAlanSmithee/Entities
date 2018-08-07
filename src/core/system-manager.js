@@ -1,5 +1,5 @@
 import { containsAll } from '../util/contains-all'
-import { validateAndThrow, } from '../validate'
+import { validateAndThrow, } from '../validate/index'
 import { isNonEmptyString } from '../validate/is-non-empty-string'
 import { isPositiveInteger } from '../validate/is-positive-integer'
 import { isOneOf } from  '../validate/is-one-of'

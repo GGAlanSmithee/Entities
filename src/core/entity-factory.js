@@ -1,4 +1,4 @@
-import { validateAndThrow, } from '../validate'
+import { validateAndThrow, } from '../validate/index'
 import { isNonEmptyString, } from '../validate/is-non-empty-string'
 import { isEntityManager, } from '../validate/is-entity-manager'
 import { isFunction, } from '../validate/is-function'
