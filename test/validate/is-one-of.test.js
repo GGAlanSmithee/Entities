@@ -10,7 +10,7 @@ describe('validate', function() {
         }
     })
 
-    describe('isOneOf', () => {
+    describe('isOneOf(Type, value, name = undefined)', () => {
         test('is a function',  () => {
             expect(isOneOf).to.be.a('function')
         })

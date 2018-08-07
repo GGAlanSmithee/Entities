@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { isPositiveInteger, isPositiveIntegerMsg, } from '../../src/validate/is-positive-integer'
 
 describe('validate', function() {
-    describe('isPositiveInteger', () => {
+    describe('isPositiveInteger(value, name = undefined)', () => {
         test('is a function',  () => {
             expect(isPositiveInteger).to.be.a('function')
         })

@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { isNonEmptyString, isNonEmptyStringMsg, } from '../../src/validate/is-non-empty-string'
 
 describe('validate', function() {
-    describe('isNonEmptyString', () => {
+    describe('isNonEmptyString(value, name = undefined)', () => {
         test('is a function',  () => {
             expect(isNonEmptyString).to.be.a('function')
         })

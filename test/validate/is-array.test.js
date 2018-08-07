@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { isArray, isArrayMsg, } from '../../src/validate/is-array'
 
 describe('validate', function() {
-    describe('isArray', () => {
+    describe('isArray(value, name = undefined)', () => {
         test('is a function',  () => {
             expect(isArray).to.be.a('function')
         })

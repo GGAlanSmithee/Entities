@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { isObject, isObjectMsg, } from '../../src/validate/is-object'
 
 describe('validate', function() {
-    describe('isObject', () => {
+    describe('isObject(value, name = undefined)', () => {
         test('is a function',  () => {
             expect(isObject).to.be.a('function')
         })

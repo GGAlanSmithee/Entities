@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { contains, containsMsg, } from '../../src/validate/contains'
 
 describe('validate', function() {
-    describe('contains', () => {
+    describe('contains(map, key, mapName)', () => {
         test('is a function',  () => {
             expect(contains).to.be.a('function')
         })
