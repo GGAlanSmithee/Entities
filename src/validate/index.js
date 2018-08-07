@@ -1,7 +1,7 @@
 const validate = (...validations) => {
     return {
-        success: (validations || []).every(v => v.success === true),
-        message: (validations || [])
+        success: (validations).every(v => v.success === true),
+        message: (validations)
             .filter(v => v.success === false)
             .map(v => v.message)
             .join('\n'),

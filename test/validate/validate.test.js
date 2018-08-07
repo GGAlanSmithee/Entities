@@ -58,4 +58,27 @@ describe('validate(...validations)', function() {
         expect(validation).property('success').to.be.false
         expect(validation).property('message').to.equal(message)
     })
+    
+    test('works on \'semi\' bad input default values', () => {
+        let validation = validate()
+
+        expect(validation).to.be.an('object')
+        expect(validation).property('success').to.be.true
+        expect(validation).property('message').to.equal('')
+
+        validation = validate(
+            { success: true, },
+            { success: false, message: 'message two', },
+            { },
+            { success: false,  },
+            { success: true, message: 'message four', },
+            { success: 'false', message: 'message four and a half', },
+            { message: 'message five', },
+            { success: true, message: 'message six', },
+        )
+
+        expect(validation).to.be.an('object')
+        expect(validation).property('success').to.be.false
+        expect(validation).property('message').to.equal('message two\n')
+    })
 })
