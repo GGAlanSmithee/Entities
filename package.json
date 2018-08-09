@@ -1,7 +1,7 @@
 {
   "name": "gg-entities",
   "description": "easy-to-use Entity-Component System in JavaScript",
-  "version": "3.0.0",
+  "version": "3.0.0-alpha.1",
   "author": {
     "name": "alansmithee",
     "email": "ggnore.alan.smithee@gmail.com"
@@ -48,5 +48,5 @@
     "rollup": "^0.64.0",
     "rollup-plugin-babel": "^4.0.0-beta.8",
     "sinon": "^6.1.4"
-  }
+  },
 }
