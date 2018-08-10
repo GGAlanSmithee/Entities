@@ -35,17 +35,21 @@
     "lint": "eslint src",
     "prepublish": "npm run lint && npm test && npm run build"
   },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.56",
     "@babel/plugin-proposal-class-properties": "^7.0.0-beta.56",
     "@babel/polyfill": "^7.0.0-beta.56",
     "@babel/preset-env": "^7.0.0-beta.56",
+    "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^8.2.6",
     "babel-jest": "^23.4.2",
     "chai": "^4.1.2",
     "eslint": "^5.3.0",
     "jest": "^23.4.2",
-    "rollup": "^0.64.0",
+    "rollup": "^0.64.1",
     "rollup-plugin-babel": "^4.0.0-beta.8",
     "sinon": "^6.1.4"
   }

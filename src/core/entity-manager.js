@@ -1,8 +1,10 @@
 import { containsAll }               from '../util/contains-all'
+import { validateAndThrow }          from '../validate'
 import { isArray }                   from '../validate/is-array'
 import { isNonEmptyString }          from '../validate/is-non-empty-string'
 import { isPositiveInteger }         from '../validate/is-positive-integer'
 import { isDefined }                 from '../validate/is-defined'
+import { contains }                  from '../validate/contains'
 import { EntityFactory }             from './entity-factory'
 import { ComponentManager }          from './component-manager'
 import { SystemManager, SystemType } from './system-manager'
@@ -126,12 +128,22 @@ class EntityManager {
         }
     }
     
-    registerConfiguration() {
-        const configurationId = Math.max(0, ...this._entityConfigurations.keys()) + 1
+    registerConfiguration(key) {
+        validateAndThrow(
+            TypeError,
+            isNonEmptyString(key, 'key')
+        )
+
+        if (contains(this._entityConfigurations, key)) {
+            // eslint-disable-next-line no-console
+            console.warn(`overwriting entity configuration with key ${key}`)
+        }
         
-        this._entityConfigurations.set(configurationId, this._entityFactory.createConfiguration())
-        
-        return configurationId
+        const configuration = this._entityFactory.createConfiguration()
+
+        this._entityConfigurations.set(key, configuration)
+
+        return configuration
     }
     
     // Component Manager
@@ -241,19 +253,19 @@ class EntityManager {
         return this
     }
     
-    create(count, configurationId) {
+    create(count, configurationKey) {
         let configuration = undefined
         
-        if (isPositiveInteger(configurationId)) {
-            configuration = this._entityConfigurations.get(configurationId)
+        if (isNonEmptyString(configurationKey)) {
+            configuration = this._entityConfigurations.get(configurationKey)
             
             if (!isDefined(configuration)) {
-                throw Error('Could not find entity configuration. If you wish to create entities without a configuration, do not pass a configurationId.')
+                throw Error('Could not find entity configuration. If you wish to create entities without a configuration, do not pass a configurationKey.')
             }
         }
 
-        if (isDefined(configurationId) && !isPositiveInteger(configurationId)) {
-            throw Error('configurationId should be an integer if using a save configuration, or undefined if not.')
+        if (isDefined(configurationKey) && !isNonEmptyString(configurationKey)) {
+            throw Error('configurationKey should be a string if using a saved configuration, or undefined if not.')
         }
         
         return this._entityFactory.create(this, count, configuration)

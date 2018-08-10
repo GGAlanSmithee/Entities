@@ -106,11 +106,14 @@ describe('EntityManager', function() {
             this.entityManager.registerComponent(this.info, this.infoComponent)
             this.entityManager.registerComponent(this.vel, this.velComponent)
             
-            const config = this.entityManager.build()
-                                             .withComponent(this.pos)
-                                             .withComponent(this.info)
-                                             .withComponent(this.vel)
-                                             .registerConfiguration()
+            const config = ' myConf'
+            
+            this.entityManager
+                .build()
+                .withComponent(this.pos)
+                .withComponent(this.info)
+                .withComponent(this.vel)
+                .registerConfiguration(config)
                                           
             let [ entity, ] = this.entityManager.create(1, config)
             

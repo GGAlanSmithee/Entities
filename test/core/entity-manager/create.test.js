@@ -25,18 +25,17 @@ describe('EntityManager', function() {
             const component   = this.position
             const initializer = function() { return 2 }
             
-            const id = 1
-            
+            const confKey = 'conf'
             const configuration = new Map()
             configuration.set(component, initializer)
             
-            this.entityManager.entityConfigurations.set(id, configuration)
+            this.entityManager.entityConfigurations.set(confKey, configuration)
             
             const spy = sinon.spy(this.entityManager.entityFactory, 'create')
             
             const count = 3
-            
-            this.entityManager.create(count, id)
+
+            this.entityManager.create(count, confKey)
             
             expect(spy.calledOnce).to.be.true
             expect(spy.calledWith(this.entityManager, count, configuration)).to.be.true
@@ -46,15 +45,15 @@ describe('EntityManager', function() {
             const component   = this.position
             const initializer = function() { return 2 }
             
-            const id = 1
+            const confKey = 'conf'
             const configuration = new Map()
             configuration.set(component, initializer)
             
-            this.entityManager.entityConfigurations.set(id, configuration)
+            this.entityManager.entityConfigurations.set(confKey, configuration)
             
             const count = 2
             
-            const entities = this.entityManager.create(count, id)
+            const entities = this.entityManager.create(count, confKey)
             
             expect(entities).to.be.an.instanceof(Array)
             expect(entities).property('length').to.equal(2)
@@ -62,26 +61,27 @@ describe('EntityManager', function() {
             expect(entities[1].components).to.deep.equal([component])
         })
         
-        test('throws exception if a [configurationId] is supplied that doesn\'t correspond to a configuration [entityConfigurations]', () => {
-            const msg = 'Could not find entity configuration. If you wish to create entities without a configuration, do not pass a configurationId.'
+        test('throws exception if a [configurationKey] is supplied that doesn\'t correspond to a configuration [entityConfigurations]', () => {
+            const msg = 'Could not find entity configuration. If you wish to create entities without a configuration, do not pass a configurationKey.'
             
-            expect(() => this.entityManager.create(1, 1)).to.throw(Error, msg)
+            expect(() => this.entityManager.create(1, 'conf')).to.throw(Error, msg)
             expect(() => this.entityManager.create(1)).to.not.throw(Error, msg)
         })
 
-        test('throws exception if a [configurationId] is supplied that doesn\'t correspond to a configuration [entityConfigurations]', () => {
-            const msg = 'Could not find entity configuration. If you wish to create entities without a configuration, do not pass a configurationId.'
+        test('throws exception if a [configurationKey] is supplied that doesn\'t correspond to a configuration [entityConfigurations]', () => {
+            const msg = 'Could not find entity configuration. If you wish to create entities without a configuration, do not pass a configurationKey.'
             
-            expect(() => this.entityManager.create(1, 1)).to.throw(Error, msg)
+            expect(() => this.entityManager.create(1, 'conf')).to.throw(Error, msg)
             expect(() => this.entityManager.create(1)).to.not.throw(Error, msg)
         })
 
-        test('throws exception if a [configurationId] is supplied that is not null, undefined or a positive integer', () => {
-            const msg = 'configurationId should be an integer if using a save configuration, or undefined if not.'
+        test('throws exception if a [configurationKey] is supplied that is not null, undefined or a non empty string', () => {
+            const msg = 'configurationKey should be a string if using a saved configuration, or undefined if not.'
             
+            expect(() => this.entityManager.create(1, 1)).to.throw(Error, msg)
             expect(() => this.entityManager.create(1, -1)).to.throw(Error, msg)
             expect(() => this.entityManager.create(1, 1.2)).to.throw(Error, msg)
-            expect(() => this.entityManager.create(1, '1')).to.throw(Error, msg)
+            expect(() => this.entityManager.create(1, '')).to.throw(Error, msg)
             expect(() => this.entityManager.create(1, [])).to.throw(Error, msg)
             expect(() => this.entityManager.create(1, {})).to.throw(Error, msg)
             expect(() => this.entityManager.create(1, new Map())).to.throw(Error, msg)
