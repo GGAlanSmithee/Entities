@@ -1,16 +1,17 @@
+import { validateAndThrow, } from '../validate/index'
+import { isNonEmptyString, } from '../validate/is-non-empty-string'
+import { isDefined, } from '../validate/is-defined'
+import { doesNotContain, } from '../validate/does-not-contain'
+
 class ComponentManager {
     constructor() {
-        this.init()
+        this._components = new Map()
     }
     
-    init() {
-        this.components = new Map()
-    }
-    
-    newComponent(componentId) {
-        let component = this.components.get(componentId)
+    newComponent(key) {
+        let component = this._components.get(key)
         
-        if (component === null || component === undefined) {
+        if (!isDefined(component)) {
             return null
         }
         
@@ -31,22 +32,19 @@ class ComponentManager {
         }
     }
     
-    registerComponent(component) {
-        if (component === null || component === undefined) {
-            throw TypeError('component cannot be null or undefined.')
-        }
-        
-        const max = Math.max(...this.components.keys())
+    registerComponent(key, component) {
+        validateAndThrow(
+            TypeError,
+            isNonEmptyString(key, 'key'),
+            isDefined(component, 'component'),
+            doesNotContain(this._components, key, 'components')
+        )
 
-        const id = max === null || max === undefined || max === -Infinity || max === 0 ? 1 : max * 2
-
-        this.components.set(id, component)
-
-        return id
+        this._components.set(key, component)
     }
     
-    getComponents() {
-        return this.components
+    get components() {
+        return this._components
     }
 }
 

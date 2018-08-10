@@ -7,8 +7,8 @@
     <body>
         <canvas id='canvas'></canvas>
 
-        <script language="javascript" type="text/javascript" src="https://unpkg.com/gg-entities@3.0.0/dist/gg-entities.js"></script>
-        
+        <script language="javascript" type="text/javascript" src="https://unpkg.com/gg-entities@3.0.0-alpha.2/dist/gg-entities.js"></script>
+
         <script>
             function RendererEngine() {
                 const canvas  = document.getElementById('canvas')
@@ -32,26 +32,36 @@
                 
                 // Components
                 
-                const TRANSFORM_COMPONENT = entityManager.registerComponent('transform', function() {
+                const TRANSFORM_COMPONENT = 'transform'
+                entityManager.registerComponent(TRANSFORM_COMPONENT, function() {
                     this.x = 250
                     this.y = 250
                     this.w = 100
                     this.h = 100
                 })
                 
-                const APPEARANCE_COMPONENT = entityManager.registerComponent('apperance', {
+                const APPEARANCE_COMPONENT = 'appearance'
+                entityManager.registerComponent(APPEARANCE_COMPONENT, {
                     color : 'red'
                 })
                 
                 // Systems
                 
                 const renderSystem = function(entities, { rendererEngine }) {
-                    for (var { entity } of entities) {
-                        rendererEngine.render(entity['transform'], entity[APPEARANCE_COMPONENT])
+                    for (const entity of entities) {
+                        const {
+                            [TRANSFORM_COMPONENT]: tra,
+                            [APPEARANCE_COMPONENT]: app,
+                        } = entity
+                        
+                        rendererEngine.render(tra, app)
                     }
                 }
                 
-                entityManager.registerRenderSystem(['transform', 'appearance'], renderSystem)
+                entityManager.registerRenderSystem(
+                    'render',
+                    [ TRANSFORM_COMPONENT, APPEARANCE_COMPONENT, ],
+                    renderSystem)
                 
                 entityManager.build()
                              .withComponent(TRANSFORM_COMPONENT)

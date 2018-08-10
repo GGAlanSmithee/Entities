@@ -1,7 +1,14 @@
 # Changelog
 
-## v2.4.0-beta1 (2018-07-18) / v3.0.0 ()
+## v3.0.0-alpha.2 (2018-08-10)
 
+## v3.0.0-alpha.1 (2018-08-07)
+
+Replaced all numeric ids for string keys (where possible)
+
+## v2.4.0-beta.1 (2018-07-18)
+
+Normalized the return value of `EntityManager.create(...)` and `EntityFactory.create(...)`, now always returns an array of entities, even if only one was created
 Added `EntityManager.getEntity`
 Added `EntityManager.hasComponent`
 Added `isEntityManager` helper function to detect if variable is an instance of `EntityManager`

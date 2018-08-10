@@ -1,7 +1,8 @@
-const fs     = require('fs')
-const path   = require('path')
-const rollup = require('rollup')
-const babel  = require('rollup-plugin-babel')
+const fs      = require('fs')
+const path    = require('path')
+const babel   = require('rollup-plugin-babel')
+const rollup  = require('rollup')
+const resolve = require('rollup-plugin-node-resolve')
 
 const polyfillPath = path.join(__dirname, '../node_modules/@babel/polyfill/dist/polyfill.js')
 const polyfill = fs.readFileSync(polyfillPath, 'utf8')
@@ -17,6 +18,7 @@ const inputOptions = {
             presets: [['@babel/preset-env', { modules: false }]],
             exclude: 'node_modules/**',
         }),
+        resolve()
     ],
 }
 
