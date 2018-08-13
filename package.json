@@ -2,6 +2,10 @@
   "name": "gg-entities",
   "description": "easy-to-use Entity-Component System in JavaScript",
   "version": "3.0.0-alpha.2",
+  "main": "dist/gg-entities.js",
+  "jsnext:main": "src/index.js",
+  "module": "src/index.js",
+  "types": "src/index.d.ts",
   "author": {
     "name": "alansmithee",
     "email": "ggnore.alan.smithee@gmail.com"
@@ -22,9 +26,6 @@
     "dist": "dist",
     "src": "src"
   },
-  "main": "dist/gg-entities.js",
-  "jsnext:main": "src/index.js",
-  "module": "src/index.js",
   "engines": {
     "node": ">=8.0.0"
   },

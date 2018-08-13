@@ -55,7 +55,7 @@ class EntityManager {
             return null
         }
 
-        // todo: if re-using an old entity, we should reset components?
+        // todo: if re-using an old entity, we should reset components
 
         for (const entity of this._entities) {
             if (entity.components.length === 0) {
@@ -191,30 +191,30 @@ class EntityManager {
     
     // System Manager
     
-    registerSystem(type, name, components, callback) {
+    registerSystem(type, key, components, callback) {
         const entities = []
         
         for (const { id, } of this.iterateEntities(components)) {
             entities.push(id)
         }
 
-        this._systemManager.registerSystem(type, name, components, entities, callback)
+        this._systemManager.registerSystem(type, key, components, entities, callback)
     }
     
-    registerLogicSystem(name, components, callback) {
-        this.registerSystem(SystemType.Logic, name, components, callback)
+    registerLogicSystem(key, components, callback) {
+        this.registerSystem(SystemType.Logic, key, components, callback)
     }
     
-    registerRenderSystem(name, components, callback) {
-        this.registerSystem(SystemType.Render, name, components, callback)
+    registerRenderSystem(key, components, callback) {
+        this.registerSystem(SystemType.Render, key, components, callback)
     }
     
-    registerInitSystem(name, components, callback) {
-        this.registerSystem(SystemType.Init, name, components, callback)
+    registerInitSystem(key, components, callback) {
+        this.registerSystem(SystemType.Init, key, components, callback)
     }
     
-    removeSystem(systemId) {
-        return this._systemManager.removeSystem(systemId)
+    removeSystem(key) {
+        return this._systemManager.removeSystem(key)
     }
     
     onLogic(opts) {
