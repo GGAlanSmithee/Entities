@@ -142,8 +142,6 @@ class EntityManager {
         const configuration = this._entityFactory.createConfiguration()
 
         this._entityConfigurations.set(key, configuration)
-
-        return configuration
     }
     
     // Component Manager

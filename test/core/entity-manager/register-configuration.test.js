@@ -1,7 +1,7 @@
 import { expect }        from 'chai'
 import sinon             from 'sinon'
 import { EntityManager } from '../../../src/core/entity-manager'
-import { isNonEmptyStringMsg } from '../../../src/validate/is-non-empty-string';
+import { isNonEmptyStringMsg } from '../../../src/validate/is-non-empty-string'
 
 describe('EntityManager', function() {
     describe('registerConfiguration()', () => {
@@ -35,7 +35,6 @@ describe('EntityManager', function() {
             const component3   = 'lala'
             const initializer3 = 1.5
 
-
             this.entityManager.entityFactory._configuration.set(component1, initializer1)
             this.entityManager.entityFactory._configuration.set(component2, initializer2)
             this.entityManager.entityFactory._configuration.set(component3, initializer3)
@@ -45,32 +44,6 @@ describe('EntityManager', function() {
             this.entityManager.registerConfiguration(conf)
             
             const configuration = this.entityManager.entityConfigurations.get(conf)
-            
-            expect(configuration).to.be.an.instanceof(Map)
-            expect(configuration).property('size').to.equal(3)
-            expect(configuration.get(component1)).to.equal(initializer1)
-            expect(configuration.get(component2)).to.equal(initializer2)
-            expect(configuration.get(component3)).to.equal(initializer3)
-        })
-        
-        test('returns registered [configuration]', () => {
-            const component1   = 'myComp'
-            const initializer1 = function() { this.x = 2 }
-            
-            const component2   = 'anotherComp'
-            const initializer2 = 'test'
-
-            const component3   = 'lala'
-            const initializer3 = 1.5
-
-
-            this.entityManager.entityFactory._configuration.set(component1, initializer1)
-            this.entityManager.entityFactory._configuration.set(component2, initializer2)
-            this.entityManager.entityFactory._configuration.set(component3, initializer3)
-            
-            const conf = 'myConf'
-
-            const configuration = this.entityManager.registerConfiguration(conf)
             
             expect(configuration).to.be.an.instanceof(Map)
             expect(configuration).property('size').to.equal(3)
