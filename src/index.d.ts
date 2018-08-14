@@ -43,9 +43,9 @@ declare module 'gg-entities' {
     
         hasComponent(id: EntityId, component: ComponentKey) : boolean
     
-        iterateEntities(components?: ComponentKeyArray) : Generator
+        iterateEntities(components?: ComponentKeyArray) : Iterator<any>
     
-        getEntitiesByIds(ids?: EntityIdArray) : Generator
+        getEntitiesByIds(ids?: EntityIdArray) : Iterator<any>
         
         registerConfiguration(key: ConfigurationKey): {} // todo - return type
         

@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "*": ["../../src/*"]
+        },
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "es2017",
+        "experimentalDecorators": true,
+        "sourceMap": true,
+        "skipDefaultLibCheck": true,
+        "strict": true,
+        "lib": ["es2017", "dom"],
+    },
+    "exclude": ["node_modules"]
+}
