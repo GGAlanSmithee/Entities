@@ -33,55 +33,55 @@ declare module 'gg-entities' {
         capacity: number
         entities: EntityArray
     
-        increaseCapacity()
+        increaseCapacity(): void
 
-        newEntity(components: ComponentKeyArray) : Entity | null
+        newEntity(components: ComponentKeyArray): Entity | null
         
-        deleteEntity(id: EntityId)
+        deleteEntity(id: EntityId): void
     
-        getEntity(id: EntityId) : Entity | null
+        getEntity(id: EntityId): Entity | null
     
-        hasComponent(id: EntityId, component: ComponentKey) : boolean
+        hasComponent(id: EntityId, component: ComponentKey): boolean
     
-        iterateEntities(components?: ComponentKeyArray) : Iterator<any>
+        iterateEntities(components?: ComponentKeyArray): IterableIterator<Entity>
     
-        getEntitiesByIds(ids?: EntityIdArray) : Iterator<any>
+        getEntitiesByIds(ids?: EntityIdArray): IterableIterator<Entity>
         
-        registerConfiguration(key: ConfigurationKey): {} // todo - return type
+        registerConfiguration(key: ConfigurationKey): void
         
         // Component Manager
         
-        registerComponent(key: ComponentKey, component: Component)
+        registerComponent(key: ComponentKey, component: Component): void
 
-        addComponent(entityId: EntityId, component: ComponentKey)
+        addComponent(entityId: EntityId, component: ComponentKey): void
         
-        removeComponent(entityId: EntityId, component: ComponentKey)
+        removeComponent(entityId: EntityId, component: ComponentKey): void
         
         // System Manager
 
-        registerSystem(type: SystemType, key: SystemKey, components: ComponentKeyArray, callback: Function)
+        registerSystem(type: SystemType, key: SystemKey, components: ComponentKeyArray, callback: Function): void
         
-        registerLogicSystem(key: SystemKey, components: ComponentKeyArray, callback: Function)
+        registerLogicSystem(key: SystemKey, components: ComponentKeyArray, callback: Function): void
         
-        registerRenderSystem(key: SystemKey, components: ComponentKeyArray, callback: Function)
+        registerRenderSystem(key: SystemKey, components: ComponentKeyArray, callback: Function): void
         
-        registerInitSystem(key: SystemKey, components: ComponentKeyArray, callback: Function)
+        registerInitSystem(key: SystemKey, components: ComponentKeyArray, callback: Function): void
         
-        removeSystem(key: SystemKey) : boolean
+        removeSystem(key: SystemKey): boolean
         
-        onLogic(opts: any)
+        onLogic(opts: any): void
 
-        onRender(opts: any)
+        onRender(opts: any): void
 
-        onInit(opts: any)
+        onInit(opts: any): void
         
         // Entity Factory
         
-        registerInitializer(component: ComponentKey, initializer: any)
+        registerInitializer(component: ComponentKey, initializer: any): void
         
-        build() : this
+        build(): this
         
-        withComponent(component: ComponentKey, initializer?: any) : this
+        withComponent(component: ComponentKey, initializer?: any): this
         
         create(count?: number, configurationKey?: ConfigurationKey): EntityArray
         
