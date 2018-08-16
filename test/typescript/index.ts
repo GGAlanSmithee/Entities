@@ -139,8 +139,6 @@ if (entity !== null) {
     assert.deepStrictEqual(entity.components, [ Test ])
 }
 
-// System Manager
-
 const Render = 'render'
 
 function RenderSystem(entities: IterableIterator<Entity>, obj: object) {
@@ -156,7 +154,7 @@ function RenderSystem(entities: IterableIterator<Entity>, obj: object) {
 
 entityManager.registerSystem(SystemType.Render, Render, [ Pos, Test, ], RenderSystem)
 
-const entities = entityManager
+let entities = entityManager
     .build()
     .withComponent(Pos)
     .withComponent(Test, () => { return new TestComponent() })
@@ -168,22 +166,85 @@ assert.deepStrictEqual(entities[2].components, [ Pos, Test ])
 
 entityManager.onRender()
 
+let removed = entityManager.removeSystem(Render)
+assert.strictEqual(removed, true)
 
-// registerLogicSystem(key: SystemKey, components: ComponentKeyArray, callback: Function): void
+removed = entityManager.removeSystem(Render)
+assert.strictEqual(removed, false)
 
-// registerRenderSystem(key: SystemKey, components: ComponentKeyArray, callback: Function): void
+const PosKey = 'pos'
 
-// registerInitSystem(key: SystemKey, components: ComponentKeyArray, callback: Function): void
+function PosSystem(entities: IterableIterator<Entity>, obj: object) {
+    let i = 0
 
-// removeSystem(key: SystemKey): boolean
+    for (const entity of entities) {
+        assert.deepStrictEqual(entity.components.includes(Pos), true)
+        ++i
+    }
 
-// onLogic(opts: any): void
+    assert.strictEqual(i, 3)
+}
 
-// onInit(opts: any): void
+entityManager.registerInitSystem(PosKey, [ Pos ], PosSystem)
 
-// // Entity Factory
+entityManager.onInit()
 
-// registerInitializer(component: ComponentKey, initializer: any): void
+const TestKey = 'test'
+
+function TestSystem(entities: IterableIterator<Entity>, obj: object) {
+    let i = 0
+
+    for (const entity of entities) {
+        assert.deepStrictEqual(entity.components.includes(Test), true)
+        ++i
+    }
+
+    assert.strictEqual(i, 6)
+}
+
+entityManager.registerLogicSystem(TestKey, [ Test ], TestSystem)
+
+entityManager.onLogic()
+
+removed = entityManager.removeSystem(Pos)
+assert.strictEqual(removed, true)
+
+removed = entityManager.removeSystem(Pos)
+assert.strictEqual(removed, false)
+
+removed = entityManager.removeSystem(Test)
+assert.strictEqual(removed, true)
+
+removed = entityManager.removeSystem(Test)
+assert.strictEqual(removed, false)
+
+let [ ent ] = entityManager
+    .build()
+    .withComponent(Pos)
+    .create(1)
+
+assert.strictEqual(ent[Pos].x, 100)
+assert.strictEqual(ent[Pos].y, 100)
+
+function init(this: {x: number, y: number }) { this.x = 200, this.y = 200 }
+
+entityManager.registerInitializer(Pos, init)
+
+let [ ent2 ] = entityManager
+    .build()
+    .withComponent(Pos)
+    .create(1)
+
+assert.strictEqual(ent2[Pos].x, 200)
+assert.strictEqual(ent2[Pos].y, 200)
+
+let [ ent3 ] = entityManager
+    .build()
+    .withComponent(Pos, function(this: {x: number, y: number }) { this.x = 150, this.y = 150 })
+    .create(1)
+
+assert.strictEqual(ent3[Pos].x, 150)
+assert.strictEqual(ent3[Pos].y, 150)
 
 // // Event Handler
 
