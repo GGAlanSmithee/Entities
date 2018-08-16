@@ -61,15 +61,24 @@ describe('EntityManager', function() {
         
         test('invokes all [logicSystems] with the [entityManager] as context', () => {
             this.entityManager.onLogic(this.opts)
+
+            expect(this.logicSpy1.calledOn(this.entityManager)).to.be.true
+            expect(this.logicSpy2.calledOn(this.entityManager)).to.be.true
+        })
+
+        test('defaults [opts] to an empty object', () => {
+            this.entityManager.onLogic()
+            
+            expect(this.logicSpy1.calledWith(this.entities, {})).to.be.true
+            expect(this.logicSpy2.calledWith(this.entities, {})).to.be.true
+        })
+
+        test('does not invoke systems of another type', () => {
+            this.entityManager.onLogic(this.opts)
             
             expect(this.logicSpy1.calledOnce).to.be.true
-            expect(this.logicSpy1.calledOn(this.entityManager)).to.be.true
-            expect(this.logicSpy1.calledWith(this.entities, this.opts)).to.be.true
-            
             expect(this.logicSpy2.calledOnce).to.be.true
-            expect(this.logicSpy2.calledOn(this.entityManager)).to.be.true
-            expect(this.logicSpy2.calledWith(this.entities, this.opts)).to.be.true
-            
+
             expect(this.renderSpy1.calledOnce).to.be.false
             expect(this.renderSpy2.calledOnce).to.be.false
         })

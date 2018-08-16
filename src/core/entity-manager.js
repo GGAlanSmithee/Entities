@@ -215,19 +215,19 @@ class EntityManager {
         return this._systemManager.removeSystem(key)
     }
     
-    onLogic(opts) {
+    onLogic(opts = {}) {
         for (const system of this._systemManager.logicSystems.values()) {
             system.callback.call(this, this.getEntitiesByIds(system.entities), opts)
         }
     }
     
-    onRender(opts) {
+    onRender(opts = {}) {
         for (const system of this._systemManager.renderSystems.values()) {
             system.callback.call(this, this.getEntitiesByIds(system.entities), opts)
         }
     }
 
-    onInit(opts) {
+    onInit(opts = {}) {
         for (const system of this._systemManager.initSystems.values()) {
             system.callback.call(this, this.getEntitiesByIds(system.entities), opts)
         }

@@ -3,7 +3,7 @@ import sinon             from 'sinon'
 import { EntityManager } from '../../../src/core/entity-manager'
 
 describe('EntityManager', function() {
-    describe('onInit(opts)', () => {
+    describe('onInit(opts = {})', () => {
         beforeEach(() => {
             this.entityManager = new EntityManager()
             
@@ -61,19 +61,47 @@ describe('EntityManager', function() {
         
         test('invokes all [initSystems] with the [entityManager] as context', () => {
             this.entityManager.onInit(this.opts)
+
+            expect(this.initSpy1.calledOn(this.entityManager)).to.be.true
+            expect(this.initSpy2.calledOn(this.entityManager)).to.be.true
+        })
+
+        test('invokes all [initSystems] with [entities] and [opts] as arguments', () => {
+            this.entityManager.onInit(this.opts)
+
+            expect(this.initSpy1.calledWith(this.entities, this.opts)).to.be.true
+            expect(this.initSpy2.calledWith(this.entities, this.opts)).to.be.true
+        })
+        
+        test('defaults [opts] to an empty object', () => {
+            this.entityManager.onInit()
+            
+            expect(this.initSpy1.calledWith(this.entities, {})).to.be.true
+            expect(this.initSpy2.calledWith(this.entities, {})).to.be.true
+        })
+
+        test('does not invoke systems of another type', () => {
+            this.entityManager.onInit(this.opts)
             
             expect(this.initSpy1.calledOnce).to.be.true
-            expect(this.initSpy1.calledOn(this.entityManager)).to.be.true
-            expect(this.initSpy1.calledWith(this.entities, this.opts)).to.be.true
-            
             expect(this.initSpy2.calledOnce).to.be.true
-            expect(this.initSpy2.calledOn(this.entityManager)).to.be.true
-            expect(this.initSpy2.calledWith(this.entities, this.opts)).to.be.true
-            
+
             expect(this.logicSpy1.calledOnce).to.be.false
             expect(this.logicSpy2.calledOnce).to.be.false
         })
-        
+
+        test('invokes [entityManager.getEntitiesByIds()] with the correct parameters', () => {
+            this.entityManager.onInit(this.opts)
+            
+            expect(this.entityManager.getEntitiesByIds.calledTwice).to.be.true
+            
+            let initSystem1 = this.entityManager.systemManager.initSystems.get(3)
+            let initSystem2 = this.entityManager.systemManager.initSystems.get(4)
+            
+            expect(this.entityManager.getEntitiesByIds.calledWith(initSystem1.entities)).to.be.true
+            expect(this.entityManager.getEntitiesByIds.calledWith(initSystem2.entities)).to.be.true
+        })
+
         test('invokes [entityManager.getEntitiesByIds()] with the correct parameters', () => {
             this.entityManager.onInit(this.opts)
             
