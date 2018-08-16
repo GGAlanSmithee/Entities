@@ -8,7 +8,8 @@ declare module 'gg-entities' {
     type ConfigurationKey = string
 
     type SystemKey = string
-
+    type SystemCallback = (entities: IterableIterator<Entity>, opts: object) => void
+    
     type EventId = number
 
     type Component = any
@@ -59,21 +60,21 @@ declare module 'gg-entities' {
         
         // System Manager
 
-        registerSystem(type: SystemType, key: SystemKey, components: ComponentKeyArray, callback: Function): void
+        registerSystem(type: SystemType, key: SystemKey, components: ComponentKeyArray, callback: SystemCallback): void
         
-        registerLogicSystem(key: SystemKey, components: ComponentKeyArray, callback: Function): void
+        registerLogicSystem(key: SystemKey, components: ComponentKeyArray, callback: SystemCallback): void
         
-        registerRenderSystem(key: SystemKey, components: ComponentKeyArray, callback: Function): void
+        registerRenderSystem(key: SystemKey, components: ComponentKeyArray, callback: SystemCallback): void
         
-        registerInitSystem(key: SystemKey, components: ComponentKeyArray, callback: Function): void
+        registerInitSystem(key: SystemKey, components: ComponentKeyArray, callback: SystemCallback): void
         
         removeSystem(key: SystemKey): boolean
         
-        onLogic(opts: any): void
+        onLogic(opts?: object): void
 
-        onRender(opts: any): void
+        onRender(opts?: object): void
 
-        onInit(opts: any): void
+        onInit(opts?: object): void
         
         // Entity Factory
         
