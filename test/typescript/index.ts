@@ -226,7 +226,7 @@ let [ ent ] = entityManager
 assert.strictEqual(ent[Pos].x, 100)
 assert.strictEqual(ent[Pos].y, 100)
 
-function init(this: {x: number, y: number }) { this.x = 200, this.y = 200 }
+function init(this: { x: number, y: number }) { this.x = 200, this.y = 200 }
 
 entityManager.registerInitializer(Pos, init)
 
@@ -240,20 +240,35 @@ assert.strictEqual(ent2[Pos].y, 200)
 
 let [ ent3 ] = entityManager
     .build()
-    .withComponent(Pos, function(this: {x: number, y: number }) { this.x = 150, this.y = 150 })
+    .withComponent(Pos, function(this: { x: number, y: number }) { this.x = 150, this.y = 175 })
     .create(1)
 
 assert.strictEqual(ent3[Pos].x, 150)
-assert.strictEqual(ent3[Pos].y, 150)
+assert.strictEqual(ent3[Pos].y, 175)
 
-// // Event Handler
+const TestEvent = 'test'
 
-// listen(event: string, callback: Function): number
+function TestCallback(this: any, obj = {}) {
+    assert.strictEqual(this instanceof EntityManager, true)
+    assert.deepStrictEqual({ myVal: 1, myName: 'hi', }, obj)
+}
 
-// stopListen(eventId: EventId): boolean
+const event = entityManager.listen(TestEvent, TestCallback)
 
-// trigger(): Promise<any>
+assert.strictEqual(event, 0)
 
-// triggerDelayed(): Promise<any>
+entityManager.trigger(TestEvent, { myVal: 1, myName: 'hi', })
 
-console.log('!!! success !!!')
+const doIt = async () => {
+    await entityManager.triggerDelayed(TestEvent, 250, { myVal: 1, myName: 'hi', })
+}
+
+let stopped = entityManager.stopListen(event)
+assert.strictEqual(stopped, true)
+
+stopped = entityManager.stopListen(event)
+assert.strictEqual(stopped, false)
+
+doIt().then(() => {
+    console.log('!!! success !!!')
+})

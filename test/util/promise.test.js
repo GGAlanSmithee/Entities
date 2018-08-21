@@ -13,32 +13,32 @@ describe('util', function() {
         })
 
         test('invokes [callback] on [context] with [params]', () => {
-            const params = [
-                'hello',
-                [ 1, 2, 3 ],
-                { a : 'A' },
-            ]
+            const params = {
+                hello: 'hello',
+                arr: [ 1, 2, 3 ],
+                obj: { a : 'A' },
+            }
 
             const context = new TestContext()
 
             const callback = sinon.spy()
             
-            return promise(callback, context, params)
+            return promise(callback, context, undefined, params)
                 .then((res) => {
                     expect(res).to.be.undefined
 
                     expect(callback.calledOnce).to.be.true
                     expect(callback.calledOn(context)).to.be.true
-                    expect(callback.calledWith(...params)).to.be.true
+                    expect(callback.calledWith(params)).to.be.true
                 })
         })
 
         test('invokes [callback] on [context] with [params] after [timeout]', () => {
-            const params = [
-                'hello',
-                [ 1, 2, 3 ],
-                { a : 'A' },
-            ]
+            const params = {
+                hello: 'hello',
+                arr: [ 1, 2, 3 ],
+                obj: { a : 'A' },
+            }
 
             const context = new TestContext()
 
@@ -46,7 +46,7 @@ describe('util', function() {
             
             const t0 = new Date().valueOf()
 
-            return promise(callback, context, params, 1000)
+            return promise(callback, context, 1000, params)
                 .then((res) => {
                     const t1 = new Date().valueOf()
 
@@ -54,7 +54,7 @@ describe('util', function() {
 
                     expect(callback.calledOnce).to.be.true
                     expect(callback.calledOn(context)).to.be.true
-                    expect(callback.calledWith(...params)).to.be.true
+                    expect(callback.calledWith(params)).to.be.true
 
                     expect(t1-t0).to.not.be.lessThan(1000)
                 })

@@ -44,12 +44,8 @@ class EventHandler {
         return false
     }
     
-    trigger() {
+    trigger(event, opts = {}) {
         const self = isEntityManager(this) ? this.eventHandler : this
-        
-        const args = Array.from(arguments)
-        
-        const [ event ] = args.splice(0, 1)
 
         if (!isNonEmptyString(event) || !contains(self._events, event)) {
             return emptyPromise()
@@ -58,18 +54,15 @@ class EventHandler {
         const promises = []
         
         for (let callback of self._events.get(event).values()) {
-            promises.push(promise(callback, this, args))
+            promises.push(promise(callback, this, undefined, opts))
         }
 
         return Promise.all(promises)
     }
     
-    triggerDelayed() {
+    triggerDelayed(event, timeout, opts = {}) {
         const self = isEntityManager(this) ? this.eventHandler : this
         
-        const args = Array.from(arguments)
-        
-        const [ event, timeout ] = args.splice(0, 2)
         
         if (!isNonEmptyString(event) || !isPositiveInteger(timeout) || !contains(self._events, event)) {
             return emptyPromise()
@@ -78,7 +71,7 @@ class EventHandler {
         const promises = []
         
         for (let callback of self._events.get(event).values()) {
-            promises.push(promise(callback, this, args, timeout))
+            promises.push(promise(callback, this, timeout, opts))
         }
 
         return Promise.all(promises)

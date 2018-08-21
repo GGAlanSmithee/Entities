@@ -1,32 +1,30 @@
 declare module 'gg-entities' {
-    type EntityId = number
-    type EntityIdArray = Array<EntityId>
-
-    type ComponentKey = string
-    type ComponentKeyArray = Array<ComponentKey>
-    
-    type ConfigurationKey = string
-
-    type SystemKey = string
-    type SystemCallback = (entities: IterableIterator<Entity>, opts: object) => void
-    
-    type EventId = number
-
-    type Component = any
-
-    type Entity = {
-        id: EntityId
-        components: ComponentKeyArray
+    export type EntityId = number
+    export type EntityIdArray = Array<EntityId>
+    export type Entity = {
+        id: EntityId,
+        components: ComponentKeyArray,
         [Key: string]: Component
     }
+    export type EntityArray = Array<Entity>
 
-    type EntityArray = Array<Entity>
+    export type Component = any
+    export type ComponentKey = string
+    export type ComponentKeyArray = Array<ComponentKey>
+
+    export type ConfigurationKey = string
     
-    enum SystemType {
+    export type EventId = number
+    export type EventKey = string
+    export type EventCallback = (this: EntityManager, obj?: object) => void
+
+    export enum SystemType {
         Logic  = 0,
         Render = 1,
         Init   = 2,
     }
+    export type SystemKey = string
+    export type SystemCallback = (entities: IterableIterator<Entity>, opts: object) => void
     
     export class EntityManager {
         constructor(capacity?: number)
@@ -87,13 +85,13 @@ declare module 'gg-entities' {
         create(count?: number, configurationKey?: ConfigurationKey): EntityArray
         
         // Event Handler
-        
-        listen(event: string, callback: Function): number
+
+        listen(event: EventKey, callback: EventCallback): number
 
         stopListen(eventId: EventId): boolean
 
-        trigger(): Promise<any>
-
-        triggerDelayed(): Promise<any>
+        trigger(event: EventKey, opts?: object): Promise<any>
+        
+        triggerDelayed(event: EventKey, timeout: number, opts?: object): Promise<any>
     }
 }

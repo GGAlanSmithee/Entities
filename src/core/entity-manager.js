@@ -279,12 +279,12 @@ class EntityManager {
         return this._eventHandler.stopListen(eventId)
     }
     
-    trigger() {
-        return this._eventHandler.trigger.call(this, ...arguments)
+    trigger(event, opts = {}) {
+        return this._eventHandler.trigger.call(this, event, opts)
     }
     
-    triggerDelayed() {
-        return this._eventHandler.triggerDelayed.call(this, ...arguments)
+    triggerDelayed(event, timeout, opts = {}) {
+        return this._eventHandler.triggerDelayed.call(this, event, timeout, opts)
     }
 }
 
