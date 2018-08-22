@@ -33,6 +33,15 @@ describe('util', function() {
                 })
         })
 
+        test('defaults [opts] to an empty object', () => {
+            const callback = sinon.spy()
+
+            return promise(callback, this)
+                .then(() => {
+                    expect(callback.calledWith({})).to.be.true
+                })
+        })
+
         test('invokes [callback] on [context] with [params] after [timeout]', () => {
             const params = {
                 hello: 'hello',
@@ -46,7 +55,7 @@ describe('util', function() {
             
             const t0 = new Date().valueOf()
 
-            return promise(callback, context, 1000, params)
+            return promise(callback, context, 500, params)
                 .then((res) => {
                     const t1 = new Date().valueOf()
 
@@ -56,8 +65,23 @@ describe('util', function() {
                     expect(callback.calledOn(context)).to.be.true
                     expect(callback.calledWith(params)).to.be.true
 
-                    expect(t1-t0).to.not.be.lessThan(1000)
+                    expect(t1-t0).to.not.be.lessThan(500)
                 })
-        }, 2000)
+        }, 1000)
+
+        test('defaults [opts] to an empty object, using [timeout]', () => {
+            const callback = sinon.spy()
+
+            const t0 = new Date().valueOf()
+
+            return promise(callback, this, 500)
+                .then(() => {
+                    const t1 = new Date().valueOf()
+
+                    expect(callback.calledWith({})).to.be.true
+
+                    expect(t1-t0).to.not.be.lessThan(500)
+                }, 1000)
+        })
     })
 })
