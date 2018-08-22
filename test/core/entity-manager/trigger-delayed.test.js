@@ -25,14 +25,16 @@ describe('EntityManager', function() {
             const spy = sinon.spy(this.entityManager.eventHandler, 'triggerDelayed')
             
             const timeout  = 10
-            const paramOne = 'one'
-            const paramTwo = { name : 'test', age : 99 }
+            const params = {
+                one: 'one',
+                two: { name : 'test', age : 99 },
+            }
             
-            this.entityManager.triggerDelayed(event, timeout, paramOne, paramTwo)
+            this.entityManager.triggerDelayed(event, timeout, params)
             
             expect(spy.calledOnce).to.be.true
             expect(spy.calledOn(this.entityManager)).to.be.true
-            expect(spy.calledWith(event, timeout, paramOne, paramTwo)).to.be.true
+            expect(spy.calledWith(event, timeout, params)).to.be.true
         })
         
         test('returns a promise', () => {
