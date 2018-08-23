@@ -1,5 +1,6 @@
 import { containsAll } from '../util/contains-all'
-import { validateAndThrow, } from '../validate/index'
+import { validateAndThrow, } from '../validate'
+import { doesNotContain, } from '../validate/does-not-contain'
 import { isNonEmptyString } from '../validate/is-non-empty-string'
 import { isPositiveInteger } from '../validate/is-positive-integer'
 import { isOneOf } from  '../validate/is-one-of'
@@ -82,10 +83,11 @@ class SystemManager {
             isNonEmptyString(key, 'key'),
             isArray(components, 'components'),
             isArray(entities, 'entities'),
-            isFunction(callback, 'callback')
+            isFunction(callback, 'callback'),
+            doesNotContain(this.logicSystems, key, 'logic systems map'),
+            doesNotContain(this.renderSystems, key, 'render systems map'),
+            doesNotContain(this.initSystems, key, 'init systems map'),
         )
-        
-        // todo alreadyContains check for system
 
         const system = {
             components,

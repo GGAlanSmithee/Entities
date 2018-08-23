@@ -126,5 +126,15 @@ describe('SystemManager', function() {
             expect(() => { this.systemManager.registerSystem(SystemType.Logic, 'sys', components, [], undefined) }).to.throw(TypeError, msg(undefined))
             expect(() => { this.systemManager.registerSystem(SystemType.Logic, 'sys', components, []) }).to.throw(TypeError, msg())
         })
+
+        test('throws error if attempting to register a system with an already-used [key]', () => {
+            const key = 'key'
+            const components = [ 'one', 'two' ]
+            const msg = '"logic systems map" already contains "key"'
+            
+            this.systemManager.registerSystem(SystemType.Logic, key, components, [], () => { })
+
+            expect(() => { this.systemManager.registerSystem(SystemType.Logic, key, components, [], () => { }) }).to.throw(TypeError, msg)
+        })
     })
 })
