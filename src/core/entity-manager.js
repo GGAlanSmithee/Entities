@@ -102,7 +102,7 @@ class EntityManager {
         return entity.components.includes(component)
     }
 
-    *iterateEntities(components = []) {
+    *getEntitiesByComponents(components = []) {
         if (components.length === 0) {
             for (const entity of this._entities) {
                 yield entity
@@ -192,7 +192,7 @@ class EntityManager {
     registerSystem(type, key, components, callback) {
         const entities = []
         
-        for (const { id, } of this.iterateEntities(components)) {
+        for (const { id, } of this.getEntitiesByComponents(components)) {
             entities.push(id)
         }
 

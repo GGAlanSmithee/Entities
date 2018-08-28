@@ -103,7 +103,7 @@ if (entity !== null) {
 }
 
 let i = 0
-for (const entity of entityManager.iterateEntities([ Test ])) {
+for (const entity of entityManager.getEntitiesByComponents([ Test ])) {
     assert.deepStrictEqual(entity.components, [ Test ])
     ++i
 }

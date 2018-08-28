@@ -42,7 +42,7 @@ declare module 'gg-entities' {
     
         hasComponent(id: EntityId, component: ComponentKey): boolean
     
-        iterateEntities(components?: ComponentKeyArray): IterableIterator<Entity>
+        getEntitiesByComponents(components?: ComponentKeyArray): IterableIterator<Entity>
     
         getEntitiesByIds(ids?: EntityIdArray): IterableIterator<Entity>
         

@@ -2,7 +2,7 @@ import { expect }        from 'chai'
 import { EntityManager } from '../../../src/core/entity-manager'
 
 describe('EntityManager', function() {
-    describe('iterateEntities(components = 0)', () => {
+    describe('getEntitiesByComponents(components = 0)', () => {
         beforeEach(() => {
             this.maxEntityCount = 100
             this.entityManager = new EntityManager(this.maxEntityCount)
@@ -31,11 +31,11 @@ describe('EntityManager', function() {
         })
         
         test('is a generator function', () => {
-            expect(this.entityManager.iterateEntities).to.be.a('function')
+            expect(this.entityManager.getEntitiesByComponents).to.be.a('function')
         })
         
         test('returns an iterable of all entities', () => {
-            let it = this.entityManager.iterateEntities()
+            let it = this.entityManager.getEntitiesByComponents()
             
             let i = 0
             let res = {}
@@ -55,7 +55,7 @@ describe('EntityManager', function() {
         test('for each iteration, returns an object containing the [entity]', () => {
             let last = 0
             let i = 0
-            for (let entity of this.entityManager.iterateEntities()) {
+            for (let entity of this.entityManager.getEntitiesByComponents()) {
                 expect(entity.id).to.equal(i)
                 expect(entity).to.deep.equal(this.entityManager.entities[i])
                 last = entity.id
@@ -67,7 +67,7 @@ describe('EntityManager', function() {
 
             last = 0
             i = 0
-            for (let entity of this.entityManager.iterateEntities()) {
+            for (let entity of this.entityManager.getEntitiesByComponents()) {
                 expect(entity.id).to.equal(i)
                 expect(entity).to.deep.equal(this.entityManager.entities[i])
                 last = entity.id
@@ -81,7 +81,7 @@ describe('EntityManager', function() {
         test('when called with [components], only returns entities that has [components]', () => {
             let visited = []
             
-            for (const { id } of this.entityManager.iterateEntities([ this.position, this.stats ])) {
+            for (const { id } of this.entityManager.getEntitiesByComponents([ this.position, this.stats ])) {
                 visited.push(id)
             }
             
@@ -91,7 +91,7 @@ describe('EntityManager', function() {
             
             visited = []
             
-            for (const { id } of this.entityManager.iterateEntities([ this.position, this.stats ])) {
+            for (const { id } of this.entityManager.getEntitiesByComponents([ this.position, this.stats ])) {
                 visited.push(id)
             }
             
@@ -101,7 +101,7 @@ describe('EntityManager', function() {
             
             visited = []
             
-            for (const { id } of this.entityManager.iterateEntities([ this.position, this.stats ])) {
+            for (const { id } of this.entityManager.getEntitiesByComponents([ this.position, this.stats ])) {
                 visited.push(id)
             }
             
@@ -111,7 +111,7 @@ describe('EntityManager', function() {
             
             visited = []
             
-            for (const { id } of this.entityManager.iterateEntities([ this.position, this.stats ])) {
+            for (const { id } of this.entityManager.getEntitiesByComponents([ this.position, this.stats ])) {
                 visited.push(id)
             }
             
