@@ -2,14 +2,24 @@
 
 ## v3.0.0-alpha.3 (2018-08-22)
 
-// are these two documented in the correct release?
+// are these documented in the correct release?
 
-Renamed `entityManager.getEntities` to `entityManager.getEntitiesByComponents`  
-Added `entityManager.getEntitiesById` function 
+Renamed `entityManager.iterateEntities` to `entityManager.getEntitiesByComponents`  
+Added `entityManager.getEntitiesById` function  
+Typescript definitions are now included in the framework under the `package.json` `types` field  
+Bundle now only exposes the `EntityManager` (and `SystemType`) as it´s public API, all other classes are to be considered a private implementation detail  
 
 ## v3.0.0-alpha.2 (2018-08-10)
 
-Typescript definitions are now included in the framework under the `package.json` `types` field  
+Updated all dependencies  
+Updated all examples  
+
+`ComponentManager.newComponent` now takes a string `key` instead of the prior integer `componentId`  
+`ComponentManager.registerComponent` now takes a desterministic string `key` as its first argument  
+exchanged `ComponentManager.getComponents` to `get`er `ComponentManager.components`  
+
+`EntityFactory.registerInitializer` now takes a string `key` instead of the prior integer `id`  
+`EntityFactory.withComponent` now takes a string `key` instead of the prior integer `componentId`  
 
 `EntityManager` received a major internal re-write  
 Removed internal `EntityManager.componentLookup` since components are now registered using string keys  
