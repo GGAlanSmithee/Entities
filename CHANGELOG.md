@@ -2,11 +2,46 @@
 
 ## v3.0.0-alpha.3 (2018-08-22)
 
+// are these two documented in the correct release?
+
+Renamed `entityManager.getEntities` to `entityManager.getEntitiesByComponents`  
+Added `entityManager.getEntitiesById` function 
+
 ## v3.0.0-alpha.2 (2018-08-10)
 
-// are these two documented in the correct release?
-Renamed `entityManager.getEntities` to `entityManager.getEntitiesByComponents`  
-Added `entityManager.getEntitiesById` function  
+Typescript definitions are now included in the framework under the `package.json` `types` field  
+
+`EntityManager` received a major internal re-write  
+Removed internal `EntityManager.componentLookup` since components are now registered using string keys  
+Added public `get`ers for internal members  
+
+- capacity
+- entityFactory
+- systemManager
+- componentManager
+- eventHandler
+- entityConfigurations
+- entities
+
+`EntityManager.iterateEntities` now takes an array of string keys instead of a bitmask  
+`EntityManager.registerConfiguration` now takes a string `key` to register the configuration under  
+`EntityManager` now only adds a component to an entity under the component's `key`  
+`EntityManager.addComponent` now only accepts a string as the `key` argument  
+`EntityManager.removeComponent` now only accepts a string as the `component` argument  
+`EntityManager.registerSystem` now takes a deterministic `name` to register the system under  
+`EntityManager.registerLogicSystem` now takes a deterministic `name` to register the system under  
+`EntityManager.registerRenderSystem` now takes a deterministic `name` to register the system under  
+`EntityManager.registerInitSystem` now takes a deterministic `name` to register the system under  
+`EntityManager.removeSystem` now takes a deterministic `name` corresponding to the system to be removed  
+`EntityManager.registerInitializer` now only accepts a string as the `component` argument  
+`EntityManager.withComponent` now only accepts a string as the `component` argument  
+`EntityManager.create` now only accepts a string as the `configurationKey` argument  
+
+`EventHandler` received a internal re-write for readability and speed, public API stays the same  
+
+`SystemManager` now uses deterministic string keys instead of caluclated integer keys  
+`SystemManager.registerSystem` now takes an additional `key` parameter  
+`SystemManager.removeSystem` now takes a string `key` instead of prior integer `systemId` parameter  
 
 Added new validations functions  
 Added `validate` function  
