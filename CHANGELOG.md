@@ -4,6 +4,31 @@
 
 ## v3.0.0-alpha.2 (2018-08-10)
 
+// are these two documented in the correct release?
+Renamed `entityManager.getEntities` to `entityManager.getEntitiesByComponents`  
+Added `entityManager.getEntitiesById` function  
+
+Added new validations functions  
+Added `validate` function  
+Added `validateAndThrow` function  
+Added `isArray` and `isArrayMsg` functions  
+Added `isDefined` and `isDefinedMsg` functions  
+Added `isEntityManager` and `isEntityManagerMsg` functions  
+Added `isFunction` and `isFunctionMsg` functions  
+Added `isNonEmptyString` and `isNonEmptyStringMsg` functions  
+Added `isObject` and `isObjectMsg` functions  
+Added `isOneOf` and `isOneOfMsg` functions  
+Added `isPositiveInteger` and `isPositiveIntegerMsg` functions  
+Added tests for validation functions  
+
+Added new utility functions  
+Added `containsAll` function  
+Added `promise` function  
+Added `emptyPromise` function  
+Added tests for utility functions  
+
+Updated old tests for corresponding code updates  
+
 ## v3.0.0-alpha.1 (2018-08-07)
 
 Replaced all numeric ids for string keys (where possible)  
@@ -25,6 +50,7 @@ Removed circular dependencies (do not include `EntityManager` in other files)
 
 Added additional tests for edgecases  
 Updated and fixed examples  
+Updated documentation  
 Updated documentation  
 
 Updated all dependencies and simplified build / bundle  
