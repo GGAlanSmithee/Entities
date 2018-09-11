@@ -1,6 +1,6 @@
 # Changelog
 
-## v3.0.0 (2018-09-??)
+## v3.0.0-beta.2 (2018-09-11)
 
 Renamed `entityManager.iterateEntities` to `entityManager.getEntitiesByComponents`  
 `SystemManager.registerSystem` now prevents registering a `system` with a `key` that's already used  
