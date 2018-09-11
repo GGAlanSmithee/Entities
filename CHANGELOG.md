@@ -1,13 +1,37 @@
 # Changelog
 
-## v3.0.0-alpha.3 (2018-08-22)
+## v3.0.0 (2018-09-??)
+
+Renamed `entityManager.iterateEntities` to `entityManager.getEntitiesByComponents`  
+`SystemManager.registerSystem` now prevents registering a `system` with a `key` that's already used  
+Added `gotchas.md` doc  
+
+## v3.0.0-beta.1 (2018-08-22)
 
 // are these documented in the correct release?
 
-Renamed `entityManager.iterateEntities` to `entityManager.getEntitiesByComponents`  
-Added `entityManager.getEntitiesById` function  
-Typescript definitions are now included in the framework under the `package.json` `types` field  
-Bundle now only exposes the `EntityManager` (and `SystemType`) as it´s public API, all other classes are to be considered a private implementation detail  
+Added full Typescript definitions under the `package.json` `types` field  
+Added tests for typescript definitions  
+
+Removed `prepublish` script in favor of `prepublishOnly` to make sure it's only run on pre-publish  
+
+Bundle now only exposes the `EntityManager` (and `SystemType`) as it´s public API, all other classes are to be considered an internal implementation detail  
+
+`EntityManager.onLogic` `opts` argument now defaults to an empty object  
+`EntityManager.onRender` `opts` argument now defaults to an empty object  
+`EntityManager.onInit` `opts` argument now defaults to an empty object  
+
+Changed public interface of `EntityManager.trigger` and `EntityManager.triggerDelayed`, both now takes a `opts` object instead of an `arguments` list:  
+
+- `EntityManager.trigger` now has an explicit function definition `(event: string, opts = {})`  
+- `EntityManager.triggerDelayed` now has an explicit function definition `(event: string, timeout: number, - opts = {})`  
+- `EventHandler.trigger` now has an explicit function definition `(event: string, opts = {})`  
+- `EventHandler.triggerDelayed` now has an explicit function definition `(event: string, timeout: number, opts = {})`  
+
+util `promise` has a new, more logical, and explicit funciton definition: `(callback, context, timeout, opts = {})`  
+
+Fixed test coverage  
+Updated npm dependencies  
 
 ## v3.0.0-alpha.2 (2018-08-10)
 
@@ -38,11 +62,11 @@ Added public `get`ers for internal members
 `EntityManager` now only adds a component to an entity under the component's `key`  
 `EntityManager.addComponent` now only accepts a string as the `key` argument  
 `EntityManager.removeComponent` now only accepts a string as the `component` argument  
-`EntityManager.registerSystem` now takes a deterministic `name` to register the system under  
-`EntityManager.registerLogicSystem` now takes a deterministic `name` to register the system under  
-`EntityManager.registerRenderSystem` now takes a deterministic `name` to register the system under  
-`EntityManager.registerInitSystem` now takes a deterministic `name` to register the system under  
-`EntityManager.removeSystem` now takes a deterministic `name` corresponding to the system to be removed  
+`EntityManager.registerSystem` now takes a deterministic `key` to register the system under  
+`EntityManager.registerLogicSystem` now takes a deterministic `key` to register the system under  
+`EntityManager.registerRenderSystem` now takes a deterministic `key` to register the system under  
+`EntityManager.registerInitSystem` now takes a deterministic `key` to register the system under  
+`EntityManager.removeSystem` now takes a deterministic `key` corresponding to the system to be removed  
 `EntityManager.registerInitializer` now only accepts a string as the `component` argument  
 `EntityManager.withComponent` now only accepts a string as the `component` argument  
 `EntityManager.create` now only accepts a string as the `configurationKey` argument  
@@ -82,6 +106,7 @@ Replaced all numeric ids for string keys (where possible)
 
 Normalized the return value of `EntityManager.create(...)` and `EntityFactory.create(...)`, now always returns an array of entities, even if only a single entity was created  
 Added `EntityManager.getEntity`  
+Added `EntityManager.getEntitiesById`  
 Added `EntityManager.hasComponent`  
 Added `isEntityManager` helper function to detect if variable is an instance of `EntityManager`  
 Added variable sanitation in many places  
