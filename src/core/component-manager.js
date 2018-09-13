@@ -9,7 +9,7 @@ class ComponentManager {
     }
     
     newComponent(key) {
-        let component = this._components.get(key)
+        const component = this._components.get(key)
         
         if (!isDefined(component)) {
             return null
@@ -19,13 +19,7 @@ class ComponentManager {
             case 'function':
                 return new component()
             case 'object'  : {
-                return ((component) => {
-                    let ret = {}
-                    
-                    Object.keys(component).forEach(key => ret[key] = component[key])
-                    
-                    return ret
-                })(component)
+                return ((comp) => ({ ...comp }))(component)
             }
             default:
                 return component

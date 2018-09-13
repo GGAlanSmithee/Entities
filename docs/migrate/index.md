@@ -2,23 +2,7 @@
 
 ## Migrating from v2 to v3
 
-The public API has not changed since version 2, but it has been extended with a few utility methods:
-
-* `EntityManager.getEntity`
-
-Returns a entity by its id
-
-```javascript
-    entityManager.getEntity(entityId)
-```
-
-* `EntityManager.hasComponent`
-
-Returns a boolean value indicating if a entity has a component
-
-```javascript
-    entityManager.hasComponent(entityId, componentId)
-```
+### COMPLETE INTERNAL REWRITE, MAJOR PUBLIC API CHANGES, DOCS COMMING SOON !
 
 ## Migrating from v1 to v2
 

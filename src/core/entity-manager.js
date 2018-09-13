@@ -150,7 +150,7 @@ class EntityManager {
         // Will be validated in _componentManager.registerComponent
         this._componentManager.registerComponent(key, component)
         
-        for (let entity of this._entities) {
+        for (const entity of this._entities) {
             entity[key] = this._componentManager.newComponent(key)
         }
         
@@ -190,13 +190,12 @@ class EntityManager {
     // System Manager
     
     registerSystem(type, key, components, callback) {
-        const entities = []
-        
-        for (const { id, } of this.getEntitiesByComponents(components)) {
-            entities.push(id)
-        }
-
-        this._systemManager.registerSystem(type, key, components, entities, callback)
+        this._systemManager.registerSystem(
+            type,
+            key,
+            components,
+            Array.from(this.getEntitiesByComponents(components)).map(e => e.id),
+            callback)
     }
     
     registerLogicSystem(key, components, callback) {
