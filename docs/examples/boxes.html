@@ -7,7 +7,7 @@
     <body>
         <canvas id='canvas'></canvas>
         
-        <script language="javascript" type="text/javascript" src="https://unpkg.com/gg-entities@3.0.0-alpha.2/dist/gg-entities.js"></script>
+        <script language="javascript" type="text/javascript" src="https://unpkg.com/gg-entities@3.0.0/dist/gg-entities.js"></script>
         
         <script>
             window.onload = function() {
@@ -122,7 +122,7 @@
                 
                 let numbSpawnedObjects = 0
                 
-                entityManager.listen(CLICKED_EVENT, function(entity) {
+                entityManager.listen(CLICKED_EVENT, function({ entity, }) {
                     const cli = entity[CLICKABLE_COMPONENT]
                     
                     cli.timesClicked++
@@ -137,7 +137,7 @@
                         case 0:
                             entity[APPEARANCE_COMPONENT].color = 'purple'
                             
-                            this.triggerDelayed(DESTROY_EVENT, 400, entity.id)
+                            this.triggerDelayed(DESTROY_EVENT, 400, { id: entity.id, })
                             
                             break
                         case 1:
@@ -147,7 +147,7 @@
                     }
                 })
                 
-                entityManager.listen(DESTROY_EVENT, function(entityId) {
+                entityManager.listen(DESTROY_EVENT, function({ id: entityId, }) {
                     this.deleteEntity(entityId)
                     
                     numbSpawnedObjects--
@@ -157,7 +157,7 @@
                     Menu.isOpen = true
                 })
                 
-                entityManager.listen(CLICK_EVENT, function(x, y) {
+                entityManager.listen(CLICK_EVENT, function({ x, y, }) {
                     for (const entity of this.getEntitiesByComponents([ CLICKABLE_COMPONENT, TRANSFORM_COMPONENT, APPEARANCE_COMPONENT, ])) {
                         const tra = entity[TRANSFORM_COMPONENT]
                         const cli = entity[CLICKABLE_COMPONENT]
@@ -168,7 +168,7 @@
                         const boxY = tra.y - (boxH - tra.h) / 2
                         
                         if (x >= boxX && x <= boxX + boxW && y >= boxY && y <= boxY + boxH) {
-                            this.trigger(CLICKED_EVENT, entity)
+                            this.trigger(CLICKED_EVENT, { entity, })
                         }
                     }
                 })
@@ -190,7 +190,7 @@
                             Menu.onStartClicked()
                         }
                     } else {
-                        entityManager.trigger(CLICK_EVENT, x, y)
+                        entityManager.trigger(CLICK_EVENT, { x, y, })
                     }
                 })
                 
