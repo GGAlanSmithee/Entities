@@ -1,150 +1,157 @@
+import { containsAll }               from '../util/contains-all'
+import { validateAndThrow }          from '../validate'
+import { isArray }                   from '../validate/is-array'
+import { isNonEmptyString }          from '../validate/is-non-empty-string'
+import { isPositiveInteger }         from '../validate/is-positive-integer'
+import { isDefined }                 from '../validate/is-defined'
+import { contains }                  from '../validate/contains'
 import { EntityFactory }             from './entity-factory'
 import { ComponentManager }          from './component-manager'
 import { SystemManager, SystemType } from './system-manager'
 import { EventHandler }              from './event-handler'
 
 class EntityManager {
-    constructor(capacity = 1000) {
-        this.init(capacity)
-    }
-    
-    init(capacity) {
-        this.capacity         = capacity
-        this.currentMaxEntity = -1
+    constructor(capacity = 1000) {        
+        this._entityFactory    = new EntityFactory()
+        this._systemManager    = new SystemManager()
+        this._componentManager = new ComponentManager()
+        this._eventHandler     = new EventHandler()
         
-        this.entityFactory    = new EntityFactory()
-        this.systemManager    = new SystemManager()
-        this.componentManager = new ComponentManager()
-        this.eventHandler     = new EventHandler()
+        this._entityConfigurations = new Map()
         
-        this.entityConfigurations = new Map()
-        this.componentLookup      = new Map()
-        
-        this.entities = Array.from({ length : this.capacity }, () => ({ components: 0 }))
+        this._entities = Array.from({ length: capacity, }, (_e, id) => ({ id, components: [] }))
     }
 
-    componentNamesToId(components) {
-        return Array
-            .from(this.componentLookup)
-            .filter(cl => components.some(c => c === cl[0]))
-            .map(cl => cl[1])
-            .reduce((curr, next) => curr | next, 0)
-    }
-    
+    get capacity() { return this._entities.length }
+    get entityFactory() { return this._entityFactory }
+    get systemManager() { return this._systemManager }
+    get componentManager() { return this._componentManager }
+    get eventHandler() { return this._eventHandler }
+    get entityConfigurations() { return this._entityConfigurations }
+    get entities() { return this._entities }
+
     increaseCapacity() {
-        let oldCapacity = this.capacity
+        let oldlength = this._entities.length
         
-        this.capacity *= 2
-        
-        this.entities = [...this.entities, ...Array.from({ length : oldCapacity }, () => ({ components: 0 }))]
-
-        for (let i = oldCapacity; i < this.capacity; ++i) {
-            let entity = this.entities[i]
-            
-            for (const componentId of this.componentManager.getComponents().keys()) {
-                let componentName = null
-                
-                for (let [key, value] of this.componentLookup.entries()) {
-                    if (value === componentId) {
-                        componentName = key
-                        
-                        break
-                    }
+        this._entities = [
+            ...this._entities,
+            ...Array.from({ length : oldlength }, (_e, i) => {
+                const entity = { 
+                    id: oldlength + i,
+                    components: [],
                 }
 
-                entity[componentId] = this.componentManager.newComponent(componentId)
-                
-                Object.defineProperty(entity, componentName, { get() { return this[componentId] }, configurable: true })
-            }
-        }
+                for (const componentName of this._componentManager.components.keys()) {
+                    entity[componentName] = this._componentManager.newComponent(componentName)
+                }
+
+                return entity
+            }),
+        ]
     }
     
     newEntity(components) {
-        if (Array.isArray(components)) {
-            components = this.componentNamesToId(components)
+        if (!isArray(components)) {
+            return null
         }
-        
-        if (!Number.isInteger(components) || components <= 0) {
-            return { id : this.capacity, entity : null }
-        }
-        
-        let id = 0
-        
-        for (; id < this.capacity; ++id) {
-            if (this.entities[id].components === 0) {
-                break
+
+        // todo: if re-using an old entity, we should reset components
+
+        for (const entity of this._entities) {
+            if (entity.components.length === 0) {
+                entity.components = components
+
+                this._systemManager.addEntity(entity.id, components)
+
+                return entity
             }
         }
         
-        if (id >= this.capacity) {
-            // todo: auto increase capacity?
-            return { id : this.capacity, entity : null }
-        }
-        
-        if (id > this.currentMaxEntity) {
-            this.currentMaxEntity = id
-        }
-        
-        this.entities[id].components = components
-        
-        return { id, entity : this.entities[id] }
+        return null
     }
     
     deleteEntity(id) {
-        //todo add sanity check
-        this.entities[id].components = 0
-        
-        if (id < this.currentMaxEntity) {
+        if (!isPositiveInteger(id)) {
             return
         }
-        
-        for (let i = id; i >= 0; --i) {
-            if (this.entities[i].components !== 0) {
-                this.currentMaxEntity = i
-                
-                return
-            }
-        }
 
-        this.currentMaxEntity = 0
+        this._systemManager.removeEntity(id)
+        
+        this._entities[id].components = []
     }
 
-    // Does not allow components to be anything other than a bitmask for performance reasons
-    // This method will be called for every system for every loop (which might be as high as 60 / second)
-    *getEntities(components = 0) {
-        for (let id = 0; id <= this.currentMaxEntity; ++id) {
-            if (components === 0 || (this.entities[id].components & components) === components) {
-                yield { id, entity : this.entities[id] }
+    getEntity(id) {
+        if (!isPositiveInteger(id)) {
+            return null
+        }
+
+        return this._entities[id] || null
+    }
+
+    hasComponent(id, component) {
+        if (!isNonEmptyString(component)) {
+            return false
+        }
+
+        const entity = this.getEntity(id)
+
+        if (!entity) {
+            return false
+        }
+
+        return entity.components.includes(component)
+    }
+
+    *getEntitiesByComponents(components = []) {
+        if (components.length === 0) {
+            for (const entity of this._entities) {
+                yield entity
+            }
+
+            return
+        }
+
+        for (const entity of this._entities.filter(e => containsAll(e.components, components))) {
+            yield entity
+        }
+    }
+
+    *getEntitiesByIds(ids = []) {
+        if (!isArray(ids)) {
+            return
+        }
+
+        for (const id of ids) {
+            if (isPositiveInteger(id) && id < this._entities.length) {
+                yield this._entities[id]
             }
         }
     }
     
-    registerConfiguration() {
-        const configurationId = Math.max(0, ...this.entityConfigurations.keys()) + 1
+    registerConfiguration(key) {
+        validateAndThrow(
+            TypeError,
+            isNonEmptyString(key, 'key')
+        )
+
+        if (contains(this._entityConfigurations, key)) {
+            // eslint-disable-next-line no-console
+            console.warn(`overwriting entity configuration with key ${key}`)
+        }
         
-        this.entityConfigurations.set(configurationId, this.entityFactory.createConfiguration())
-        
-        return configurationId
+        const configuration = this._entityFactory.createConfiguration()
+
+        this._entityConfigurations.set(key, configuration)
     }
     
     // Component Manager
     
-    registerComponent(name, component) {
-        if (typeof name !== 'string' || name.length === 0) {
-            throw TypeError('name must be a non-empty string.')
-        }
+    registerComponent(key, component) {
+        // Will be validated in _componentManager.registerComponent
+        this._componentManager.registerComponent(key, component)
         
-        if (this.componentLookup.get(name) != null) {
-            return
-        }
-        
-        const componentId = this.componentManager.registerComponent(component)
-        
-        this.componentLookup.set(name, componentId)
-        
-        for (let entity of this.entities) {
-            entity[componentId] = this.componentManager.newComponent(componentId)
-            Object.defineProperty(entity, name, { get() { return this[componentId] }, configurable: true })
+        for (const entity of this._entities) {
+            entity[key] = this._componentManager.newComponent(key)
         }
         
         let initializer
@@ -163,127 +170,120 @@ class EntityManager {
             default: initializer = function() { return component }; break
         }
         
-        this.entityFactory.registerInitializer(componentId, initializer)
-        
-        return componentId
+        this._entityFactory.registerInitializer(key, initializer)
     }
     
     addComponent(entityId, component) {
-        if (typeof component === 'string') {
-            this.entities[entityId].components |= this.componentLookup.get(component)
-        } else {
-            this.entities[entityId].components |= component
+        if (!isNonEmptyString(component)) {
+            return
+        }
+
+        if (!this._entities[entityId].components.includes(component)) {
+            this._entities[entityId].components.push(component)
         }
     }
     
     removeComponent(entityId, component) {
-        if (typeof component === 'string') {
-            this.entities[entityId].components &= ~this.componentLookup.get(component)
-        } else {
-            this.entities[entityId].components &= ~component   
-        }
+        this._entities[entityId].components = this._entities[entityId].components.filter(c => c !== component)
     }
     
     // System Manager
     
-    registerSystem(type, components, callback) {
-        if (Array.isArray(components)) {
-            components = this.componentNamesToId(components)
+    registerSystem(type, key, components, callback) {
+        this._systemManager.registerSystem(
+            type,
+            key,
+            components,
+            Array.from(this.getEntitiesByComponents(components)).map(e => e.id),
+            callback)
+    }
+    
+    registerLogicSystem(key, components, callback) {
+        this.registerSystem(SystemType.Logic, key, components, callback)
+    }
+    
+    registerRenderSystem(key, components, callback) {
+        this.registerSystem(SystemType.Render, key, components, callback)
+    }
+    
+    registerInitSystem(key, components, callback) {
+        this.registerSystem(SystemType.Init, key, components, callback)
+    }
+    
+    removeSystem(key) {
+        return this._systemManager.removeSystem(key)
+    }
+    
+    onLogic(opts = {}) {
+        for (const system of this._systemManager.logicSystems.values()) {
+            system.callback.call(this, this.getEntitiesByIds(system.entities), opts)
         }
-        
-        return this.systemManager.registerSystem(type, components, callback)
     }
     
-    registerLogicSystem(components, callback) {
-        return this.registerSystem(SystemType.Logic, components, callback)
-    }
-    
-    registerRenderSystem(components, callback) {
-        return this.registerSystem(SystemType.Render, components, callback)
-    }
-    
-    registerInitSystem(components, callback) {
-        return this.registerSystem(SystemType.Init, components, callback)
-    }
-    
-    removeSystem(systemId) {
-        return this.systemManager.removeSystem(systemId)
-    }
-    
-    onLogic(opts) {
-        for (let system of this.systemManager.logicSystems.values()) {
-            system.callback.call(this, this.getEntities(system.components), opts)
-        }
-    }
-    
-    onRender(opts) {
-        for (let system of this.systemManager.renderSystems.values()) {
-            system.callback.call(this, this.getEntities(system.components), opts)
+    onRender(opts = {}) {
+        for (const system of this._systemManager.renderSystems.values()) {
+            system.callback.call(this, this.getEntitiesByIds(system.entities), opts)
         }
     }
 
-    onInit(opts) {
-        for (let system of this.systemManager.initSystems.values()) {
-            system.callback.call(this, this.getEntities(system.components), opts)
+    onInit(opts = {}) {
+        for (const system of this._systemManager.initSystems.values()) {
+            system.callback.call(this, this.getEntitiesByIds(system.entities), opts)
         }
     }
     
     // Entity Factory
     
     registerInitializer(component, initializer) {
-        if (typeof component === 'string') {
-            this.entityFactory.registerInitializer(this.componentLookup.get(component), initializer)
-        } else {
-            this.entityFactory.registerInitializer(component, initializer)
-        }
+        this._entityFactory.registerInitializer(component, initializer)
     }
     
     build() {
-        this.entityFactory.build()
+        this._entityFactory.build()
         
         return this
     }
     
     withComponent(component, initializer) {
-        if (typeof component === 'string') {
-            this.entityFactory.withComponent(this.componentLookup.get(component), initializer)
-        } else {
-            this.entityFactory.withComponent(component, initializer)
-        }
+        this._entityFactory.withComponent(component, initializer)
         
         return this
     }
     
-    create(count, configurationId) {
+    create(count, configurationKey) {
         let configuration = undefined
         
-        if (Number.isInteger(configurationId) && configurationId > 0) {
-            configuration = this.entityConfigurations.get(configurationId)
+        if (isNonEmptyString(configurationKey)) {
+            configuration = this._entityConfigurations.get(configurationKey)
             
-            if (configuration === undefined) {
-                throw Error('Could not find entity configuration. If you wish to create entities without a configuration, do not pass a configurationId.')
+            if (!isDefined(configuration)) {
+                throw Error('Could not find entity configuration. If you wish to create entities without a configuration, do not pass a configurationKey.')
             }
         }
+
+        if (isDefined(configurationKey) && !isNonEmptyString(configurationKey)) {
+            throw Error('configurationKey should be a string if using a saved configuration, or undefined if not.')
+        }
         
-        return this.entityFactory.create(this, count, configuration)
+        return this._entityFactory.create(this, count, configuration)
     }
     
     // Event Handler
     
     listen(event, callback) {
-        return this.eventHandler.listen(event, callback)
+        return this._eventHandler.listen(event, callback)
     }
     
     stopListen(eventId) {
-        return this.eventHandler.stopListen(eventId)
+        return this._eventHandler.stopListen(eventId)
     }
     
-    trigger() {
-        return this.eventHandler.trigger.call(this, ...arguments)
+    trigger(event, opts = {}) {
+        return this._eventHandler.trigger.call(this, event, opts)
     }
     
-    triggerDelayed() {
-        return this.eventHandler.triggerDelayed.call(this, ...arguments)
+    triggerDelayed(event, timeout, opts = {}) {
+        return this._eventHandler.triggerDelayed.call(this, event, timeout, opts)
     }
 }
 

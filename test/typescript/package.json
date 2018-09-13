@@ -1,0 +1,25 @@
+{
+  "name": "gg-entities-typescript-test",
+  "version": "1.0.0",
+  "description": "testing typescript definitions for gg-entities",
+  "main": "index.ts",
+  "scripts": {
+    "test": "ts-node index.ts"
+  },
+  "keywords": [
+    "gg-entities",
+    "typescript",
+    "test"
+  ],
+  "author": {
+    "name": "alansmithee",
+    "email": "ggnore.alan.smithee@gmail.com"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "gg-entities": "file:../..",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.0.3"
+  }
+}
