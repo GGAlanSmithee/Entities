@@ -23,12 +23,8 @@ class EntityManager {
     }
 
     get capacity() { return this._entities.length }
-    get entityFactory() { return this._entityFactory }
-    get systemManager() { return this._systemManager }
-    get componentManager() { return this._componentManager }
-    get eventHandler() { return this._eventHandler }
-    get entityConfigurations() { return this._entityConfigurations }
     get entities() { return this._entities }
+    get entityConfigurations() { return this._entityConfigurations }
 
     increaseCapacity() {
         let oldlength = this._entities.length

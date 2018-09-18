@@ -14,7 +14,7 @@ describe('EntityManager', function() {
         })
         
         test('invokes [entityFactory].create', () => {
-            const spy = sinon.spy(this.entityManager.entityFactory, 'create')
+            const spy = sinon.spy(this.entityManager._entityFactory, 'create')
             
             this.entityManager.create()
             
@@ -31,7 +31,7 @@ describe('EntityManager', function() {
             
             this.entityManager.entityConfigurations.set(confKey, configuration)
             
-            const spy = sinon.spy(this.entityManager.entityFactory, 'create')
+            const spy = sinon.spy(this.entityManager._entityFactory, 'create')
             
             const count = 3
 

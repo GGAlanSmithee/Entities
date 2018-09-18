@@ -34,7 +34,7 @@ describe('EntityManager', function() {
         })
         
         test('invokes [systemManager.registerSystem] with [type] = SystemType.Render', () => {
-            const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
+            const spy = sinon.spy(this.entityManager._systemManager, 'registerSystem')
 
             const name       = 'drawSystem'
             const components = [ this.position, this.velocity, ]

@@ -21,14 +21,19 @@ assert.strictEqual(SystemType.Init, 2)
 
 const entityManager = new EntityManager(100)
 
+assert.deepStrictEqual(entityManager.entityConfigurations, new Map())
+
+assert.strictEqual(entityManager.entities.length, 100)
 assert.strictEqual(entityManager.capacity, 100)
 
 entityManager.increaseCapacity()
 
+assert.strictEqual(entityManager.entities.length, 200)
 assert.strictEqual(entityManager.capacity, 200)
 
 entityManager.increaseCapacity()
 
+assert.strictEqual(entityManager.entities.length, 400)
 assert.strictEqual(entityManager.capacity, 400)
 
 entityManager.registerComponent(Test, TestComponent)

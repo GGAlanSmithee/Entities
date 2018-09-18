@@ -17,7 +17,7 @@ describe('EntityManager', function() {
         })
         
         test('invokes [entityFactory].build', () => {
-            const spy = sinon.spy(this.entityManager.entityFactory, 'build')
+            const spy = sinon.spy(this.entityManager._entityFactory, 'build')
             
             this.entityManager.build()
             

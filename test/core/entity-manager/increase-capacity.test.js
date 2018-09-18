@@ -15,9 +15,9 @@ describe('EntityManager', function() {
             this.stats = 'stats'
             this.statsComponent = { xp : 10000, level : 20 }
             
-            this.entityManager.componentManager.components.set(this.position, this.positionComponent)
-            this.entityManager.componentManager.components.set(this.velocity, this.velocityComponent)
-            this.entityManager.componentManager.components.set(this.stats, this.statsComponent)
+            this.entityManager._componentManager.components.set(this.position, this.positionComponent)
+            this.entityManager._componentManager.components.set(this.velocity, this.velocityComponent)
+            this.entityManager._componentManager.components.set(this.stats, this.statsComponent)
         })
         
         afterEach(() => {

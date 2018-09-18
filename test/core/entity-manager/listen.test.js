@@ -20,7 +20,7 @@ describe('EntityManager', function() {
             const event    = 'onEvent'
             const callback = function() { this.hi = 'hi' }
             
-            const spy = sinon.spy(this.entityManager.eventHandler, 'listen')
+            const spy = sinon.spy(this.entityManager._eventHandler, 'listen')
             
             this.entityManager.listen(event, callback)
             

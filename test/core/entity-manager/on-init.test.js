@@ -21,25 +21,25 @@ describe('EntityManager', function() {
             this.entityManager.getEntitiesByIds = sinon.stub().returns(this.entities)
             
             this.logicSpy1 = sinon.spy()
-            this.entityManager.systemManager.logicSystems.set(1, {
+            this.entityManager._systemManager.logicSystems.set(1, {
                     callback   : this.logicSpy1,
                     components : [ this.position, this.velocity, this.clickable, ]
                 })
             
             this.logicSpy2 = sinon.spy()
-            this.entityManager.systemManager.logicSystems.set(2, {
+            this.entityManager._systemManager.logicSystems.set(2, {
                     callback   : this.logicSpy2,
                     components : [ this.position, this.velocity, this.interactable, ]
                 })
             
             this.initSpy1 = sinon.spy()
-            this.entityManager.systemManager.initSystems.set(3, {
+            this.entityManager._systemManager.initSystems.set(3, {
                     callback   : this.initSpy1,
                     components : [ this.position, this.velocity, this.clickable, ]
                 })
             
             this.initSpy2 = sinon.spy()
-            this.entityManager.systemManager.initSystems.set(4, {
+            this.entityManager._systemManager.initSystems.set(4, {
                     callback   : this.initSpy2,
                     components : [ this.spawnable, ]
                 })
@@ -95,8 +95,8 @@ describe('EntityManager', function() {
             
             expect(this.entityManager.getEntitiesByIds.calledTwice).to.be.true
             
-            let initSystem1 = this.entityManager.systemManager.initSystems.get(3)
-            let initSystem2 = this.entityManager.systemManager.initSystems.get(4)
+            let initSystem1 = this.entityManager._systemManager.initSystems.get(3)
+            let initSystem2 = this.entityManager._systemManager.initSystems.get(4)
             
             expect(this.entityManager.getEntitiesByIds.calledWith(initSystem1.entities)).to.be.true
             expect(this.entityManager.getEntitiesByIds.calledWith(initSystem2.entities)).to.be.true
@@ -107,8 +107,8 @@ describe('EntityManager', function() {
             
             expect(this.entityManager.getEntitiesByIds.calledTwice).to.be.true
             
-            let initSystem1 = this.entityManager.systemManager.initSystems.get(3)
-            let initSystem2 = this.entityManager.systemManager.initSystems.get(4)
+            let initSystem1 = this.entityManager._systemManager.initSystems.get(3)
+            let initSystem2 = this.entityManager._systemManager.initSystems.get(4)
             
             expect(this.entityManager.getEntitiesByIds.calledWith(initSystem1.entities)).to.be.true
             expect(this.entityManager.getEntitiesByIds.calledWith(initSystem2.entities)).to.be.true

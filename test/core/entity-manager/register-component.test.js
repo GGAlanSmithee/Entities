@@ -64,7 +64,7 @@ describe('EntityManager', function() {
         })
       
         test('invokes [componentManger].registerComponent with [component]', () => {
-            const spy = sinon.spy(this.entityManager.componentManager, 'registerComponent')
+            const spy = sinon.spy(this.entityManager._componentManager, 'registerComponent')
             
             this.entityManager.registerComponent(this.pos, this.posComponent)
             
@@ -73,7 +73,7 @@ describe('EntityManager', function() {
         })
         
         test('invokes [entityFactory].registerInitializer with the [key] of the [component]', () => {
-            const spy = sinon.spy(this.entityManager.entityFactory, 'registerInitializer')
+            const spy = sinon.spy(this.entityManager._entityFactory, 'registerInitializer')
             
             this.entityManager.registerComponent(this.pos, this.posComponent)
             

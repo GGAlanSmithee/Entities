@@ -19,7 +19,7 @@ describe('EntityManager', function() {
         test('invokes [eventHandler.stopListen] with the correct parameters', () => {
             const eventId = 1
             
-            const spy = sinon.spy(this.entityManager.eventHandler, 'stopListen')
+            const spy = sinon.spy(this.entityManager._eventHandler, 'stopListen')
             
             this.entityManager.stopListen(eventId)
             

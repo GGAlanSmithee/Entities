@@ -13,6 +13,8 @@ declare module 'gg-entities' {
     export type ComponentKeyArray = Array<ComponentKey>
 
     export type ConfigurationKey = string
+    export type Initializer = number | string | object | Function
+    export type Configuration = Map<string, Initializer>
     
     export type EventId = number
     export type EventKey = string
@@ -31,6 +33,7 @@ declare module 'gg-entities' {
     
         capacity: number
         entities: EntityArray
+        entityConfigurations: Map<ConfigurationKey, Configuration>
     
         increaseCapacity(): void
 
@@ -76,11 +79,11 @@ declare module 'gg-entities' {
         
         // Entity Factory
         
-        registerInitializer(component: ComponentKey, initializer: any): void
+        registerInitializer(component: ComponentKey, initializer: Initializer): void
         
         build(): this
         
-        withComponent(component: ComponentKey, initializer?: any): this
+        withComponent(component: ComponentKey, initializer?: Initializer): this
         
         create(count?: number, configurationKey?: ConfigurationKey): EntityArray
         

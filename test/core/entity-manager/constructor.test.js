@@ -32,24 +32,24 @@ describe('EntityManager', function() {
             expect(this.entityManager).property('entities').property('length').to.equal(1000)
         })
         
-        test('creates [entityConfigurations] as an empty Map', () => {
-            expect(this.entityManager).property('entityConfigurations').to.be.an.instanceof(Map).and.to.be.empty
+        test('creates [_entityConfigurations] as an empty Map', () => {
+            expect(this.entityManager).property('_entityConfigurations').to.be.an.instanceof(Map).and.to.be.empty
         })
 
-        test('instantiates [entityFactory] as an instance of [EntityFactory]', () => {
-            expect(this.entityManager).property('entityFactory').to.be.an.instanceof(EntityFactory)
+        test('instantiates [_entityFactory] as an instance of [EntityFactory]', () => {
+            expect(this.entityManager).property('_entityFactory').to.be.an.instanceof(EntityFactory)
         })
         
-        test('instantiates [eventHandler] as an instance of [EventHandler]', () => {
-            expect(this.entityManager).property('eventHandler').to.be.an.instanceof(EventHandler)
+        test('instantiates [_eventHandler] as an instance of [EventHandler]', () => {
+            expect(this.entityManager).property('_eventHandler').to.be.an.instanceof(EventHandler)
         })
         
-        test('instantiates [componentManager] as an instance of [ComponentManager]', () => {
-            expect(this.entityManager).property('componentManager').to.be.an.instanceof(ComponentManager)
+        test('instantiates [_componentManager] as an instance of [ComponentManager]', () => {
+            expect(this.entityManager).property('_componentManager').to.be.an.instanceof(ComponentManager)
         })
         
-        test('instantiates [systemManager] as an instance of [SystemManager]', () => {
-            expect(this.entityManager).property('systemManager').to.be.an.instanceof(SystemManager)
+        test('instantiates [_systemManager] as an instance of [SystemManager]', () => {
+            expect(this.entityManager).property('_systemManager').to.be.an.instanceof(SystemManager)
         })
     })
     

@@ -32,7 +32,7 @@ describe('EntityManager', function() {
         })
         
         test('invokes [systemManager.registerSystem] with [type] = SystemType.Init', () => {
-            const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
+            const spy = sinon.spy(this.entityManager._systemManager, 'registerSystem')
             
             const name       = 'initTestSystem'
             const components = [ this.position, this.velocity ]

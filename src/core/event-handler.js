@@ -45,7 +45,7 @@ class EventHandler {
     }
     
     trigger(event, opts = {}) {
-        const self = isEntityManager(this) ? this.eventHandler : this
+        const self = isEntityManager(this) ? this._eventHandler : this
 
         if (!isNonEmptyString(event) || !contains(self._events, event)) {
             return emptyPromise()
@@ -61,8 +61,7 @@ class EventHandler {
     }
     
     triggerDelayed(event, timeout, opts = {}) {
-        const self = isEntityManager(this) ? this.eventHandler : this
-        
+        const self = isEntityManager(this) ? this._eventHandler : this
         
         if (!isNonEmptyString(event) || !isPositiveInteger(timeout) || !contains(self._events, event)) {
             return emptyPromise()

@@ -19,7 +19,7 @@ describe('EntityManager', function() {
         test('invokes [systemManager.removeSystem] with the correct parameters', () => {
             const system = 'movement'
             
-            const spy = sinon.spy(this.entityManager.systemManager, 'removeSystem')
+            const spy = sinon.spy(this.entityManager._systemManager, 'removeSystem')
             
             this.entityManager.removeSystem(system)
             

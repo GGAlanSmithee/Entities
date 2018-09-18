@@ -17,7 +17,7 @@ describe('EntityManager', function() {
         })
         
         test('invokes [entityFactory].registerInitializer with the corrent arguments', () => {
-            const spy = sinon.spy(this.entityManager.entityFactory, 'registerInitializer')
+            const spy = sinon.spy(this.entityManager._entityFactory, 'registerInitializer')
 
             const initializer = function() {
                 this.x = 10.0

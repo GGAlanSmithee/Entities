@@ -86,7 +86,7 @@ describe('EntityManager', function() {
                 }
             }
             
-            const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
+            const spy = sinon.spy(this.entityManager._systemManager, 'registerSystem')
             
             this.entityManager.registerSystem(type, name, components, callback)
             
@@ -108,7 +108,7 @@ describe('EntityManager', function() {
             
             this.entityManager.registerSystem(SystemType.Init, name, components, callback)
             
-            const { initSystems, } = this.entityManager.systemManager
+            const { initSystems, } = this.entityManager._systemManager
 
             expect(initSystems.size).to.equal(1)
             
@@ -118,7 +118,7 @@ describe('EntityManager', function() {
         })
 
         test('registers a system with the correct entities', () => {
-            const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
+            const spy = sinon.spy(this.entityManager._systemManager, 'registerSystem')
             
             const name       = 'render'
             const components = [ this.appearance ]
@@ -135,7 +135,7 @@ describe('EntityManager', function() {
             expect(spy.calledOnce).to.be.true
             expect(spy.calledWith(SystemType.Render, name, components, entityIds, callback)).to.be.true
 
-            const { renderSystems, } = this.entityManager.systemManager
+            const { renderSystems, } = this.entityManager._systemManager
 
             expect(renderSystems.size).to.equal(1)
             
@@ -145,7 +145,7 @@ describe('EntityManager', function() {
         })
         
         test('registers a system given an array of components', () => {
-            const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
+            const spy = sinon.spy(this.entityManager._systemManager, 'registerSystem')
             
             const name       = 'initialize'
             const components = [ this.position, this.velocity, this.appearance]
@@ -165,7 +165,7 @@ describe('EntityManager', function() {
         })
 
         test('registers a render system given an array of components, not using all registered components 1', () => {
-            const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
+            const spy = sinon.spy(this.entityManager._systemManager, 'registerSystem')
             
             const name       = 'initInit'
             const components = [ this.position, this.velocity ]
@@ -185,7 +185,7 @@ describe('EntityManager', function() {
         })
 
         test('registers a logic system given an array of components, not using all registered components 2', () => {
-            const spy = sinon.spy(this.entityManager.systemManager, 'registerSystem')
+            const spy = sinon.spy(this.entityManager._systemManager, 'registerSystem')
             
             const name       = 'movement'
             const components = [ this.position ]

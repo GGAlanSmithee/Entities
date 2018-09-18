@@ -18,7 +18,7 @@ describe('EntityManager', function() {
         })
         
         test('invokes [entityFactory].createConfiguration', () => {
-            let spy = sinon.spy(this.entityManager.entityFactory, 'createConfiguration')
+            let spy = sinon.spy(this.entityManager._entityFactory, 'createConfiguration')
 
             this.entityManager.registerConfiguration('myConfiguration', 'conf')
             
@@ -35,9 +35,9 @@ describe('EntityManager', function() {
             const component3   = 'lala'
             const initializer3 = 1.5
 
-            this.entityManager.entityFactory._configuration.set(component1, initializer1)
-            this.entityManager.entityFactory._configuration.set(component2, initializer2)
-            this.entityManager.entityFactory._configuration.set(component3, initializer3)
+            this.entityManager._entityFactory._configuration.set(component1, initializer1)
+            this.entityManager._entityFactory._configuration.set(component2, initializer2)
+            this.entityManager._entityFactory._configuration.set(component3, initializer3)
             
             const conf = 'myConf'
 

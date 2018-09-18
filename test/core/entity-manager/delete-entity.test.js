@@ -18,9 +18,9 @@ describe('EntityManager', function() {
         this.statsComponent = { xp : 10000, level : 20 }
         
         this.components = [ this.position, this.velocity, this.stats, ]
-        this.entityManager.componentManager.components.set(this.position, this.positionComponent)
-        this.entityManager.componentManager.components.set(this.velocity, this.velocityComponent)
-        this.entityManager.componentManager.components.set(this.stats, this.statsComponent)
+        this.entityManager._componentManager.components.set(this.position, this.positionComponent)
+        this.entityManager._componentManager.components.set(this.velocity, this.velocityComponent)
+        this.entityManager._componentManager.components.set(this.stats, this.statsComponent)
     })
         
     describe('deleteEntity(entityId)', () => {
@@ -63,7 +63,7 @@ describe('EntityManager', function() {
         })
 
         test('invokes [systemManager].removeEntity with [id]', () => {
-            const spy = sinon.spy(this.entityManager.systemManager, 'removeEntity')
+            const spy = sinon.spy(this.entityManager._systemManager, 'removeEntity')
             
             this.entityManager.deleteEntity(this.entityId)
             

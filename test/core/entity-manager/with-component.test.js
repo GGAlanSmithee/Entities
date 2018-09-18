@@ -19,7 +19,7 @@ describe('EntityManager', function() {
         test('invokes [entityFactory].withComponent with [component] and [initializer]', () => {
             const initializer = function() { return 2 }
             
-            const spy = sinon.spy(this.entityManager.entityFactory, 'withComponent')
+            const spy = sinon.spy(this.entityManager._entityFactory, 'withComponent')
             
             this.entityManager.withComponent('position', initializer)
             

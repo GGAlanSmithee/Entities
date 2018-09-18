@@ -22,7 +22,7 @@ describe('EntityManager', function() {
             
             this.entityManager.listen(event, callback)
             
-            const spy = sinon.spy(this.entityManager.eventHandler, 'trigger')
+            const spy = sinon.spy(this.entityManager._eventHandler, 'trigger')
             
             const params = {
                 one: 'one',
