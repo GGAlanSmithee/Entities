@@ -54,6 +54,7 @@ describe('EntityManager', function() {
             for (let i = 0; i < this.entityManager.capacity; ++i) {
                 expect(this.entityManager.entities[i]).to.be.any.instanceof(Object)
                 expect(this.entityManager.entities[i]).property('components').to.deep.equal([])
+                expect(this.entityManager.entities[i]).property('data').to.deep.equal({})
             }
             
             this.entityManager.increaseCapacity()
@@ -63,6 +64,7 @@ describe('EntityManager', function() {
             for (let i = 0; i < this.entityManager.capacity; ++i) {
                 expect(this.entityManager.entities[i]).to.be.any.instanceof(Object)
                 expect(this.entityManager.entities[i]).property('components').to.deep.equal([])
+                expect(this.entityManager.entities[i]).property('data').to.deep.equal({})
             }
         })
         

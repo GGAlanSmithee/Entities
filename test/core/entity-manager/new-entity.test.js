@@ -54,6 +54,7 @@ describe('EntityManager', function() {
             expect(entity.id).to.equal(1)
             expect(entity).to.deep.equal(this.entityManager.entities[entity.id])
             expect(entity.components).to.deep.equal([ this.position, this.stats, ])
+            expect(entity.data).to.deep.equal({})
         })
         
         test('does not add an entity and returns null, given invalid [components] input', () => {
@@ -99,24 +100,28 @@ describe('EntityManager', function() {
             expect(entity.id).to.equal(0)
             expect(this.entityManager.entities[entity.id].components).to.deep.equal(this.components)
             expect(entity.components).to.deep.equal(this.components)
+            expect(entity.data).to.deep.equal({})
 
             entity = this.entityManager.newEntity([ this.stats ])
             
             expect(entity.id).to.equal(1)
             expect(this.entityManager.entities[entity.id].components).to.deep.equal([ this.stats, ])
             expect(entity.components).to.deep.equal([ this.stats, ])
+            expect(entity.data).to.deep.equal({})
 
             entity = this.entityManager.newEntity([ this.position, this.stats ])
             
             expect(entity.id).to.equal(2)
             expect(this.entityManager.entities[entity.id].components).to.deep.equal([ this.position, this.stats ])
             expect(entity.components).to.deep.equal([ this.position, this.stats ])
+            expect(entity.data).to.deep.equal({})
 
             entity = this.entityManager.newEntity(this.components)
             
             expect(entity.id).to.equal(3)
             expect(this.entityManager.entities[entity.id].components).to.deep.equal(this.components)
             expect(entity.components).to.deep.equal(this.components)
+            expect(entity.data).to.deep.equal({})
 
             this.entityManager.entities[2].components = []
 
@@ -125,6 +130,7 @@ describe('EntityManager', function() {
             expect(entity.id).to.equal(2)
             expect(this.entityManager.entities[entity.id].components).to.deep.equal([ this.position ])
             expect(entity.components).to.deep.equal([ this.position ])
+            expect(entity.data).to.deep.equal({})
         })
         
         test('returns null and does not add an entity if there is no more space in the entityManager', () => {

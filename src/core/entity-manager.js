@@ -19,7 +19,11 @@ class EntityManager {
         
         this._entityConfigurations = new Map()
         
-        this._entities = Array.from({ length: capacity, }, (_e, id) => ({ id, components: [] }))
+        this._entities = Array.from({ length: capacity, }, (_e, id) => ({
+            id,
+            components: [],
+            data: {},
+        }))
     }
 
     get capacity() { return this._entities.length }
@@ -32,9 +36,10 @@ class EntityManager {
         this._entities = [
             ...this._entities,
             ...Array.from({ length : oldlength }, (_e, i) => {
-                const entity = { 
+                const entity = {
                     id: oldlength + i,
                     components: [],
+                    data: {},
                 }
 
                 for (const componentName of this._componentManager.components.keys()) {
@@ -56,6 +61,7 @@ class EntityManager {
         for (const entity of this._entities) {
             if (entity.components.length === 0) {
                 entity.components = components
+                entity.data = {}
 
                 this._systemManager.addEntity(entity.id, components)
 

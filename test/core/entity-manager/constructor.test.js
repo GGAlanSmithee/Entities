@@ -78,6 +78,7 @@ describe('EntityManager', function() {
                 expect(entity.id).to.be.equal(i)
                 expect(entity).to.be.an.instanceof(Object)
                 expect(entity).property('components').to.deep.equal([])
+                expect(entity).property('data').to.deep.equal({})
             }
         })
     })
