@@ -31,6 +31,7 @@
   },
   "scripts": {
     "test": "jest",
+    "test:watch": "jest --watch",
     "test:cover": "jest --coverage",
     "build": "node build/bundle",
     "lint": "eslint src test --fix",

@@ -51,7 +51,7 @@ class EntityManager {
         ]
     }
     
-    newEntity(components) {
+    newEntity(components, data = {}) {
         if (!isArray(components)) {
             return null
         }
@@ -61,7 +61,7 @@ class EntityManager {
         for (const entity of this._entities) {
             if (entity.components.length === 0) {
                 entity.components = components
-                entity.data = {}
+                entity.data = data
 
                 this._systemManager.addEntity(entity.id, components)
 

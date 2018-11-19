@@ -41,6 +41,10 @@ describe('EntityManager', function() {
             expect(entity).to.deep.equal(this.entityManager.entities[entity.id])
         })
 
+        test('TODO ADD TEST FOR DEFAULT DATA PARAM', () => {
+            expect(true).to.be.false
+        })
+        
         test('correctly creates an entity given an array not containing all registered components', () => {
             const components = [ this.position, this.stats ]
 
