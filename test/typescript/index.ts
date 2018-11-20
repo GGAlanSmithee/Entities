@@ -15,6 +15,11 @@ const PosComponent = {
     y: 100,
 }
 
+const Data = {
+    key: 'value',
+    additionalData: 42,
+}
+
 assert.strictEqual(SystemType.Logic, 0)
 assert.strictEqual(SystemType.Render, 1)
 assert.strictEqual(SystemType.Init, 2)
@@ -52,7 +57,7 @@ if (entity !== null) {
     assert.deepStrictEqual(entity.components, [ ])
 }
 
-entity = entityManager.newEntity([ Test ])
+entity = entityManager.newEntity([ Test ], Data)
 
 assert.notStrictEqual(entity, null)
 
@@ -61,7 +66,7 @@ if (entity !== null) {
     assert.deepStrictEqual(entity.components, [ Test ])
 }
 
-entity = entityManager.newEntity([ Test ])
+entity = entityManager.newEntity([ Test ], Data)
 
 assert.notStrictEqual(entity, null)
 
@@ -163,11 +168,15 @@ let entities = entityManager
     .build()
     .withComponent(Pos)
     .withComponent(Test, () => { return new TestComponent() })
+    .withData(Data)
     .create(3)
 
 assert.deepStrictEqual(entities[0].components, [ Pos, Test ])
+assert.deepStrictEqual(entities[0].data, Data)
 assert.deepStrictEqual(entities[1].components, [ Pos, Test ])
+assert.deepStrictEqual(entities[1].data, Data)
 assert.deepStrictEqual(entities[2].components, [ Pos, Test ])
+assert.deepStrictEqual(entities[2].data, Data)
 
 entityManager.onRender()
 
@@ -226,10 +235,12 @@ assert.strictEqual(removed, false)
 let [ ent ] = entityManager
     .build()
     .withComponent(Pos)
+    .withData({ test: 'Testing', })
     .create(1)
 
 assert.strictEqual(ent[Pos].x, 100)
 assert.strictEqual(ent[Pos].y, 100)
+assert.strictEqual(ent.data.test, 'Testing')
 
 function init(this: { x: number, y: number }) { this.x = 200, this.y = 200 }
 
@@ -238,10 +249,12 @@ entityManager.registerInitializer(Pos, init)
 let [ ent2 ] = entityManager
     .build()
     .withComponent(Pos)
+    .withData({ hi: 'bye', })
     .create(1)
 
 assert.strictEqual(ent2[Pos].x, 200)
 assert.strictEqual(ent2[Pos].y, 200)
+assert.strictEqual(ent2.data.hi, 'bye')
 
 let [ ent3 ] = entityManager
     .build()
@@ -250,6 +263,7 @@ let [ ent3 ] = entityManager
 
 assert.strictEqual(ent3[Pos].x, 150)
 assert.strictEqual(ent3[Pos].y, 175)
+assert.deepStrictEqual(ent3.data, {})
 
 const TestEvent = 'test'
 

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Entities example - Opts</title>
+    </head>
+    
+    <body>
+        <div id="stage">
+            <h2>
+                Data
+            </h2>
+
+            <div id="data-field">
+
+            </div>
+        </div>
+
+        <script language="javascript" type="text/javascript" src="https://unpkg.com/gg-entities@4.0.0-beta.1/dist/gg-entities.js"></script>
+
+        <script>
+            window.onload = function() {
+                'use strict'
+                
+                var entityManager = new GGEntities.EntityManager()
+                
+                // Components
+
+                const APPEARANCE_COMPONENT = 'appearance'
+                entityManager.registerComponent(APPEARANCE_COMPONENT, {
+                    color : 'red'
+                })
+                
+                // Systems
+                
+                const renderSystem = function(entities, { rendererEngine }) {
+                    for (const { data: { name, rank, value, } } of entities) {
+                        
+                        const dataField = document.getElementById('data-field')
+
+                        const dl = document.createElement('dl')
+
+                        const nameDt = document.createElement('dt')
+                        nameDt.innerText = 'name'
+                        dl.appendChild(nameDt)
+
+                        const nameDd = document.createElement('dd')
+                        nameDd.innerText = name
+                        dl.appendChild(nameDd)
+                        
+                        const rankDt = document.createElement('dt')
+                        rankDt.innerText = 'rank'
+                        dl.appendChild(rankDt)
+
+                        const rankDd = document.createElement('dd')
+                        rankDd.innerText = rank
+                        dl.appendChild(rankDd)
+
+                        const valueDt = document.createElement('dt')
+                        valueDt.innerText = 'value'
+                        dl.appendChild(valueDt)
+
+                        const valueDd = document.createElement('dd')
+                        valueDd.innerText = value
+                        dl.appendChild(valueDd)
+
+                        dataField.appendChild(dl)
+                    }
+                }
+                
+                entityManager.registerRenderSystem('render', [ APPEARANCE_COMPONENT ], renderSystem)
+                
+                entityManager
+                    .build()
+                    .withComponent(APPEARANCE_COMPONENT)
+                    .withData({ name: 'Test', rank: 'commander', value: 42, })
+                    .create()
+                
+                entityManager.onRender()
+            }
+        </script>
+    </body>
+</html>

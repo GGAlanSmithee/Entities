@@ -26,8 +26,12 @@ describe('EntityManager', function() {
             const initializer = function() { return 2 }
             
             const confKey = 'conf'
-            const configuration = new Map()
-            configuration.set(component, initializer)
+            const configuration = {
+                components: new Map(),
+                data: { test: 'testing!'}
+            }
+
+            configuration.components.set(component, initializer)
             
             this.entityManager.entityConfigurations.set(confKey, configuration)
             
@@ -41,13 +45,17 @@ describe('EntityManager', function() {
             expect(spy.calledWith(this.entityManager, count, configuration)).to.be.true
         })
         
-        test('returns the created entities as an object containing { id, entity }', () => {
+        test('returns the created entities as an entity object, containing { id, components and data }', () => {
             const component   = this.position
             const initializer = function() { return 2 }
             
             const confKey = 'conf'
-            const configuration = new Map()
-            configuration.set(component, initializer)
+            const configuration = {
+                components: new Map(),
+                data: { 'lalala': 'hello' }
+            }
+
+            configuration.components.set(component, initializer)
             
             this.entityManager.entityConfigurations.set(confKey, configuration)
             
@@ -57,8 +65,14 @@ describe('EntityManager', function() {
             
             expect(entities).to.be.an.instanceof(Array)
             expect(entities).property('length').to.equal(2)
+
+            expect(entities[0].id).to.equal(0)
             expect(entities[0].components).to.deep.equal([component])
+            expect(entities[0].data).to.deep.equal({ 'lalala': 'hello' })
+
+            expect(entities[1].id).to.equal(1)
             expect(entities[1].components).to.deep.equal([component])
+            expect(entities[1].data).to.deep.equal({ 'lalala': 'hello' })
         })
         
         test('throws exception if a [configurationKey] is supplied that doesn\'t correspond to a configuration [entityConfigurations]', () => {

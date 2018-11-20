@@ -37,7 +37,7 @@ declare module 'gg-entities' {
     
         increaseCapacity(): void
 
-        newEntity(components: ComponentKeyArray): Entity | null
+        newEntity(components: ComponentKeyArray, data?: object): Entity | null
         
         deleteEntity(id: EntityId): void
     
@@ -84,6 +84,8 @@ declare module 'gg-entities' {
         build(): this
         
         withComponent(component: ComponentKey, initializer?: Initializer): this
+
+        withData(data: object): this
         
         create(count?: number, configurationKey?: ConfigurationKey): EntityArray
         

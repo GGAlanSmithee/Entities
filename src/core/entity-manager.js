@@ -51,8 +51,8 @@ class EntityManager {
         ]
     }
     
-    newEntity(components) {
-        if (!isArray(components)) {
+    newEntity(components, data = {}) {
+        if (!isArray(components) || components.length === 0) {
             return null
         }
 
@@ -61,7 +61,7 @@ class EntityManager {
         for (const entity of this._entities) {
             if (entity.components.length === 0) {
                 entity.components = components
-                entity.data = {}
+                entity.data = data
 
                 this._systemManager.addEntity(entity.id, components)
 
@@ -252,6 +252,12 @@ class EntityManager {
         return this
     }
     
+    withData(data) {
+        this._entityFactory.withData(data)
+        
+        return this
+    }
+
     create(count, configurationKey) {
         let configuration = undefined
         

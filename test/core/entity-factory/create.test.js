@@ -19,10 +19,13 @@ describe('EntityFactory', function() {
             this.componentThreeInitializer = () => { return 15 }
             this.componentFourInitializer  = () => { return "Full Name" }
 
-            this.entityFactory._configuration.set(this.componentOne, this.componentOneInitializer)
-            this.entityFactory._configuration.set(this.componentTwo, this.componentTwoInitializer)
-            this.entityFactory._configuration.set(this.componentThree, this.componentThreeInitializer)
-            this.entityFactory._configuration.set(this.componentFour, this.componentFourInitializer)
+            this.entityFactory._configuration.components.set(this.componentOne, this.componentOneInitializer)
+            this.entityFactory._configuration.components.set(this.componentTwo, this.componentTwoInitializer)
+            this.entityFactory._configuration.components.set(this.componentThree, this.componentThreeInitializer)
+            this.entityFactory._configuration.components.set(this.componentFour, this.componentFourInitializer)
+
+            this.data = { value: 'entity data from entity factory' }
+            this.entityFactory._configuration.data = this.data
             
             this.components = [
                 this.componentOne,
@@ -30,12 +33,16 @@ describe('EntityFactory', function() {
                 this.componentThree,
                 this.componentFour
             ]
-            
+
             for (let entity of this.entityManager.entities) {
                 entity[this.componentOne] = new (function() { this.x = 1.0 })()
                 entity[this.componentTwo] = { y : 2.0 }
                 entity[this.componentThree] = 1
                 entity[this.componentFour] = 'Name'
+                entity.data = {
+                    value: 'default entity data',
+                    valueToBeRemoved: 'I should be overwritten and removed',
+                }
             }
         })
         
@@ -51,6 +58,7 @@ describe('EntityFactory', function() {
         test('creates an entity according to the current [_configuration]', () => {
             const [entity] = this.entityFactory.create(this.entityManager)
             
+            expect(entity.data).to.deep.equal(this.data)
             expect(entity.components).to.deep.equal(this.components)
             expect(entity[this.componentOne]).property('x').to.equal(4.0)
             expect(entity[this.componentTwo]).property('y').to.equal(5.0)
@@ -59,13 +67,14 @@ describe('EntityFactory', function() {
         })
         
         test('does not change a components value if there is no initializer for that component', () => {
-            this.entityFactory._configuration.set(this.componentOne, undefined)
-            this.entityFactory._configuration.set(this.componentTwo, undefined)
-            this.entityFactory._configuration.set(this.componentThree, undefined)
-            this.entityFactory._configuration.set(this.componentFour, undefined)
+            this.entityFactory._configuration.components.set(this.componentOne, undefined)
+            this.entityFactory._configuration.components.set(this.componentTwo, undefined)
+            this.entityFactory._configuration.components.set(this.componentThree, undefined)
+            this.entityFactory._configuration.components.set(this.componentFour, undefined)
             
             const [entity] = this.entityFactory.create(this.entityManager)
 
+            expect(entity.data).to.deep.equal(this.data)
             expect(entity.components).to.deep.equal(this.components)
             expect(entity[this.componentOne]).property('x').to.equal(1.0)
             expect(entity[this.componentTwo]).property('y').to.equal(2.0)
@@ -74,14 +83,15 @@ describe('EntityFactory', function() {
         })
         
         test('creates an entity from a [configuration]', () => {
-            let configuration = this.entityFactory._configuration
+            const configuration = { ...this.entityFactory._configuration, }
             
-            this.entityFactory._configuration = new Map()
+            this.entityFactory._configuration = null
             
             const [entity] = this.entityFactory.create(this.entityManager, 1, configuration)
 
             expect(entity).to.be.an.instanceof(Object)
 
+            expect(entity.data).to.deep.equal(this.data)
             expect(entity.components).to.deep.equal(this.components)
             expect(entity[this.componentOne]).property('x').to.equal(4.0)
             expect(entity[this.componentTwo]).property('y').to.equal(5.0)
@@ -89,18 +99,33 @@ describe('EntityFactory', function() {
             expect(entity[this.componentFour]).to.equal(this.componentFourInitializer())
         })
         
-        test('creates an entity without a [configuration]', () => {
-            this.entityFactory._configuration = new Map()
+        test('does not create an entity without a [configuration] since components are empty', () => {
+            this.entityFactory._configuration = {
+                components: new Map(),
+                data: {},
+            }
             
+            const entities = this.entityFactory.create(this.entityManager, 1)
+
+            expect(entities).to.an.instanceOf(Array).and.to.be.empty
+        })
+        
+        test('creates an entity with an empty [data] object if none was set', () => {
+            this.entityFactory._configuration = {
+                ...this.entityFactory._configuration,
+                data: {},
+            }
+
             const [entity] = this.entityFactory.create(this.entityManager, 1)
 
             expect(entity).to.be.an.instanceof(Object)
-
-            expect(entity.components).to.deep.equal([])
-            expect(entity[this.componentOne]).property('x').to.equal(1.0)
-            expect(entity[this.componentTwo]).property('y').to.equal(2.0)
-            expect(entity[this.componentThree]).to.equal(1)
-            expect(entity[this.componentFour]).to.equal('Name')
+            
+            expect(entity.data).to.deep.equal({})
+            expect(entity.components).to.deep.equal(this.components)
+            expect(entity[this.componentOne]).property('x').to.equal(4.0)
+            expect(entity[this.componentTwo]).property('y').to.equal(5.0)
+            expect(entity[this.componentThree]).to.equal(this.componentThreeInitializer())
+            expect(entity[this.componentFour]).to.equal(this.componentFourInitializer())
         })
 
         test('creates [count] number of entities', () => {
@@ -110,16 +135,19 @@ describe('EntityFactory', function() {
         })
         
         test('creates [count] number of entities from [configuration]', () => {
-            const configuration = this.entityFactory._configuration
+            const configuration = { ...this.entityFactory._configuration, }
             
-            this.entityFactory._configuration = new Map()
+            this.entityFactory._configuration = {
+                components: new Map(),
+                data: {}
+            }
             
             const count = Math.floor(Math.random() * 100)
             
             expect(this.entityFactory.create(this.entityManager, count, configuration)).property('length').to.equal(count)
         })
 
-        test('returns an empty array [configuration] and [_configuration] is null', () => {
+        test('returns an empty array if [configuration] and [_configuration] is null', () => {
             const spy = sinon.spy(console, 'warn')
 
             this.entityFactory._configuration = null

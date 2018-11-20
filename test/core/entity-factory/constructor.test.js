@@ -19,8 +19,10 @@ describe('EntityFactory', function() {
             expect(this.entityFactory).to.be.an.instanceof(EntityFactory)
         })
         
-        test('instantiates [_configuration] as a Map', () => {
-            expect(this.entityFactory._configuration).to.be.an.instanceof(Map)
+        test('instantiates [_configuration] as an object containing [components] and [data]', () => {
+            expect(this.entityFactory._configuration).to.be.an.instanceof(Object)
+            expect(this.entityFactory._configuration).property('components').to.be.an.instanceof(Map)
+            expect(this.entityFactory._configuration).property('data').to.be.an.instanceof(Object)
         })
         
         test('instantiates [_initializers] as a Map', () => {

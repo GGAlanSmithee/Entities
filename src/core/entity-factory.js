@@ -5,10 +5,15 @@ import { isFunction, } from '../validate/is-function'
 import { isObject, } from '../validate/is-object'
 import { isDefined } from '../validate/is-defined'
 
+const newConfiguration = () => ({
+    components: new Map(),
+    data: {},
+})
+
 class EntityFactory {
     constructor() {
         this._initializers  = new Map()
-        this._configuration = new Map()
+        this._configuration = newConfiguration()
     }
     
     registerInitializer(key, initializer) {
@@ -22,7 +27,7 @@ class EntityFactory {
     }
     
     build() {
-        this._configuration = new Map()
+        this._configuration = newConfiguration()
         
         return this
     }
@@ -36,9 +41,17 @@ class EntityFactory {
             initializer = this._initializers.get(key)
         }
         
-        this._configuration.set(key, initializer)
+        this._configuration.components.set(key, initializer)
         
         return this
+    }
+
+    withData(data) {
+        if (!isObject(data)) {
+            return this
+        }
+
+        this._configuration.data = data
     }
     
     createConfiguration() {
@@ -60,17 +73,17 @@ class EntityFactory {
             return []
         }
         
-        const components = Array.from(configuration.keys())
+        const components = Array.from(configuration.components.keys())
         
         return Array
             .from({ length, }, () => {
-                const entity = entityManager.newEntity(components)
+                const entity = entityManager.newEntity(components, configuration.data)
                 
                 if (entity === null) {
                     return null
                 }
 
-                for (const [component, initializer] of configuration) {
+                for (const [component, initializer] of configuration.components) {
                     if (!isFunction(initializer)) {
                         continue
                     }

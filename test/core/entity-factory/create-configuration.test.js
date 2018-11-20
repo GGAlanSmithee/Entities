@@ -34,19 +34,20 @@ describe('EntityFactory', function() {
                 a = "A"
             }
             
-            this.entityFactory._configuration.set(this.position, initializerOne)
-            this.entityFactory._configuration.set(this.velocity, initializerTwo)
-            this.entityFactory._configuration.set(this.stats, initializerThree)
+            this.entityFactory._configuration.components.set(this.position, initializerOne)
+            this.entityFactory._configuration.components.set(this.velocity, initializerTwo)
+            this.entityFactory._configuration.components.set(this.stats, initializerThree)
+            this.entityFactory._configuration.data = { val1: 'valueOne', val2: 42 }
             
             const configuration = this.entityFactory.createConfiguration()
             
-            expect(configuration).to.equal(this.entityFactory._configuration)
-            
-            expect(configuration).property('size').to.equal(3)
-            
-            expect(configuration.get(this.position)).to.equal(initializerOne)
-            expect(configuration.get(this.velocity)).to.equal(initializerTwo)
-            expect(configuration.get(this.stats)).to.equal(initializerThree)
+            expect(configuration.components).property('size').to.equal(3)
+            expect(configuration.components).to.deep.equal(this.entityFactory._configuration.components)
+            expect(configuration.components.get(this.position)).to.equal(initializerOne)
+            expect(configuration.components.get(this.velocity)).to.equal(initializerTwo)
+            expect(configuration.components.get(this.stats)).to.equal(initializerThree)
+
+            expect(configuration.data).to.deep.equal(this.entityFactory._configuration.data)
         })
     })
 })
