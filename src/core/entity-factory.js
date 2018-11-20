@@ -5,13 +5,15 @@ import { isFunction, } from '../validate/is-function'
 import { isObject, } from '../validate/is-object'
 import { isDefined } from '../validate/is-defined'
 
+const newConfiguration = () => ({
+    components: new Map(),
+    data: {},
+})
+
 class EntityFactory {
     constructor() {
         this._initializers  = new Map()
-        this._configuration = {
-            components: new Map(),
-            data: {},
-        }
+        this._configuration = newConfiguration()
     }
     
     registerInitializer(key, initializer) {
@@ -25,10 +27,7 @@ class EntityFactory {
     }
     
     build() {
-        this._configuration = {
-            components: new Map(),
-            data: {},
-        }
+        this._configuration = newConfiguration()
         
         return this
     }
