@@ -52,7 +52,7 @@ class EntityManager {
     }
     
     newEntity(components, data = {}) {
-        if (!isArray(components)) {
+        if (!isArray(components) || components.length === 0) {
             return null
         }
 
@@ -252,6 +252,12 @@ class EntityManager {
         return this
     }
     
+    withData(data) {
+        this._entityFactory.withData(data)
+        
+        return this
+    }
+
     create(count, configurationKey) {
         let configuration = undefined
         

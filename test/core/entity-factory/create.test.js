@@ -99,24 +99,17 @@ describe('EntityFactory', function() {
             expect(entity[this.componentFour]).to.equal(this.componentFourInitializer())
         })
         
-        test('creates an entity without a [configuration]', () => {
+        test('does not create an entity without a [configuration] since components are empty', () => {
             this.entityFactory._configuration = {
                 components: new Map(),
                 data: {},
             }
             
-            const [entity] = this.entityFactory.create(this.entityManager, 1)
+            const entities = this.entityFactory.create(this.entityManager, 1)
 
-            expect(entity).to.be.an.instanceof(Object)
-
-            expect(entity.data).to.deep.equal({})
-            expect(entity.components).to.deep.equal([])
-            expect(entity[this.componentOne]).property('x').to.equal(1.0)
-            expect(entity[this.componentTwo]).property('y').to.equal(2.0)
-            expect(entity[this.componentThree]).to.equal(1)
-            expect(entity[this.componentFour]).to.equal('Name')
+            expect(entities).to.an.instanceOf(Array).and.to.be.empty
         })
-
+        
         test('creates an entity with an empty [data] object if none was set', () => {
             this.entityFactory._configuration = {
                 ...this.entityFactory._configuration,

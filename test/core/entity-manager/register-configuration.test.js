@@ -35,9 +35,12 @@ describe('EntityManager', function() {
             const component3   = 'lala'
             const initializer3 = 1.5
 
-            this.entityManager._entityFactory._configuration.set(component1, initializer1)
-            this.entityManager._entityFactory._configuration.set(component2, initializer2)
-            this.entityManager._entityFactory._configuration.set(component3, initializer3)
+            const data = { myData: { value: 'this is some data', key: 42, }}
+
+            this.entityManager._entityFactory._configuration.data = { ...data, }
+            this.entityManager._entityFactory._configuration.components.set(component1, initializer1)
+            this.entityManager._entityFactory._configuration.components.set(component2, initializer2)
+            this.entityManager._entityFactory._configuration.components.set(component3, initializer3)
             
             const conf = 'myConf'
 
@@ -45,11 +48,12 @@ describe('EntityManager', function() {
             
             const configuration = this.entityManager.entityConfigurations.get(conf)
             
-            expect(configuration).to.be.an.instanceof(Map)
-            expect(configuration).property('size').to.equal(3)
-            expect(configuration.get(component1)).to.equal(initializer1)
-            expect(configuration.get(component2)).to.equal(initializer2)
-            expect(configuration.get(component3)).to.equal(initializer3)
+            expect(configuration).property('data').to.deep.equal(data)
+            expect(configuration).property('components').to.be.an.instanceof(Map)
+            expect(configuration).property('components').property('size').to.equal(3)
+            expect(configuration.components.get(component1)).to.equal(initializer1)
+            expect(configuration.components.get(component2)).to.equal(initializer2)
+            expect(configuration.components.get(component3)).to.equal(initializer3)
         })
 
         test('invokes console.warn if there is already a configuration registered on [key]', () => {

@@ -29,7 +29,7 @@ describe('EntityManager', function() {
             expect(this.entityManager.newEntity).to.be.a('function')
         })
         
-        test('adds and returns an object containing an entity, given correct [components] input', () => {
+        test('adds and returns an entity object, given correct [components] input', () => {
             let entity = this.entityManager.newEntity(this.components)
             
             expect(entity.id).to.equal(0)
@@ -41,8 +41,28 @@ describe('EntityManager', function() {
             expect(entity).to.deep.equal(this.entityManager.entities[entity.id])
         })
 
-        test('TODO ADD TEST FOR DEFAULT DATA PARAM', () => {
-            expect(true).to.be.false
+        test('creates an entity with the provided [data] object', () => {
+            const components = [ this.position, ]
+            const data = { myData: 'this is some awesome data!' }
+
+            let entity = this.entityManager.newEntity(components, data)
+            
+            expect(entity.id).to.equal(0)
+            expect(entity).to.deep.equal(this.entityManager.entities[entity.id])
+            
+            entity = this.entityManager.newEntity(components, data)
+            
+            expect(entity.id).to.equal(1)
+            expect(entity).to.deep.equal(this.entityManager.entities[entity.id])
+            expect(entity.components).to.deep.equal(components)
+            expect(entity.data).to.deep.equal(data)
+
+            entity = this.entityManager.newEntity(components, {})
+            
+            expect(entity.id).to.equal(2)
+            expect(entity).to.deep.equal(this.entityManager.entities[entity.id])
+            expect(entity.components).to.deep.equal(components)
+            expect(entity.data).to.deep.equal({})
         })
         
         test('correctly creates an entity given an array not containing all registered components', () => {
@@ -93,6 +113,11 @@ describe('EntityManager', function() {
             expect(entity).to.be.null
             
             entity = this.entityManager.newEntity({})
+            expect(entity).to.be.null
+        })
+
+        test('does not add an entity and returns null, given empty [components] input', () => {
+            let entity = this.entityManager.newEntity([], { data: 'I have provided proper data data' })
             expect(entity).to.be.null
         })
         
