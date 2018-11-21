@@ -1,7 +1,7 @@
 {
   "name": "gg-entities",
   "description": "easy-to-use Entity-Component System in JavaScript",
-  "version": "4.0.0-beta.1",
+  "version": "4.0.0-beta.2",
   "main": "dist/gg-entities.js",
   "jsnext:main": "src/index.js",
   "module": "src/index.js",

@@ -1,6 +1,6 @@
 {
   "name": "gg-entities-typescript-test",
-  "version": "4.0.0-beta.1",
+  "version": "4.0.0-beta.2",
   "description": "testing typescript definitions for gg-entities",
   "main": "index.ts",
   "scripts": {

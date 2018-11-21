@@ -10,7 +10,7 @@ class TestComponent {
 
 const Pos = 'pos'
 
-const PosComponent = {
+const PosComponent: object = {
     x: 100,
     y: 100,
 }
@@ -43,6 +43,10 @@ assert.strictEqual(entityManager.capacity, 400)
 
 entityManager.registerComponent(Test, TestComponent)
 entityManager.registerComponent(Pos, PosComponent)
+
+assert.deepStrictEqual(
+    entityManager.components,
+    new Map([[ Test, TestComponent, ], [ Pos, PosComponent, ]]))
 
 let entity = entityManager.newEntity([ Test ])
 

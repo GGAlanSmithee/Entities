@@ -33,6 +33,7 @@ declare module 'gg-entities' {
     
         capacity: number
         entities: EntityArray
+        components: Map<ComponentKey, Component>
         entityConfigurations: Map<ConfigurationKey, Configuration>
     
         increaseCapacity(): void

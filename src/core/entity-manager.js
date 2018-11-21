@@ -26,6 +26,9 @@ class EntityManager {
         }))
     }
 
+    // todo - should we return deep copies to prevent unwanted modifications?
+    // or will that create hard-to-debug situations?
+    get components() { return this._componentManager.components }
     get capacity() { return this._entities.length }
     get entities() { return this._entities }
     get entityConfigurations() { return this._entityConfigurations }
