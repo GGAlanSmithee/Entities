@@ -1,7 +1,9 @@
 import { expect }        from 'chai'
-import sinon             from 'sinon'
 import { EntityManager } from '../../../src/core/entity-manager'
 import { EntityFactory } from '../../../src/core/entity-factory'
+import { isDefinedMsg } from '../../../src/validate/is-defined'
+import { isMapMsg } from '../../../src/validate/is-map'
+import { isObjectMsg } from '../../../src/validate/is-object';
 
 describe('EntityFactory', function() {
     describe('create(entityManager, count = 1, configuration = undefined)', () => {
@@ -14,10 +16,10 @@ describe('EntityFactory', function() {
             this.componentThree = 'three'
             this.componentFour  = 'four'
             
-            this.componentOneInitializer   = function() { this.x = 4.0 }
-            this.componentTwoInitializer   = function() { this.y = 5.0 }
-            this.componentThreeInitializer = () => { return 15 }
-            this.componentFourInitializer  = () => { return "Full Name" }
+            this.componentOneInitializer   = (c) => ({ ...c, x: 4.0, })
+            this.componentTwoInitializer   = (c) => ({ ...c, y: 5.0, })
+            this.componentThreeInitializer = () => 15
+            this.componentFourInitializer  = () => "Full Name"
 
             this.entityFactory._configuration.components.set(this.componentOne, this.componentOneInitializer)
             this.entityFactory._configuration.components.set(this.componentTwo, this.componentTwoInitializer)
@@ -98,6 +100,96 @@ describe('EntityFactory', function() {
             expect(entity[this.componentThree]).to.equal(this.componentThreeInitializer())
             expect(entity[this.componentFour]).to.equal(this.componentFourInitializer())
         })
+
+        test('succesfully initializes a component which is a class without providing a initializer', () => {
+            const testComp = 'classCompTest'
+
+            class TestComponent {
+                constructor(x, y) {
+                    this.x = x
+                    this.y = y
+                }
+
+                x = 0
+                y = 0
+            }
+
+            for (const entity of this.entityManager.entities) {
+                entity[testComp] = new TestComponent(5, 5)
+            }
+
+            this.entityFactory._configuration = {
+                components: new Map(),
+                data: { }
+            }
+
+            this.entityFactory._configuration.components.set(testComp)
+
+            const [entity] = this.entityFactory.create(this.entityManager)
+
+            expect(entity.components).to.deep.equal([testComp])
+            expect(entity[testComp]).to.deep.equal(new TestComponent(5, 5))
+        })
+
+        test('succesfully initializes a component which is a class when providing a initializer', () => {
+            const testComp = 'classCompTest'
+
+            class TestComponent {
+                constructor(x, y) {
+                    this.x = x
+                    this.y = y
+                }
+
+                x = 0
+                y = 0
+            }
+
+            for (const entity of this.entityManager.entities) {
+                entity[testComp] = new TestComponent(5, 5)
+            }
+
+            this.entityFactory._configuration = {
+                components: new Map(),
+                data: { }
+            }
+
+            this.entityFactory._configuration.components.set(testComp, () => new TestComponent(10, 10))
+
+            const [entity] = this.entityFactory.create(this.entityManager)
+
+            expect(entity.components).to.deep.equal([testComp])
+            expect(entity[testComp]).to.deep.equal(new TestComponent(10, 10))
+        })
+
+        test('skips component initialization and uses default values if a initializer which does not return a value was provided', () => {
+            const testComp = 'classCompTest'
+
+            class TestComponent {
+                constructor(x, y) {
+                    this.x = x
+                    this.y = y
+                }
+
+                x = 0
+                y = 0
+            }
+
+            for (const entity of this.entityManager.entities) {
+                entity[testComp] = new TestComponent(5, 5)
+            }
+
+            this.entityFactory._configuration = {
+                components: new Map(),
+                data: { }
+            }
+
+            this.entityFactory._configuration.components.set(testComp, () => { /* does not return a value */ })
+
+            const [entity] = this.entityFactory.create(this.entityManager)
+
+            expect(entity.components).to.deep.equal([testComp])
+            expect(entity[testComp]).to.deep.equal(new TestComponent(5, 5))
+        })
         
         test('does not create an entity without a [configuration] since components are empty', () => {
             this.entityFactory._configuration = {
@@ -147,18 +239,46 @@ describe('EntityFactory', function() {
             expect(this.entityFactory.create(this.entityManager, count, configuration)).property('length').to.equal(count)
         })
 
-        test('returns an empty array if [configuration] and [_configuration] is null', () => {
-            const spy = sinon.spy(console, 'warn')
+        test('throws and error if both [configuration] and [_configuration] isn\'t defined', () => {
+            const msg = (value = '') => isDefinedMsg('configuration', value)
+            
+            this.entityFactory._configuration = null
+
+            expect(() => this.entityFactory.create(this.entityManager, 1)).to.throw(TypeError, msg(null))
+            expect(() => this.entityFactory.create(this.entityManager, 1, null)).to.throw(TypeError, msg(null))
+            expect(() => this.entityFactory.create(this.entityManager, 1, undefined)).to.throw(TypeError, msg(null))
+        })
+
+        test('throws and error if [configuration.components] isn´t a map', () => {
+            const msg = (value = '') => isMapMsg('configuration.components', value)
+            
+            const configuration = { ...this.entityFactory._configuration }
 
             this.entityFactory._configuration = null
+
+            expect(() => this.entityFactory.create(this.entityManager, 1, { ...configuration, components: {}, })).to.throw(TypeError, msg({}))
+            expect(() => this.entityFactory.create(this.entityManager, 1, { ...configuration, components: [], })).to.throw(TypeError, msg([]))
+            expect(() => this.entityFactory.create(this.entityManager, 1, { ...configuration, components: '', })).to.throw(TypeError, msg(''))
+            expect(() => this.entityFactory.create(this.entityManager, 1, { ...configuration, components: 1, })).to.throw(TypeError, msg(1))
+            expect(() => this.entityFactory.create(this.entityManager, 1, { ...configuration, components: 1.5, })).to.throw(TypeError, msg(1.5))
+            expect(() => this.entityFactory.create(this.entityManager, 1, { ...configuration, components: null, })).to.throw(TypeError, msg(null))
+            expect(() => this.entityFactory.create(this.entityManager, 1, { ...configuration, components: undefined, })).to.throw(TypeError, msg(undefined))
+        })
+
+        test('throws and error if [configuration.data] isn´t an object', () => {
+            const msg = (value = '') => isObjectMsg('configuration.data', value)
             
-            const entities = this.entityFactory.create(this.entityManager, 1)
+            const configuration = { ...this.entityFactory._configuration }
 
-            expect(entities).to.be.an.instanceof(Array)
-            expect(entities).property('length').to.equal(0)
+            this.entityFactory._configuration = null
 
-            expect(spy.calledOnce).to.be.true
-            expect(spy.calledWith('no configuration supplied - could not create entity.')).to.be.true
+            expect(() => this.entityFactory.create(this.entityManager, 1, { ...configuration, data: new Map(), })).to.throw(TypeError, msg(new Map()))
+            expect(() => this.entityFactory.create(this.entityManager, 1, { ...configuration, data: [], })).to.throw(TypeError, msg([]))
+            expect(() => this.entityFactory.create(this.entityManager, 1, { ...configuration, data: '', })).to.throw(TypeError, msg(''))
+            expect(() => this.entityFactory.create(this.entityManager, 1, { ...configuration, data: 1, })).to.throw(TypeError, msg(1))
+            expect(() => this.entityFactory.create(this.entityManager, 1, { ...configuration, data: 1.5, })).to.throw(TypeError, msg(1.5))
+            expect(() => this.entityFactory.create(this.entityManager, 1, { ...configuration, data: null, })).to.throw(TypeError, msg(null))
+            expect(() => this.entityFactory.create(this.entityManager, 1, { ...configuration, data: undefined, })).to.throw(TypeError, msg(undefined))
         })
         
         test('returns an empty array if [entityManager] is not an instance of EntityManager', () => {

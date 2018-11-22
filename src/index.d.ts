@@ -13,8 +13,8 @@ declare module 'gg-entities' {
     export type ComponentKeyArray = Array<ComponentKey>
 
     export type ConfigurationKey = string
-    export type Initializer = number | string | object | Function
-    export type Configuration = Map<string, Initializer>
+    export type ComponentInitializer = (component?: Component) => any
+    export type Configuration = Map<string, ComponentInitializer>
     
     export type EventId = number
     export type EventKey = string
@@ -80,11 +80,11 @@ declare module 'gg-entities' {
         
         // Entity Factory
         
-        registerInitializer(component: ComponentKey, initializer: Initializer): void
+        registerInitializer(component: ComponentKey, initializer: ComponentInitializer): void
         
         build(): this
         
-        withComponent(component: ComponentKey, initializer?: Initializer): this
+        withComponent(component: ComponentKey, initializer?: ComponentInitializer): this
 
         withData(data: object): this
         

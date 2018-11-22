@@ -22,8 +22,8 @@ describe('EntityManager', function() {
         })
         
         test('invokes [entityFactory].create with [entityManager] as the context (this), [count] and the configuration corresponding to [id]', () => {
-            const component   = this.position
-            const initializer = function() { return 2 }
+            const component   = 'pos'
+            const initializer = () => 2
             
             const confKey = 'conf'
             const configuration = {
@@ -32,7 +32,6 @@ describe('EntityManager', function() {
             }
 
             configuration.components.set(component, initializer)
-            
             this.entityManager.entityConfigurations.set(confKey, configuration)
             
             const spy = sinon.spy(this.entityManager._entityFactory, 'create')
@@ -43,10 +42,21 @@ describe('EntityManager', function() {
             
             expect(spy.calledOnce).to.be.true
             expect(spy.calledWith(this.entityManager, count, configuration)).to.be.true
+
+            const classComponent   = 'classComp'
+            const classInitializer = () =>new (class A {})()
+
+            configuration.components.set(classComponent, classInitializer)
+            this.entityManager.entityConfigurations.set(confKey, configuration)
+
+            this.entityManager.create(count, confKey)
+            
+            expect(spy.calledTwice).to.be.true
+            expect(spy.calledWith(this.entityManager, count, configuration)).to.be.true
         })
         
         test('returns the created entities as an entity object, containing { id, components and data }', () => {
-            const component   = this.position
+            const component   = 'pos'
             const initializer = function() { return 2 }
             
             const confKey = 'conf'

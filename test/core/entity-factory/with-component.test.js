@@ -20,9 +20,10 @@ describe('EntityFactory', function() {
         test('adds [key] and [initializer] to [configuration]', () => {
             expect(this.entityFactory._configuration.components.has(this.position)).to.be.false
             
-            function initializer() {
-                this.a = "A"
-            }
+            const initializer = (comp) => ({
+                ...comp,
+                a: "A"
+            })
             
             this.entityFactory.withComponent(this.position, initializer)
             
@@ -32,9 +33,10 @@ describe('EntityFactory', function() {
         })
         
         test('adds registered initializer as [initializer] when [initializer] is omitted or not a function', () => {
-            function initializer() {
-                this.a = "A"
-            }
+            const initializer = (comp) => ({
+                ...comp,
+                a: "A"
+            })
             
             this.entityFactory._initializers.set(this.position, initializer)
             

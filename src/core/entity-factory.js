@@ -1,6 +1,7 @@
 import { validateAndThrow, } from '../validate/index'
 import { isNonEmptyString, } from '../validate/is-non-empty-string'
 import { isEntityManager, } from '../validate/is-entity-manager'
+import { isMap } from '../validate/is-map'
 import { isFunction, } from '../validate/is-function'
 import { isObject, } from '../validate/is-object'
 import { isDefined } from '../validate/is-defined'
@@ -63,16 +64,25 @@ class EntityFactory {
             return []
         }
     
-        if (configuration == null) {
+        if (!isDefined(configuration)) {
             configuration = this._configuration
         }
 
-        if (configuration == null) {
-            console.warn('no configuration supplied - could not create entity.') // eslint-disable-line no-console
-
-            return []
-        }
+        validateAndThrow(
+            TypeError,
+            isDefined(configuration, 'configuration')
+        )
         
+        validateAndThrow(
+            TypeError,
+            isMap(configuration.components, 'configuration.components')
+        )
+
+        validateAndThrow(
+            TypeError,
+            isObject(configuration.data, 'configuration.data')
+        )
+
         const components = Array.from(configuration.components.keys())
         
         return Array
@@ -84,13 +94,18 @@ class EntityFactory {
                 }
 
                 for (const [component, initializer] of configuration.components) {
-                    if (!isFunction(initializer)) {
+                    if (!isDefined(initializer)) {
                         continue
                     }
 
-                    const result = initializer.call(entity[component])
+                    validateAndThrow(
+                        TypeError,
+                        isFunction(initializer, `initializer for component ${component}`)
+                    )
+
+                    const result = initializer(entity[component])
                     
-                    if (!isObject(entity[component]) && isDefined(result)) {
+                    if (isDefined(result)) {
                         entity[component] = result
                     }
                 }

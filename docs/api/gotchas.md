@@ -10,4 +10,22 @@ See above.
 
 ## always use a `bind`-able function when registering a system
 
-Since the system is bound with the EntityManager as its context, using a lexically bound function will not work as intended.
+Since the system is bound with the EntityManager as its context, using a lexically bound function (`() => { ... }`) will not work as intended.
+
+## component initializers must be a function which returns the new component value
+
+```js
+// OK !
+entityManager
+    .build()
+    .withComponent('testComp', () => new TestComponen(1, 'some value', true))
+    .withComponent('valueComp', () => 42)
+    .create(10)
+
+// Not OK !
+entityManager
+    .build()
+    .withComponent('testComp', new TestComponen(1, 'some value', true)) // initializer must be a function
+    .withComponent('valueComp', 42) // initializer must be a function
+    .create(10)
+```

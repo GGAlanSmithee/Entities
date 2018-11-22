@@ -159,22 +159,11 @@ class EntityManager {
             entity[key] = this._componentManager.newComponent(key)
         }
         
-        let initializer
+        const initializer = 
+            typeof component === 'function' ? () => new component() :
+            typeof component === 'object' ? () => ({ ...component }) :
+            () => component
 
-        switch (typeof component) {
-            case 'function': initializer = component; break
-            case 'object': {
-                initializer = function() {
-                    for (let key of Object.keys(component)) {
-                        this[key] = component[key]
-                    }
-                }
-            
-                break
-            }
-            default: initializer = function() { return component }; break
-        }
-        
         this._entityFactory.registerInitializer(key, initializer)
     }
     

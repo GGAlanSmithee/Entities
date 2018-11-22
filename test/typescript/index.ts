@@ -8,6 +8,12 @@ class TestComponent {
     y = 100
 }
 
+const Test2 = 'test2'
+
+class SecondTestComponent {
+    value = 'somewhere...'
+}
+
 const Pos = 'pos'
 
 const PosComponent: object = {
@@ -42,11 +48,12 @@ assert.strictEqual(entityManager.entities.length, 400)
 assert.strictEqual(entityManager.capacity, 400)
 
 entityManager.registerComponent(Test, TestComponent)
+entityManager.registerComponent(Test2, SecondTestComponent)
 entityManager.registerComponent(Pos, PosComponent)
 
 assert.deepStrictEqual(
     entityManager.components,
-    new Map([[ Test, TestComponent, ], [ Pos, PosComponent, ]]))
+    new Map([[ Test, TestComponent, ], [ Test2, SecondTestComponent, ], [ Pos, PosComponent, ]]))
 
 let entity = entityManager.newEntity([ Test ])
 
@@ -171,13 +178,14 @@ entityManager.registerSystem(SystemType.Render, Render, [ Pos, Test, ], RenderSy
 let entities = entityManager
     .build()
     .withComponent(Pos)
-    .withComponent(Test, () => { return new TestComponent() })
+    .withComponent(Test, () => new TestComponent())
+    .withComponent(Test2)
     .withData(Data)
     .create(3)
 
-assert.deepStrictEqual(entities[0].components, [ Pos, Test ])
+assert.deepStrictEqual(entities[0].components, [ Pos, Test, Test2 ])
 assert.deepStrictEqual(entities[0].data, Data)
-assert.deepStrictEqual(entities[1].components, [ Pos, Test ])
+assert.deepStrictEqual(entities[1].components, [ Pos, Test, Test2 ])
 assert.deepStrictEqual(entities[1].data, Data)
 assert.deepStrictEqual(entities[2].components, [ Pos, Test ])
 assert.deepStrictEqual(entities[2].data, Data)
