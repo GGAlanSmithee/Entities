@@ -3,7 +3,7 @@ import { EntityManager } from '../../../src/core/entity-manager'
 import { EntityFactory } from '../../../src/core/entity-factory'
 import { isDefinedMsg } from '../../../src/validate/is-defined'
 import { isMapMsg } from '../../../src/validate/is-map'
-import { isObjectMsg } from '../../../src/validate/is-object';
+import { isObjectMsg } from '../../../src/validate/is-object'
 
 describe('EntityFactory', function() {
     describe('create(entityManager, count = 1, configuration = undefined)', () => {

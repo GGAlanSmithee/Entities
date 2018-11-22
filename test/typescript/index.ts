@@ -162,18 +162,18 @@ if (entity !== null) {
 
 const Render = 'render'
 
-function RenderSystem(entities: IterableIterator<Entity>, obj: object) {
+function RenderSystem(entities: IterableIterator<Entity>, _obj: object) {
     let i = 0
 
     for (const entity of entities) {
-        assert.deepStrictEqual(entity.components, [ Pos, Test, ])
+        assert.deepStrictEqual(entity.components, [ Pos, Test, Test2 ])
         ++i
     }
 
     assert.strictEqual(i, 3)
 }
 
-entityManager.registerSystem(SystemType.Render, Render, [ Pos, Test, ], RenderSystem)
+entityManager.registerSystem(SystemType.Render, Render, [ Pos, Test, Test2 ], RenderSystem)
 
 let entities = entityManager
     .build()
@@ -187,7 +187,7 @@ assert.deepStrictEqual(entities[0].components, [ Pos, Test, Test2 ])
 assert.deepStrictEqual(entities[0].data, Data)
 assert.deepStrictEqual(entities[1].components, [ Pos, Test, Test2 ])
 assert.deepStrictEqual(entities[1].data, Data)
-assert.deepStrictEqual(entities[2].components, [ Pos, Test ])
+assert.deepStrictEqual(entities[2].components, [ Pos, Test, Test2 ])
 assert.deepStrictEqual(entities[2].data, Data)
 
 entityManager.onRender()
@@ -254,7 +254,11 @@ assert.strictEqual(ent[Pos].x, 100)
 assert.strictEqual(ent[Pos].y, 100)
 assert.strictEqual(ent.data.test, 'Testing')
 
-function init(this: { x: number, y: number }) { this.x = 200, this.y = 200 }
+const init = (c: { x: number, y: number }) => ({
+    ...c,
+    x: 200,
+    y: 200,
+})
 
 entityManager.registerInitializer(Pos, init)
 
@@ -270,12 +274,23 @@ assert.strictEqual(ent2.data.hi, 'bye')
 
 let [ ent3 ] = entityManager
     .build()
-    .withComponent(Pos, function(this: { x: number, y: number }) { this.x = 150, this.y = 175 })
+    .withComponent(Pos, (c: { x: number, y: number }) => ({ ...c, x: 150, y: 175, }))
     .create(1)
 
 assert.strictEqual(ent3[Pos].x, 150)
 assert.strictEqual(ent3[Pos].y, 175)
 assert.deepStrictEqual(ent3.data, {})
+
+let [ ent4 ] = entityManager
+    .build()
+    .withData({ myProperty: 'myValue', })
+    .withComponent(Test2, (c: { x: number, y: number }) => ({ ...c, x: 13 }))
+    .create(1)
+
+assert.strictEqual(ent4[Test2].x, 13)
+assert.strictEqual(ent4[Test2].value, 'somewhere...')
+assert.deepStrictEqual(ent4.data, { myProperty: 'myValue', })
+
 
 const TestEvent = 'test'
 
