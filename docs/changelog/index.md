@@ -1,6 +1,6 @@
 # Changelog
 
-## v4.0.0-beta.2 (Not yet released)
+## v4.0.0-beta.2 (2018-11-23)
 
 Added `EntityManager.components` getter which returns the map of all registered components  
 
