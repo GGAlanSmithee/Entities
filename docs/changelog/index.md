@@ -1,5 +1,28 @@
 # Changelog
 
+## v4.0.0-beta.2 (Not yet released)
+
+Added `EntityManager.components` getter which returns the map of all registered components  
+
+Component `initializer`s (as used in `EntityManager.withComponent(component, initializer)`) are now required to be a function which returns the new component  
+
+Added automatically generated (from typescript definitions) API documentation of the entire `EntityManager` class  
+We are now using a `gh-pages` branch for documentation since it gives us better control on how to update docs  
+
+Added and updated tests, typescript definitions, and examples for all new / changed functionality  
+
+## v4.0.0-beta.1 (2018-11-20)
+
+Removed the `entityFactory` getter from the `EntityManager`  
+Removed the `systemManager` getter from the `EntityManager`  
+Removed the `componentManager` getter from the `EntityManager`  
+Removed the `eventHandler` getter from the `EntityManager`  
+
+Added a `data` property to each entity, which can be used for component-independent data  
+Added a `with-data` example which illustrates how to add (and use) `data` to an entity  
+
+Added and updated tests, typescript definitions, and examples for all new / changed functionality  
+
 ## v3.0.0 (2018-09-13)
 
 Updated changelog  
