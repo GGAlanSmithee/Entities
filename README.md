@@ -54,7 +54,12 @@ entityManager.onRender({ delta: 16 }) // invokes all render systems (logSystem)
 
 * Easy to use
 * Configurable
-* 100% code coverage
+* Well tessted with 100% code coverage
+* Well documented
+* Typescript typings included
+* No external dependencies
+* Built with modern JavaScript
+* Small [TODO: is this relatively true?]
 * Fast [TODO: add benchmarks and comparisons to back this claim]
 
 ## Examples
