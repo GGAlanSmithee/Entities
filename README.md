@@ -61,44 +61,15 @@ entityManager.onRender({ delta: 16 }) // invokes all render systems (logSystem)
 
 * [boxes](http://ggalansmithee.github.io/Entities/examples/boxes.html)
 * [options](http://ggalansmithee.github.io/Entities/examples/opts.html)
-
+* [using custom entity data](http://ggalansmithee.github.io/Entities/examples/with-data.html)
+  
 ## Docs
 
 http://ggalansmithee.github.io/Entities/
 
 ## Typings
 
-There are no official typings (yet), but @ForsakenHarmony has provided a [gist](https://gist.github.com/ForsakenHarmony/33ef7c4d7cba7a08d5fa2667b5b1b31e) for TypeScript users.
-
-## FAQ / Gotchas
-
-* Since a system is bound with the `EntityManager` as its context, a system must be a regular function (not an es6 arrow function)
-
-## Tips and tricks
-
-* Using [destructuring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#Object_destructuring) and [computed properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#Computed_property_names)
-
-Accessing an entity's components in a system usually looks like this
-
-```javascript
-function movementSystem(entities) {
-    for (const { entity } of entities) {
-        entity[POS_COMPONENT].x += entity[VEL_COMPONENT].x * delta
-        entity[POS_COMPONENT].y += entity[VEL_COMPONENT].y * delta
-    }
-}
-```
-
-which can be a bit ugly, especially if your entity has a lot of components which are accessed multiple times. Using some ES6 (computed property keys) and ES7 (object spread) magic, we can make it a bit more concise:
-
-```javascript
-function movementSystem(entities) {
-    for (const { entity: { [POS_COMPONENT]: pos, [VEL_COMPONENT]: vel } } of entities) {
-        pos.x += vel.x * delta
-        pos.y += vel.y * delta
-    }
-}
-```
+The library includes typescript typings for 100% of the public API.
 
 ## Get involved
 
