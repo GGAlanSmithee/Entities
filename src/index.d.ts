@@ -36,6 +36,9 @@ declare module 'gg-entities' {
         components: Map<ComponentKey, Component>
         entityConfigurations: Map<ConfigurationKey, Configuration>
     
+        /**
+         * Increases the capacity (number of max entities) by a factor of 2
+         */
         increaseCapacity(): void
 
         newEntity(components: ComponentKeyArray, data?: object): Entity | null
@@ -46,6 +49,11 @@ declare module 'gg-entities' {
     
         hasComponent(id: EntityId, component: ComponentKey): boolean
     
+        /**
+         * Comment for method getEntitiesByComponents.
+         * @param target  Comment for parameter components.
+         * @returns       Comment for return value.
+         */
         getEntitiesByComponents(components?: ComponentKeyArray): IterableIterator<Entity>
     
         getEntitiesByIds(ids?: EntityIdArray): IterableIterator<Entity>
