@@ -5,6 +5,7 @@
 Updated changelog  
 Updated package version  
 Updated dependencies  
+Updated examples  
 A couple of smaller internal rewrites  
 
 ## v3.0.0-beta.2 (2018-09-11)
