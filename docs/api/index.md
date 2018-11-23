@@ -7,4 +7,4 @@ The entire GG-Entities API surface consists of one class, the `EntityManager`. T
 
 ## Entity Manager
 
-[docs](/api/entitymanager)
+[docs](/docs/api/entitymanager)
