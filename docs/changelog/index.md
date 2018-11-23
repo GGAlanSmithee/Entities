@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.0.0 (2018-09-13)
+
+Updated changelog  
+Updated package version  
+Updated dependencies  
+A couple of smaller internal rewrites  
+
 ## v3.0.0-beta.2 (2018-09-11)
 
 Renamed `entityManager.iterateEntities` to `entityManager.getEntitiesByComponents`  
