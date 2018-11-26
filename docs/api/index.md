@@ -7,4 +7,4 @@ The entire GG-Entities API surface consists of one class, the `EntityManager`. T
 
 ## Entity Manager
 
-[docs](https://github.com/ggalansmithee/entities/blob/gh-pages/api/classes/_index_d_._gg_entities_.entitymanager.html)
+The `EntityManager` API documentation is auto-generated from the typescript definitions and can be found [here](http://ggalansmithee.github.io/Entities/api/).
