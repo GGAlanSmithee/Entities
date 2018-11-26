@@ -36,10 +36,7 @@
     "build": "node build/bundle",
     "lint": "eslint src test --fix",
     "prepublishOnly": "npm run lint && npm test && npm run build",
-    "docs:generate": "npm run docs:create && npm run docs:copy && npm run docs:cleanup",
-    "docs:create": "typedoc --out type-docs/ src/index.d.ts --includeDeclarations --excludeExternals --excludePrivate --excludeProtected --theme markdown --name gg-entities --tsconfig test/typescript/tsconfig.json",
-    "docs:copy": "move-cli type-docs/classes/_index_d_._gg_entities_.entitymanager.md docs/api/entitymanager.md",
-    "docs:cleanup": "rimraf type-docs && line-replace docs/api/entitymanager.md:1"
+    "docs:generate": "typedoc --out api/ src/index.d.ts --includeDeclarations --excludeExternals --excludePrivate --excludeProtected --name gg-entities --tsconfig test/typescript/tsconfig.json"
   },
   "jest": {
     "testEnvironment": "node"
@@ -55,14 +52,10 @@
     "chai": "^4.1.2",
     "eslint": "^5.5.0",
     "jest": "^23.6.0",
-    "line-replace": "^1.0.2",
-    "move-cli": "^1.2.0",
-    "rimraf": "^2.6.2",
     "rollup": "^0.65.2",
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-node-resolve": "^3.4.0",
     "sinon": "^6.2.0",
-    "typedoc": "^0.13.0",
-    "typedoc-plugin-markdown": "^1.1.19"
+    "typedoc": "^0.13.0"
   }
 }
