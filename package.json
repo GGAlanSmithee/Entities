@@ -29,6 +29,9 @@
   "engines": {
     "node": ">=8.0.0"
   },
+  "watch": {
+    "docs:generate": "/src/index.d.ts"
+  },
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
@@ -36,7 +39,8 @@
     "build": "node build/bundle",
     "lint": "eslint src test --fix",
     "prepublishOnly": "npm run lint && npm test && npm run build",
-    "docs:generate": "typedoc --out api/ src/index.d.ts --includeDeclarations --excludeExternals --excludePrivate --excludeProtected --name gg-entities --tsconfig test/typescript/tsconfig.json"
+    "docs:generate": "typedoc --out api/ src/index.d.ts --includeDeclarations --excludeExternals --excludePrivate --excludeProtected --name gg-entities --tsconfig test/typescript/tsconfig.json",
+    "watch": "npm-watch"
   },
   "jest": {
     "testEnvironment": "node"

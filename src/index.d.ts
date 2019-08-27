@@ -50,7 +50,7 @@ declare module 'gg-entities' {
         hasComponent(id: EntityId, component: ComponentKey): boolean
     
         /**
-         * Gets an iterable of all entities containing all @components 
+         * Gets an iterable of all entities that contains all {@components}
          * @param components List of component keys to get entities by
          * @returns An Iterable of all matched entities 
          */
